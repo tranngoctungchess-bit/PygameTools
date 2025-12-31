@@ -6,7 +6,7 @@ import kernel
 class MarginScreen:
     def __init__(self, width: int, height: int, border_percent: Optional[Tuple[float, float]] ):
         self.display = pygame.display.set_mode((width, height))
-        self.margin_manager = kernel.Margin(self.display, percentage_to_screen=border_percent)
+        self.margin_manager = kernel.Margin(self.display, padding=border_percent)
         self.width = width
         self.height = height
     def get_pos(self, obj_size: tuple, anchor: str):
