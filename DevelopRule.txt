@@ -1,0 +1,6 @@
+Kernel : This component serves as a foundation upon which to build another component;
+         therefore, its features are not exclusive to other templates or components.
+Templates : As it is the primary tool reaching the user, it must possess the following characteristics:
+            -Its tools (class) don't necessarily have to be lightweight, but they shouldn't have too many parameters.
+            -It must be backward compatible with Pygame.
+            -It shouldn't be separated from pygame; everything must be built in such a way that pygame can run it properly.
