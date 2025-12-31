@@ -18,4 +18,3 @@ class MarginScreen:
         self.display.blit(surface, pos)
     def update(self):
         pygame.display.flip()
-# giờ, nhớ lại rằng template ko phải pyQt, vậy nên như này có lẽ là được, và còn một file nữa:
