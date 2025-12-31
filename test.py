@@ -1,21 +1,32 @@
-from Template.Align import SFM
 import pygame
+from kernel import Next
 
-# Khởi tạo màn hình với Margin 5% ngang và 10% dọc
-screen = SFM.MarginScreen(800, 700, (5.0, 10.0))
+pygame.init()
+screen = pygame.display.set_mode((800, 600))
 
-# Tạo một hình vuông màu đỏ để test
-rect_surface = pygame.Surface((100, 100))
-rect_surface.fill((255, 0, 0))
+# Tạo rect mẫu
+obj_rect = pygame.Rect(100, 100, 50, 50)  # đối tượng gốc
+next_rect = (0, 0, 30, 30)    # đối tượng muốn đặt cạnh
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+next_calc = Next(screen)
 
-    screen.fill((0, 0, 0))  # Xóa màn hình bằng màu đen
-    screen.anchor_render(rect_surface, "Center")
+# Test các hướng
+try:
+    pos_right = next_calc.get_pos(obj_rect, next_rect, 'Left', (-10, 0))
+    print('Right pos:', pos_right)
+except ValueError as e:
+    print(e)
 
-    screen.update()
-pygame.quit()
+try:
+    pos_down = next_calc.get_pos(obj_rect, next_rect, 'Down', (0, 10))
+    print('Down pos:', pos_down)
+except ValueError as e:
+    print(e)
+
+# Test không đủ chỗ (ví dụ đặt lên trên nhưng obj_rect quá sát top)
+obj_rect.top = 5
+try:
+    pos_up = next_calc.get_pos(obj_rect, next_rect, 'Up', (0, 10))
+    print('Up pos:', pos_up)
+except ValueError as e:
+    print('Up error:', e)

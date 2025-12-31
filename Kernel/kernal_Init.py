@@ -1,8 +1,8 @@
 import pygame
-init_ = False
+init_state = False
 def init():
-    global init_
-    if not init_:
+    global init_state
+    if not init_state:
         pygame.init()
-        init_ = True
+        init_state = True
 
