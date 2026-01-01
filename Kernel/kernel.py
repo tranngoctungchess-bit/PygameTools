@@ -112,27 +112,26 @@ class Margin:
 ######
 #NEXT
 ######
-class Next:
+class LayoutHelper:
     def __init__(self,screen):
         self.screen = screen
         self.screen_rect = screen.get_rect()
     def get_pos(self, obj_rect: Union[Tuple[Union[int, float], Union[int, float], Union[int, float], Union[int, float]],
                 pygame.Rect],
-                next_obj_rect: Union[Tuple[Union[int, float], Union[int, float], Union[int, float], Union[int, float]],
-                pygame.Rect],
+                next_obj_size: Tuple[Union[int, float], Union[int, float]],
                 next_dir: str, padding: Optional[Tuple[float, float]] = (0, 0)
                 ):
         if isinstance(obj_rect, tuple):
             obj_rect = pygame.Rect(*obj_rect)
-        if isinstance(next_obj_rect, tuple):
-            next_obj_rect = pygame.Rect(*next_obj_rect)
         if next_dir not in ['Right', 'Left', 'Up', 'Down']:
             raise KeyError('Your next position direction is not valid')
-        if self.check_enough_size(obj_rect, next_obj_rect, next_dir, padding):
+        if self.check_enough_size(obj_rect, next_obj_size, next_dir, padding):
             pad_x, pad_y = padding
+            w_next_obj = next_obj_size[0]
+            h_next_obj = next_obj_size[1]
             if next_dir == 'Up':
                 x = obj_rect.x + pad_x
-                y = obj_rect.top - pad_y - next_obj_rect.height
+                y = obj_rect.top - pad_y - h_next_obj
             elif next_dir == 'Down':
                 x = obj_rect.x + pad_x
                 y = obj_rect.bottom + pad_y
@@ -140,22 +139,27 @@ class Next:
                 x = obj_rect.right + pad_x
                 y = obj_rect.y + pad_y
             else:  # Left
-                x = obj_rect.left - pad_x - next_obj_rect.width
+                x = obj_rect.left - pad_x - w_next_obj
                 y = obj_rect.y + pad_y
 
             return x, y
         else:
             raise ValueError('Your object is out of screen')
+
     def check_enough_size(self, obj_rect, next_obj, next_dir, padding):
-        w_next_obj, h_next_obj = next_obj.width, next_obj.height
+        w_next_obj, h_next_obj = next_obj[0], next_obj[1]
         pad_x, pad_y = padding
-        screen_rect = self.screen.get_rect()  # pygame.Rect
-        w_screen, h_screen = screen_rect.size  # unpack từ .size
+        w_screen, h_screen = self.screen.get_rect().size
+
         if next_dir == 'Up':
-            return  obj_rect.y - pad_y - h_next_obj >= 0  and 0 <= obj_rect.x + pad_x <=  w_screen
+            return (obj_rect.y - pad_y - h_next_obj >= 0 and
+                    0 <= obj_rect.x + pad_x <= w_screen - w_next_obj)
         elif next_dir == 'Down':
-            return obj_rect.y + pad_y + h_next_obj <= w_screen and 0 <= obj_rect.x + pad_x <=  w_screen
+            return (obj_rect.y + pad_y + h_next_obj <= h_screen and
+                    0 <= obj_rect.x + pad_x <= w_screen - w_next_obj)
         elif next_dir == 'Right':
-            return obj_rect.x - pad_x - h_next_obj <= h_screen and 0 <= obj_rect.y + pad_y <=  h_screen
-        else:
-            return obj_rect.x + pad_x + h_next_obj <= h_screen and 0 <= obj_rect.y + pad_y <=  h_screen
+            return (obj_rect.x + pad_x + w_next_obj <= w_screen and
+                    0 <= obj_rect.y + pad_y <= h_screen - h_next_obj)
+        else:  # Left
+            return (obj_rect.x - pad_x - w_next_obj >= 0 and
+                    0 <= obj_rect.y + pad_y <= h_screen - h_next_obj)
