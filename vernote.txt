@@ -25,3 +25,7 @@ The Note for Templates developer and Users
 
 - Kernel initialization is now automatic via kernal_Init (no need to call pygame.init() manually when using templates).
 -SFM renamed to MarginScreen
+0.03:
+- Optimized kernel performance (Margin, LayoutHelper) – now only 1.1–1.3× slower than equivalent manual code.
+- Added SunLayout template – places objects in a 3×3 grid around a central object.
+- Updated DeveloperRule.txt with guidelines for template documentation and advanced versions.

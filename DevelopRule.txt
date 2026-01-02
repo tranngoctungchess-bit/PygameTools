@@ -1,6 +1,18 @@
-Kernel : This component serves as a foundation upon which to build another component;
-         therefore, its features are not exclusive to other templates or components.
-Templates : As it is the primary tool reaching the user, it must possess the following characteristics:
-            -Its tools (class) don't necessarily have to be lightweight, but they shouldn't have too many parameters.
-            -It must be backward compatible with Pygame.
-            -It shouldn't be separated from pygame; everything must be built in such a way that pygame can run it properly.
+Kernel: This component serves as a foundation upon which to build another component.
+         Therefore, its features are not exclusive to other templates or components.
+Templates: As it is the primary tool reaching the user, it must possess the following characteristics:
+            1. Its tools (class) don't necessarily have to be lightweight, but they shouldn't have too many parameters.
+            2.It must be backward compatible with Pygame.
+            3.It shouldn't be separated from pygame; everything must be built in such a way that pygame can run it properly.
+            4. You should import the kernel when creating templates, as it acts as both the kernel and the automatic init function.
+            5. Alternatively, if you don't want to import the kernel, you can create your own automatic init function (not recommended).
+            6. Your template may have a more advanced version, but please consider the need.
+            7. Advanced templates should be separate modules when they introduce significantly new functionality
+            8. You need an .md file once you've finished developing a template. That .md file introduces the template or provides more information.
+mdFile: This is the structure of the md file in the original template(Not the custom template)
+        ##<Your template> template
+        <Your introduction>
+        ##<Anything else>
+        <Anything else>
+        ##Note <Optional>
+        <YourNote>
