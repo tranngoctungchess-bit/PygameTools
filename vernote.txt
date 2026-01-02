@@ -29,3 +29,4 @@ The Note for Templates developer and Users
 - Optimized kernel performance (Margin, LayoutHelper) – now only 1.1–1.3× slower than equivalent manual code.
 - Added SunLayout template – places objects in a 3×3 grid around a central object.
 - Updated DeveloperRule.txt with guidelines for template documentation and advanced versions.
+- This project changes its public name to **PGT** (Pygame Tools) for brevity.

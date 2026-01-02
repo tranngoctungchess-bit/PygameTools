@@ -1,7 +1,6 @@
 import pygame
 import timeit
-
-pygame.init()
+from kernel import Margin, LayoutHelper
 screen = pygame.Surface((800, 600))
 w, h = screen.get_size()
 pad_x, pad_y = 50, 50
@@ -67,7 +66,6 @@ def manual_layout_get_pos(obj_rect, next_size, direction, padding):
     return x, y
 
 # --- Benchmark ---
-from kernel import Margin, LayoutHelper
 
 margin = Margin(screen, padding=(50, 50))
 helper = LayoutHelper(screen)

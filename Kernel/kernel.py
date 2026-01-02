@@ -1,8 +1,9 @@
 #Kernel 1(build 0.02)
 #Pre-alpha
-from typing import Tuple, Union, Optional, Mapping
+from typing import Tuple, Union, Optional
 import pygame
 import kernal_Init
+
 kernal_Init.init()
 #####
 #Margin
