@@ -1,6 +1,6 @@
-# StackLayout Templates
+## StackLayout templates
 
-StackLayout provides automatic stacking of UI elements in vertical or horizontal direction.
+Automatic vertical/horizontal stacking of UI elements.
 
 ---
 
@@ -10,7 +10,11 @@ Stacks objects vertically (top to bottom by default).
 ## 2. HorizontalStack
 Stacks objects vertically (right to left by default).
 ### Initialization
-```python
-from StackLayout import VerticalStack
 
-stack = VerticalStack(screen, first_pos=(x, y), reverse=False)
+```python
+from Template.Layout.StackLayout import VerticalStack, HorizontalStack
+vstack = VerticalStack(screen, (100, 50))
+vstack.push((150, 50), padding=10)
+```
+## Note
+Use reverse=True to stack upward (vertical) or leftward (horizontal).

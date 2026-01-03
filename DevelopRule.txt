@@ -12,7 +12,7 @@ Templates: As it is the primary tool reaching the user, it must possess the foll
 mdFile: This is the structure of the md file in the original template(Not the custom template)
         ##<Your template> template
         <Your introduction>
-        ##<Anything else>
-        <Anything else>
+        ##<Anything else(Optional)>
+        <Anything else(Optional)>
         ##Note <Optional>
         <YourNote>

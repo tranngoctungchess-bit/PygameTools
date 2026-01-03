@@ -30,3 +30,8 @@ The Note for Templates developer and Users
 - Added SunLayout template – places objects in a 3×3 grid around a central object.
 - Updated DeveloperRule.txt with guidelines for template documentation and advanced versions.
 - This project changes its public name to **PGT** (Pygame Tools) for brevity.
+0.04:
+Added geometry.py to kernel (vector, point, angle, rect utilities).
+Added SimpleDraw template (basic drawing wrapper).
+Added MissPoint template (missing‑point calculator).
+Updated all template .md files to the new concise format.
