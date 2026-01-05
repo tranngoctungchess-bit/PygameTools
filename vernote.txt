@@ -39,3 +39,7 @@ Updated all template .md files to the new concise format.
 Added AroundLayoutPro (extended Sun) with circle layout, screen‑edge positioning, alignment fixing.
 Extended geometry.py with Pythagorean, law of cosines, triangle area, point‑line distance.
 pre_alpha 1(build 9):    #this is only 8 version in testing development
+0.06:
+Added Grid kernel (basic N×M grid layout support).
+Added VideoResize template (automatic resize detection and propagation).
+Performance benchmarks show existing templates are already fast (<0.01 ms per call).
