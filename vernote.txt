@@ -35,3 +35,6 @@ Added geometry.py to kernel (vector, point, angle, rect utilities).
 Added SimpleDraw template (basic drawing wrapper).
 Added MissPoint template (missing‑point calculator).
 Updated all template .md files to the new concise format.
+0.05:
+
+pre_alpha 1(build 9):    #this is only 8 version in testing development
