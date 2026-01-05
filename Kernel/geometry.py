@@ -92,3 +92,30 @@ def rotate_point(point, center, angle_deg):
 
     # Translate back
     return rx + cx, ry + cy
+
+def pytagore(a, b):
+    """Return sqrt(a² + b²) – Pythagorean distance for a right triangle."""
+    return sqrt(a*a + b*b)
+
+def law_of_cosines(a, b, angle_deg):
+    """Return length of side c given sides a, b and included angle C in degrees."""
+    rad = radians(angle_deg)
+    return sqrt(a*a + b*b - 2*a*b*cos(rad))
+
+def triangle_area(p1, p2, p3):
+    """Area of triangle given three points (x, y)."""
+    x1, y1 = p1
+    x2, y2 = p2
+    x3, y3 = p3
+    return abs((x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2)) / 2.0)
+
+def point_line_distance(point, line_p1, line_p2):
+    """Distance from point to line defined by two points."""
+    x0, y0 = point
+    x1, y1 = line_p1
+    x2, y2 = line_p2
+    numerator = abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1))
+    denominator = sqrt((x2-x1)**2 + (y2-y1)**2)
+    if denominator == 0:
+        return distance(point, line_p1)  # line is a point
+    return numerator / denominator

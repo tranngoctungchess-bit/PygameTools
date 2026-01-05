@@ -62,9 +62,130 @@ class AroundLayout:
         if failed_slots and warning:
             import warnings
             warnings.warn(f"Slots {failed_slots} are out of screen after moving center object.")
-class SunPro:
-    def __init__(self):
-        print('This template is being developed soon')
-        print('please waiting for PygameTools v0.05')
-    #Well, Tạo phiên bản nâng cao hơn cho sunlayout, nhưng nó sẽ ko thân thiện cho lắm, vậy nên, ai muốn đơn giản thì dùng Sunlayout Gốc
 
+
+class AroundLayoutPro:
+    def __init__(self, screen, center_obj: tuple, padding=10):
+        self.screen = screen
+        self.center = center_obj  # (x, y, w, h)
+        self.padding = padding
+        self.basic = AroundLayout(screen, center_obj, padding)
+        self.start_angle = 0  # góc bắt đầu mặc định
+
+    def circle(self, radius, defined_obj: list, angle='auto', padding=0):
+        """
+        defined_obj: list of (width, height).
+        angle: starting angle in degrees, or 'auto' for even distribution.
+        padding: minimum space between objects (tangential).
+        Returns: list of (x, y) positions for each object.
+        """
+        cx = self.center[0] + self.center[2] // 2
+        cy = self.center[1] + self.center[3] // 2
+        n = len(defined_obj)
+
+        if angle == 'auto':
+            start = 0
+        else:
+            start = math.radians(angle)
+
+        max_size = max(max(w, h) for w, h in defined_obj)
+        min_delta = (max_size + padding) / max(radius, 1)
+        total_angle = n * min_delta
+        if total_angle > 2 * math.pi:
+            raise ValueError("Objects too large or too many for the given radius and padding.")
+
+        positions = []
+        for i in range(n):
+            theta = start + i * min_delta
+            x = cx + radius * math.cos(theta) - defined_obj[i][0] // 2
+            y = cy + radius * math.sin(theta) - defined_obj[i][1] // 2
+            positions.append((x, y))
+        return positions
+
+    def rotate(self, count=1):
+        """Rotate the layout by `count` steps (each step = 360°/n)."""
+        self.start_angle += 360 * count
+        self.start_angle %= 360
+
+    def get_to_screen(self, distance_to_screen: float, count=4, index=0):
+        """
+        Place center object at one of `count` equally spaced positions around screen.
+        index: 0 to count‑1 (0 = right, then counter‑clockwise).
+        """
+        sw, sh = self.screen.get_size()
+        cw, ch = self.center[2], self.center[3]
+
+        radius = min(sw - cw, sh - ch) / 2 - distance_to_screen
+        if radius < 0:
+            radius = 0
+
+        angle_step = 2 * math.pi / count
+        angle = angle_step * index
+
+        center_x = sw // 2
+        center_y = sh // 2
+
+        obj_x = center_x + radius * math.cos(angle)
+        obj_y = center_y + radius * math.sin(angle)
+
+        x = obj_x - cw // 2
+        y = obj_y - ch // 2
+
+        x = max(distance_to_screen, min(x, sw - cw - distance_to_screen))
+        y = max(distance_to_screen, min(y, sh - ch - distance_to_screen))
+
+        new_center = (int(x), int(y), cw, ch)
+        return AroundLayout(self.screen, new_center, self.padding)
+
+    def fix_align(self, objects: list, center_obj, layout_type='circle', layout_params=None):
+        """
+        layout_type: 'circle', 'sun', 'grid'
+        layout_params: dict chứa tham số (radius, angle, rows, cols, ...)
+        """
+        if layout_params is None:
+            layout_params = {}
+
+        sw, sh = self.screen.get_size()
+        center_rect = pygame.Rect(center_obj) if isinstance(center_obj, tuple) else center_obj
+
+        def recalc_positions(padding):
+            if layout_type == 'circle':
+                radius = layout_params.get('radius', 100)
+                angle = layout_params.get('start_angle', 0)
+                return self.circle(radius, [r.size for r in objects], angle)
+            elif layout_type == 'sun':
+                sun = AroundLayout(self.screen, center_rect, padding)
+                positions = []
+                for i, rect in enumerate(objects):
+                    slot = layout_params.get('slots', ['TopCenter'] * len(objects))[i]
+                    positions.append(sun.get_pos(slot, rect.size))
+                return positions
+            else:
+                raise ValueError(f"Unsupported layout_type: {layout_type}")
+
+        padding = self.padding
+        for attempt in range(10):
+            new_positions = recalc_positions(padding)
+            rects = [pygame.Rect(pos, obj.size) for pos, obj in zip(new_positions, objects)]
+
+            all_ok = True
+            for rect in rects:
+                if rect.colliderect(center_rect):
+                    all_ok = False
+                    break
+                for other in rects:
+                    if rect is other:
+                        continue
+                    if rect.colliderect(other):
+                        all_ok = False
+                        break
+                if rect.left < 0 or rect.right > sw or rect.top < 0 or rect.bottom > sh:
+                    all_ok = False
+                    break
+
+            if all_ok:
+                return rects
+
+            padding = max(0, padding - 5)
+
+        raise ValueError("Alignment failed after reducing padding to zero.")

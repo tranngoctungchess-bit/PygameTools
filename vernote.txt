@@ -36,5 +36,6 @@ Added SimpleDraw template (basic drawing wrapper).
 Added MissPoint template (missing‑point calculator).
 Updated all template .md files to the new concise format.
 0.05:
-
+Added AroundLayoutPro (extended Sun) with circle layout, screen‑edge positioning, alignment fixing.
+Extended geometry.py with Pythagorean, law of cosines, triangle area, point‑line distance.
 pre_alpha 1(build 9):    #this is only 8 version in testing development
