@@ -1,5 +1,6 @@
 #CodeName: Sun
 from kernel import LayoutHelper
+import math
 #This is the first template that have a pro version
 """
 ArroundLayout – Basic surrounding layout (3x3 grid around a center object).

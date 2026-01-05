@@ -1,28 +1,22 @@
 import pygame
 import time
-from Template.Align.MarginScreen import MarginScreen
+from Template.Layout.StackLayout import VerticalStack
 
 pygame.init()
 screen = pygame.display.set_mode((800, 600))
 
-# Test 1: Creation and anchor_render
-ms = MarginScreen(800, 600, border_percent=(5, 10))
-test_surface = pygame.Surface((100, 50))
+stack = VerticalStack(screen, first_pos=(100, 100), reverse=False)
+obj_sizes = [(80, 40), (90, 50), (70, 60)] * 3  # 9 objects
 
-start = time.perf_counter()
-for _ in range(1000):
-    ms.anchor_render(test_surface, 'Center')
-    ms.anchor_render(test_surface, 'TopRight')
-    ms.anchor_render(test_surface, 'BottomLeft')
-end = time.perf_counter()
-print(f"1000 anchor_render calls: {(end-start)*1000:.2f} ms")
-print(f"Per call: {(end-start)/3000*1000:.3f} ms")
-
-# Test 2: Resize handling (if resizable)
-ms_resizable = MarginScreen(800, 600, border_percent=(5, 10), resizeable=True)
-event = pygame.event.Event(pygame.VIDEORESIZE, w=1024, h=768)
+# Test push nhiều lần (mỗi lần tạo stack mới để không bị out‑of‑screen)
 start = time.perf_counter()
 for _ in range(500):
-    ms_resizable.resize_screen_handle(event)
+    temp_stack = VerticalStack(screen, first_pos=(100, 100))
+    for sz in obj_sizes:
+        temp_stack.push(sz, padding=10)
 end = time.perf_counter()
-print(f"500 resize events: {(end-start)*1000:.2f} ms")
+
+total_pushes = 500 * len(obj_sizes)
+print(f"500 stacks * {len(obj_sizes)} pushes = {total_pushes} total pushes")
+print(f"Total time: {(end-start)*1000:.2f} ms")
+print(f"Per push: {(end-start)/total_pushes*1000:.3f} ms")
