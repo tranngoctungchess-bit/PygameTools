@@ -137,3 +137,37 @@ class LayoutHelper:
             raise KeyError('Invalid direction')
 
         return x, y
+
+
+class Grid:
+    def __init__(self, rows, cols, screen, margin=(0, 0)):
+        self.rows = rows
+        self.cols = cols
+        self.screen = screen
+        self.margin_x, self.margin_y = margin
+
+        sw, sh = screen.get_size()
+        usable_w = sw - 2 * self.margin_x
+        usable_h = sh - 2 * self.margin_y
+
+        self.cell_width = usable_w / cols
+        self.cell_height = usable_h / rows
+
+        if self.cell_width <= 0 or self.cell_height <= 0:
+            raise ValueError("Grid cells would have non‑positive size (check margin).")
+
+    def get_cell_rect(self, row, col, span_rows=1, span_cols=1):
+        x = self.margin_x + col * self.cell_width
+        y = self.margin_y + row * self.cell_height
+        w = span_cols * self.cell_width
+        h = span_rows * self.cell_height
+        return pygame.Rect(x, y, w, h)
+
+    def get_cell_center(self, row, col):
+        rect = self.get_cell_rect(row, col)
+        return rect.center
+
+    def iter_cells(self):
+        for r in range(self.rows):
+            for c in range(self.cols):
+                yield r, c, self.get_cell_rect(r, c)
