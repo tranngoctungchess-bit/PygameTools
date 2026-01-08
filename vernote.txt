@@ -3,9 +3,9 @@ The Note for Templates developer and Users
 -This was the first version of the project, then called PygameTools.
 - In the kernel, Margin was included, and an SFM template was added to create smart screens with integrated Margin.
 - About MarginScreen: MarginScreenReadme.md
-In the kernel's margin class, there are basic functions like get_pos, save_margin and check_anchor_valid.
+In the kernel's margin class, there are basic functions like get_pos, save margin, and check_anchor_valid.
 
-- Get_pos: Gets the width, height and anchor values of an object, then calculates the object's position and returns the pos.
+- Get_pos: Gets the width, height, and anchor values of an object, then calculates the object's position, and returns the pos.
 - The other two functions are as their names suggest.
 0.02:
 - Added class LayoutHelper (formerly Next) in kernel, which provides:
@@ -16,12 +16,12 @@ In the kernel's margin class, there are basic functions like get_pos, save_margi
     • Added update_on_resize(screen): updates padding and recalculates margins when the screen is resized.
     • Added content_rect property: returns pygame.Rect of the inner content area (inside margins).
     • Optimized caching: positions are now cached per object size and anchor; cache clears on resize.
-    • Added anchor validation via a list of supported anchors.
+    • Added anchor validation via the list of supported anchors.
 
 - New templates:
     • VerticalStack: automatically stacks objects vertically (Down or Up with reverse=True).
     • HorizontalStack: automatically stacks objects horizontally (Right or Left with reverse=True).
-    • Both stacks support padding (can be negative for overlap), include total_length property, clear(), pop() and __len__().
+    • Both stacks support padding (can be negative for overlap), include total_length property, clear(), pop(), and __len__().
 
 - Kernel initialization is now automatic via kernal_Init (no need to call pygame.init() manually when using templates).
 - SFM renamed to MarginScreen
@@ -42,6 +42,5 @@ Extended geometry.py with Pythagorean, law of cosines, triangle area, point‑li
 Added Grid kernel (basic N×M grid layout support).
 Added VideoResize template (automatic resize detection and propagation).
 0.07:
-Added an automatic line break (or smaller object) feature if the screen limit is reached with new layouts: ProVeriticalStack and ProHorizontalStack.
-(last version of testing, it will be merged to pre-alpha soon)
-pre_alpha 1 (build 8): #this is only the seven versions in testing development
+Added ProHorizontalStack and ProVerticalStack with auto‑wrap and padding shrink.
+Completed the testing phase (v0.01 - v0.07).
