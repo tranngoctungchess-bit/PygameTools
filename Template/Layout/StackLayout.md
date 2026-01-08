@@ -9,6 +9,10 @@ Automatic vertical/horizontal stacking of UI elements.
 Stacks objects vertically (top to bottom by default).
 ## 2. HorizontalStack
 Stacks objects vertically (right to left by default).
+## 3.ProVerticalStack
+Like VerticalStack but an object now gets linebreak automatically
+## 4.ProVerticalStack
+Like HorizontalStack but an object now gets linebreak automatically
 ### Initialization
 
 ```python
