@@ -42,5 +42,5 @@ Extended geometry.py with Pythagorean, law of cosines, triangle area, point‑li
 Added Grid kernel (basic N×M grid layout support).
 Added VideoResize template (automatic resize detection and propagation).
 0.07:
-Added an automatic line break (or smaller object) feature if the screen limit is reached. (last version of testing, it will be merged to pre-alpha)
+Added an automatic line break (or smaller object) feature if the screen limit is reached. (last version of testing, it will be merged to pre-alpha soon)
 pre_alpha 1 (build 8): #this is only the seven versions in testing development
