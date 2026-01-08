@@ -1,10 +1,10 @@
 #CodeName : Verista
 from typing import Tuple, Union
 
-import kernel
+import Kernel.kernel
 import pygame
 import warnings
-from kernel import LayoutHelper
+from Kernel.kernel import LayoutHelper
 
 
 class VerticalStack:

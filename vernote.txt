@@ -1,22 +1,22 @@
 The Note for Templates developer and Users
 0.01:
 -This was the first version of the project, then called PygameTools.
--In the kernel, Margin was included, and an SFM template was added to create smart screens with integrated Margin.
--About MarginScreen: MarginScreenReadme.md
--In the kernel's margin class, there are basic functions like get_pos, save_margin, and check_anchor_valid.
+- In the kernel, Margin was included, and an SFM template was added to create smart screens with integrated Margin.
+- About MarginScreen: MarginScreenReadme.md
+In the kernel's margin class, there are basic functions like get_pos, save margin, and check_anchor_valid.
 
--get_pos: Gets the width, height, and anchor values of an object, then calculates the object's position and returns the pos.
--The other two functions are as their names suggest.
+- Get_pos: Gets the width, height, and anchor values of an object, then calculates the object's position, and returns the pos.
+- The other two functions are as their names suggest.
 0.02:
 - Added class LayoutHelper (formerly Next) in kernel, which provides:
     • get_pos(obj_rect, next_obj_size, direction, padding): calculates position next to an existing object (Up/Down/Left/Right).
     • check_enough_size(): validates if there is enough screen space for placement.
 
 - Improved Margin class:
-    • Added update_on_resize(screen): updates padding and recalculates margins when screen is resized.
+    • Added update_on_resize(screen): updates padding and recalculates margins when the screen is resized.
     • Added content_rect property: returns pygame.Rect of the inner content area (inside margins).
     • Optimized caching: positions are now cached per object size and anchor; cache clears on resize.
-    • Added anchor validation via list of supported anchors.
+    • Added anchor validation via the list of supported anchors.
 
 - New templates:
     • VerticalStack: automatically stacks objects vertically (Down or Up with reverse=True).
@@ -24,7 +24,7 @@ The Note for Templates developer and Users
     • Both stacks support padding (can be negative for overlap), include total_length property, clear(), pop(), and __len__().
 
 - Kernel initialization is now automatic via kernal_Init (no need to call pygame.init() manually when using templates).
--SFM renamed to MarginScreen
+- SFM renamed to MarginScreen
 0.03:
 - Optimized kernel performance (Margin, LayoutHelper) – now only 1.1–1.3× slower than equivalent manual code.
 - Added SunLayout template – places objects in a 3×3 grid around a central object.
@@ -38,4 +38,4 @@ Updated all template .md files to the new concise format.
 0.05:
 Added AroundLayoutPro (extended Sun) with circle layout, screen‑edge positioning, alignment fixing.
 Extended geometry.py with Pythagorean, law of cosines, triangle area, point‑line distance.
-pre_alpha 1(build 9):    #this is only 8 version in testing development
+Pre_alpha 1 (build 9): #this is only an eight version in testing development
