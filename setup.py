@@ -4,8 +4,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="pygame-tools",
-    version="0.3.0",
+    name="kernel",
+    version="0.7.0",
     author="Tung",
     author_email="tranngoctung.chess@gmail.com",
     description="Kernel UI layout tools for Pygame",
