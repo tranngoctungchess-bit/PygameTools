@@ -1,7 +1,6 @@
 #CodeName: Sun
-from kernel import LayoutHelper
+from Kernel import kernel
 import math
-#This is the first template that have a pro version
 """
 ArroundLayout – Basic surrounding layout (3x3 grid around a center object).
 For advanced features (rotation, dynamic padding, auto‑spacing), see SunPro (available from v0.05).
