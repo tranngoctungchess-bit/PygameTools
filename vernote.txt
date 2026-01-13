@@ -46,3 +46,7 @@ Added ProHorizontalStack and ProVerticalStack with auto‑wrap and padding shrin
 Completed the testing phase (v0.01 - v0.07).
 Build 8:
 A small initial build: Provides a wrapper for pygame's long tasks, making the code more concise.
+Add some shortcuts to your code shorter
+Add ColorTools to the kernel
+Add QuickColor Template: the template that you can import and use the color quickly
+Build 9:
