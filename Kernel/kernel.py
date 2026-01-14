@@ -2,9 +2,10 @@
 #Pre-alpha
 from typing import Tuple, Union, Optional
 import pygame
-import kernal_Init
+from Kernel import kernal_Init
 import re
-from kernel_color import *
+from . import kernel_color
+
 kernal_Init.init()
 #####
 #Margin
@@ -138,8 +139,46 @@ class LayoutHelper:
             raise KeyError('Invalid direction')
 
         return x, y
-
-
+    def getpos_up(self, obj_rect: tuple, next_obj_size, padding=(0, 0)):
+        ox, oy, ow, oh = obj_rect
+        nw, nh = next_obj_size
+        px, py = padding
+        sw, sh = self.screen_w, self.screen_h
+        x = ox + px
+        y = oy - py - nh
+        if y < 0 or x > sw - nw or x < 0:
+            raise ValueError('Out of screen')
+        return x, y
+    def getpos_down(self, obj_rect: tuple, next_obj_size, padding=(0, 0)):
+        ox, oy, ow, oh = obj_rect
+        nw, nh = next_obj_size
+        px, py = padding
+        sw, sh = self.screen_w, self.screen_h
+        x = ox + px
+        y = oy + oh + py
+        if y > sh - nh or x > sw - nw or x < 0:
+            raise ValueError('Out of screen')
+        return x, y
+    def getpos_right(self, obj_rect: tuple, next_obj_size, padding=(0, 0)):
+        ox, oy, ow, oh = obj_rect
+        nw, nh = next_obj_size
+        px, py = padding
+        sw, sh = self.screen_w, self.screen_h
+        x = ox + ow + px
+        y = oy + py
+        if x + nw > sw or y + nh > sh or y < 0:
+            raise ValueError('Out of screen')
+        return x, y
+    def getpos_left(self, obj_rect: tuple, next_obj_size, padding=(0, 0)):
+        ox, oy, ow, oh = obj_rect
+        nw, nh = next_obj_size
+        px, py = padding
+        sw, sh = self.screen_w, self.screen_h
+        x = ox - px - nw
+        y = oy + py
+        if x < 0 or y > sh - nh or y < 0:
+            raise ValueError('Out of screen')
+        return x, y
 class Grid:
     def __init__(self, rows, cols, screen, margin=(0, 0)):
         self.rows = rows
@@ -162,11 +201,11 @@ class Grid:
         y = self.margin_y + row * self.cell_height
         w = span_cols * self.cell_width
         h = span_rows * self.cell_height
-        return pygame.Rect(x, y, w, h)
+        return x, y, w, h
 
     def get_cell_center(self, row, col):
         rect = self.get_cell_rect(row, col)
-        return rect.center
+        return rect.x + rect.w, rect.y + rect.h
 
     def iter_cells(self):
         for r in range(self.rows):
