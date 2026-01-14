@@ -13,6 +13,39 @@ kernal_Init.init()
 
 
 class Margin:
+    """
+    Manages margins and the display position of objects on the screen.
+    This class supports:
+    - Calculating padding based on percentage or absolute value.
+    - Storing default anchors to position objects.
+    - Caching calculated position results to improve performance.
+    - Updating when the screen size changes.
+    - Returning the content area (content_rect) after padding is subtracted.
+    Attributes
+    width_screen : int
+    Current screen width.
+    height_screen : int
+    Current screen height.
+    last_screen_size : tuple[int, int]
+    Last updated screen size.
+    padding : tuple[float, float]
+    Padding by pixels (x, y).
+    percentage : tuple[float, float]
+    Padding by percentage (0–100).
+    cache : dict
+    Stores default anchors.
+    cache_pos : dict
+    Caches the calculated position for the object.
+    Methods:
+    get_pos(obj, anchor):
+    Calculates the (x, y) position of the object based on the anchor.
+    Save_margin(anchor):
+    Saves the default anchor for later use.
+    Update_on_resize(screen):
+    Updates screen size and padding when resizing.
+    content_rect:
+    Returns the remaining content area after subtracting padding.
+    """
     __slots__ = ('width_screen', 'height_screen', 'last_screen_size', 'padding', 'percentage', 'cache', 'cache_pos')
     def __init__(self, screen ,percentage_padding: Optional[Tuple[float, float]] = (0,0), padding: Optional[Tuple[float, float]] = (0, 0)):
         self.width_screen, self.height_screen = screen.get_size()
