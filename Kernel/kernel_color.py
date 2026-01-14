@@ -1,4 +1,4 @@
-# this lib contain a lot of useful color
+# this lib contain a lot of useful color hex to use
 NAMES_TO_HEX = {
     "aliceblue": "#f0f8ff",
     "antiquewhite": "#faebd7",
