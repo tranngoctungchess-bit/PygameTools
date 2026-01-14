@@ -13,6 +13,7 @@ kernal_Init.init()
 
 
 class Margin:
+    __slots__ = ('width_screen', 'height_screen', 'last_screen_size', 'padding', 'percentage', 'cache', 'cache_pos')
     def __init__(self, screen ,percentage_padding: Optional[Tuple[float, float]] = (0,0), padding: Optional[Tuple[float, float]] = (0, 0)):
         self.width_screen, self.height_screen = screen.get_size()
         self.last_screen_size = (self.width_screen, self.height_screen)
