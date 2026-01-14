@@ -147,7 +147,3 @@ NAMES_TO_HEX = {
     "yellow": "#ffff00",
     "yellowgreen": "#9acd32",
                 }
-code = ''
-for i,j in NAMES_TO_HEX.items():
-    code += f'{i} = "{j}"\n'
-print(code)
