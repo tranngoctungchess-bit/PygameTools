@@ -1,0 +1,10 @@
+t1
+Grid.get_cell_rect: 0.00171260
+VerticalStack.push: 0.00275040
+MarginScreen.anchor_render: 0.00745100
+AroundLayoutPro.circle: 0.00157700
+t2
+Grid.get_cell_rect: 0.00798080
+VerticalStack.push: 0.03101690
+MarginScreen.anchor_render: 0.06656640
+AroundLayoutPro.circle: 0.01471120
