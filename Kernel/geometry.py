@@ -2,8 +2,7 @@
 import kernal_Init
 import math
 kernal_Init.init()
-#Ko nên cho class nhiều vào đây, vì đây chỉ là tính toán
-#code name: Geometry
+#wrap some useful function from a math lib
 sqrt = math.sqrt
 atan2 = math.atan2
 degrees = math.degrees
@@ -63,7 +62,7 @@ def rect_intersection(rect1, rect2):
     return None
 
 def rect_union(rect1, rect2):
-    """Return smallest rect containing both rects."""
+    """Return the smallest rect containing both rects."""
     x1 = min(rect1[0], rect2[0])
     y1 = min(rect1[1], rect2[1])
     x2 = max(rect1[0] + rect1[2], rect2[0] + rect2[2])
@@ -73,7 +72,7 @@ def rect_union(rect1, rect2):
 
 def rotate_point(point, center, angle_deg):
     """
-    Rotate a point around a center by given angle (degrees).
+    Rotate a point around a center by a given angle (degrees).
     Positive angle = counter‑clockwise (mathematical convention).
     """
     px, py = point
@@ -117,5 +116,5 @@ def point_line_distance(point, line_p1, line_p2):
     numerator = abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1))
     denominator = sqrt((x2-x1)**2 + (y2-y1)**2)
     if denominator == 0:
-        return distance(point, line_p1)  # line is a point
+        return distance(point, line_p1)  # a line is a point
     return numerator / denominator
