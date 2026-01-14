@@ -66,12 +66,24 @@ def bench_around_layout_circle():
         _ = pro.circle(radius=300, defined_obj=defined_obj, angle='auto', padding=5)
     end = time.perf_counter()
     return end - start
+def bench_around_layout_get_pos():
+    import pygame
+    from Template.Align.Sun import AroundLayout
+    pygame.init()
+    screen = pygame.Surface((800, 600))
+    pro = AroundLayoutPro(screen, center_obj=(400, 300, 100, 100), padding=10)
+    defined_obj = [100,100]
 
-
+    start = time.perf_counter()
+    for _ in range(10000):
+        _ = pro.get_pos('TopRight', defined_obj)
+    end = time.perf_counter()
+    return end - start
 if __name__ == '__main__':
     print("Running performance benchmarks...")
     print(f"Grid.get_cell_rect: {bench_grid():.8f}")
     print(f"VerticalStack.push: {bench_vertical_stack():.8f}")
     print(f"MarginScreen.anchor_render: {bench_margin_screen():.8f}")
     print(f"AroundLayoutPro.circle: {bench_around_layout_circle():.8f}")
+    print(f"AroundLayout.get_pos: {bench_around_layout_get_pos():.8f}")
     print("\nSave these numbers for future optimization comparison.")
