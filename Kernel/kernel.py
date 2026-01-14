@@ -214,6 +214,7 @@ class LayoutHelper:
             raise ValueError('Out of screen')
         return x, y
 class Grid:
+    __slots__ = ('rows', 'cols', 'screen', 'margin_x', 'margin_y', 'cell_width', 'cell_height')
     def __init__(self, rows, cols, screen, margin=(0, 0)):
         self.rows = rows
         self.cols = cols
@@ -358,6 +359,7 @@ class GradientGenerator:
 
         return gradientd
 class Rect:
+    __slots__ = ('x', 'y', 'width', 'height')
     def __init__(self, x: Union[int, float], y: Union[int, float], width: Union[int, float], height: Union[int, float]):
         """
         Rect:
@@ -370,3 +372,14 @@ class Rect:
         self.y = abs(y)
         self.width = abs(width)
         self.height = abs(height)
+class BP:
+    """
+    This is a tool class that helps convert the position of widgets to their actual position on the screen.
+    """
+    def __init__(self, screen):
+        self.screen = screen.get_size()
+        self.dis = None
+    def dis_set(self, x: Union[int, float], y: Union[int, float]):
+        self.dis = (x,y)
+    def convert(self, x, y):
+        return dis.x + x, dis.y + y
