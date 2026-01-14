@@ -27,9 +27,15 @@ def normalize(vec):
     return vec[0] / mag, vec[1] / mag
 
 def midpoint(p1, p2):
+    """
+    return the pos of the midpoint in the line
+    """
     return (p1[0] + p2[0]) * 0.5, (p1[1] + p2[1]) * 0.5
 
 def point_on_circle(center, radius, angle_deg):
+    """
+    return position of the point in the circle
+    """
     rad = math.radians(angle_deg)
     return (center[0] + radius * math.cos(rad),
             center[1] + radius * math.sin(rad))
