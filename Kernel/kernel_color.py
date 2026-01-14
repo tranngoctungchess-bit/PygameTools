@@ -1,3 +1,4 @@
+# this lib contain a lot of useful color
 NAMES_TO_HEX = {
     "aliceblue": "#f0f8ff",
     "antiquewhite": "#faebd7",
