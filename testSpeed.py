@@ -31,7 +31,6 @@ def bench_vertical_stack():
         for __ in range(10):
             stack.push(obj_size, padding)
     end = time.perf_counter()
-    total_pushes = 500 * 10
     return end - start
 
 
@@ -39,7 +38,6 @@ def bench_margin_screen():
     import pygame
     from Template.Align.MarginScreen import MarginScreen
     pygame.init()
-    screen = pygame.Surface((800, 600))
     ms = MarginScreen(800, 600, border_percent=(5, 10))
     test_surface = pygame.Surface((100, 50))
 
@@ -49,7 +47,6 @@ def bench_margin_screen():
         ms.anchor_render(test_surface, 'TopRight')
         ms.anchor_render(test_surface, 'BottomLeft')
     end = time.perf_counter()
-    calls = 3000
     return end - start
 
 
