@@ -50,3 +50,4 @@ Add some shortcuts to your code shorter
 Add ColorTools to the kernel
 Add QuickColor Template: the template that you can import and use the color quickly
 Build 9:
+Optimize performance all tools in templates, and kernels

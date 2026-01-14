@@ -1,5 +1,7 @@
-t6
-Grid.get_cell_rect: 0.00842950
-VerticalStack.push: 0.01605220
-MarginScreen.anchor_render: 0.06078820
-AroundLayoutPro.circle: 0.01438890
+t8
+Running performance benchmarks...
+Grid.get_cell_rect: 0.00775840
+VerticalStack.push: 0.01911560
+MarginScreen.anchor_render: 0.06304710
+AroundLayoutPro.circle: 0.01461710
+AroundLayout.get_pos: 0.00320140
