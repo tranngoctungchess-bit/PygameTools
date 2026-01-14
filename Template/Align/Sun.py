@@ -67,10 +67,10 @@ class AroundLayout:
 class AroundLayoutPro:
     def __init__(self, screen, center_obj: tuple, padding=10):
         self.screen = screen
-        self.center = center_obj  # (x, y, w, h)
+        self.center = center_obj
         self.padding = padding
         self.basic = AroundLayout(screen, center_obj, padding)
-        self.start_angle = 0  # góc bắt đầu mặc định
+        self.start_angle = 0
 
     def circle(self, radius, defined_obj: list, angle='auto', padding=0):
         """
@@ -138,10 +138,6 @@ class AroundLayoutPro:
         return AroundLayout(self.screen, new_center, self.padding)
 
     def fix_align(self, objects: list, center_obj, layout_type='circle', layout_params=None):
-        """
-        layout_type: 'circle', 'sun', 'grid'
-        layout_params: dict chứa tham số (radius, angle, rows, cols, ...)
-        """
         if layout_params is None:
             layout_params = {}
 
