@@ -28,20 +28,20 @@ class AroundLayout:
             # offset_y không cần vì 'Up'/'Down' đã tính đúng y
 
             if slot == 'TopLeft':
-                base = self.Helper.get_pos((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
-                                           obj_size, 'Up', (self.padding, self.padding))
+                base = self.Helper.getpos_up((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
+                                           obj_size, (self.padding, self.padding))
                 return base[0] - offset_x, base[1]
             elif slot == 'TopRight':
-                base = self.Helper.get_pos((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
-                                           obj_size, 'Up', (self.padding, self.padding))
+                base = self.Helper.getpos_up((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
+                                           obj_size,  (self.padding, self.padding))
                 return base[0] + offset_x, base[1]
             elif slot == 'BottomLeft':
-                base = self.Helper.get_pos((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
-                                           obj_size, 'Down', (self.padding, self.padding))
+                base = self.Helper.getpos_down((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
+                                           obj_size,  (self.padding, self.padding))
                 return base[0] - offset_x, base[1]
             elif slot == 'BottomRight':
-                base = self.Helper.get_pos((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
-                                           obj_size, 'Down', (self.padding, self.padding))
+                base = self.Helper.getpos_down((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
+                                           obj_size,(self.padding, self.padding))
                 return base[0] + offset_x, base[1]
             else:
                 del self.child_obj_pos[slot]
@@ -67,10 +67,10 @@ class AroundLayout:
 class AroundLayoutPro:
     def __init__(self, screen, center_obj: tuple, padding=10):
         self.screen = screen
-        self.center = center_obj  # (x, y, w, h)
+        self.center = center_obj
         self.padding = padding
         self.basic = AroundLayout(screen, center_obj, padding)
-        self.start_angle = 0  # góc bắt đầu mặc định
+        self.start_angle = 0
 
     def circle(self, radius, defined_obj: list, angle='auto', padding=0):
         """

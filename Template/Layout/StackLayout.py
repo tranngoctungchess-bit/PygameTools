@@ -20,20 +20,20 @@ class VerticalStack:
         try:
             if self.objects:
                 if self.reverse:
-                    next_obj_pos = self.Manager.get_pos(self.objects[-1], objSize, 'Up', (padding, 0.0))
+                    next_obj_pos = self.Manager.getpos_up(self.objects[-1], objSize, (padding, 0.0))
                     next_pos_x, next_pos_y = next_obj_pos
                     w_next, h_next = objSize
                     self.objects.append(pygame.Rect(next_pos_x,next_pos_y,w_next,h_next))
                 else:
-                    next_obj_pos = self.Manager.get_pos(self.objects[-1], objSize, 'Down', (padding, 0.0))
+                    next_obj_pos = self.Manager.getpos_down(self.objects[-1], objSize, (padding, 0.0))
                     next_pos_x, next_pos_y = next_obj_pos
                     w_next, h_next = objSize
-                    self.objects.append(pygame.Rect(next_pos_x,next_pos_y,w_next,h_next))
+                    self.objects.append((next_pos_x,next_pos_y,w_next,h_next))
                 return next_obj_pos
             else:
                 next_pos_x, next_pos_y = self.first_pos
                 w_next, h_next = objSize
-                self.objects.append(pygame.Rect(next_pos_x, next_pos_y, w_next, h_next))
+                self.objects.append((next_pos_x, next_pos_y, w_next, h_next))
         except ValueError:
             raise ValueError('Stack reached screen limit')
     def pop(self):
@@ -65,20 +65,20 @@ class HorizontalStack:
         try:
             if self.objects:
                 if self.reverse:
-                    next_obj_pos = self.Manager.get_pos(self.objects[-1], objSize, 'Left', (padding, 0.0))
+                    next_obj_pos = self.Manager.getpos_left(self.objects[-1], objSize, (padding, 0.0))
                     next_pos_x, next_pos_y = next_obj_pos
                     w_next, h_next = objSize
                     self.objects.append(pygame.Rect(next_pos_x,next_pos_y,w_next,h_next))
                 else:
-                    next_obj_pos = self.Manager.get_pos(self.objects[-1], objSize, 'Right', (padding, 0.0))
+                    next_obj_pos = self.Manager.getpos_right(self.objects[-1], objSize, (padding, 0.0))
                     next_pos_x, next_pos_y = next_obj_pos
                     w_next, h_next = objSize
-                    self.objects.append(pygame.Rect(next_pos_x,next_pos_y,w_next,h_next))
+                    self.objects.append((next_pos_x,next_pos_y,w_next,h_next))
                 return next_obj_pos
             else:
                 next_pos_x, next_pos_y = self.first_pos
                 w_next, h_next = objSize
-                self.objects.append(pygame.Rect(next_pos_x, next_pos_y, w_next, h_next))
+                self.objects.append((next_pos_x, next_pos_y, w_next, h_next))
         except ValueError:
             raise ValueError('Stack reached screen limit')
     def pop(self):
