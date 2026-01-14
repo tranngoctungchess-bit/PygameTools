@@ -71,7 +71,7 @@ def bench_around_layout_get_pos():
     from Template.Align.Sun import AroundLayout
     pygame.init()
     screen = pygame.Surface((800, 600))
-    pro = AroundLayoutPro(screen, center_obj=(400, 300, 100, 100), padding=10)
+    pro = AroundLayout(screen, center_obj=(400, 300, 100, 100), padding=10)
     defined_obj = [100,100]
 
     start = time.perf_counter()
