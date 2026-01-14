@@ -302,7 +302,6 @@ class ColorTools:
 
 class GradientGenerator:
     def linear_gradient(self, color_start, color_end, steps):
-        """Tạo gradient tuyến tính"""
         gradient = []
         for i in range(steps):
             ratio = i / (steps - 1)
@@ -324,4 +323,17 @@ class GradientGenerator:
             )
             gradient.extend(segment_grad)
 
-        return gradient
+        return gradientd
+class Rect:
+    def __init__(self, x: Union[int, float], y: Union[int, float], width: Union[int, float], height: Union[int, float]):
+        """
+        Rect:
+        the base object for any widget class as bar, button coming soon in this tool
+        x, y: the pos of rect
+        width, height: the width and the height of this rect
+        All the above values will be automatically converted to positive numbers.
+        """
+        self.x = abs(x)
+        self.y = abs(y)
+        self.width = abs(width)
+        self.height = abs(height)
