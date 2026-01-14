@@ -4,7 +4,7 @@ from typing import Tuple, Union, Optional
 import pygame
 from Kernel import kernal_Init
 import re
-from . import kernel_color
+from Kernel import kernel_color
 
 kernal_Init.init()
 #####
@@ -97,7 +97,7 @@ class Margin:
         # Đảm bảo không âm
         width = max(0, width)
         height = max(0, height)
-        return pygame.Rect(left, top, width, height)
+        return left, top, width, height
 
 ######
 #NEXT
