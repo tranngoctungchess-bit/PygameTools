@@ -1,5 +1,7 @@
 import numpy as np
 from typing import Tuple, Union, Optional, List
+from dataclasses import dataclass
+from collections import namedtuple
 MathVal1 = Tuple[Union[int, float],Union[int, float],Union[int, float],Union[int, float]]
 MathVal2 = Tuple[Union[int, float],Union[int, float]]
 """
