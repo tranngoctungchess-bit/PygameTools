@@ -52,3 +52,4 @@ Add QuickColor Template: the template that you can import and use the color quic
 Build 9:
 Optimize performance all tools in templates, and kernels
 Add metadata to some class (sorry for everyone who Apologies to those who have to look at the code to understand what it does =)) )
+Add the mising function in kernelColor(hue2rgb)
