@@ -49,7 +49,7 @@ class Margin:
     Returns the remaining content area after subtracting padding.
     """
     __slots__ = ('width_screen', 'height_screen', 'last_screen_size', 'padding', 'percentage', 'cache', 'cache_pos')
-    def __init__(self, screen ,percentage_padding: Optional[MathVal2] = (0,0), padding: Optional[MathVal2] = (0, 0)):
+    def __init__(self, screen ,percentage_padding: Optional[MathVal2] = None, padding: Optional[MathVal2] = (0, 0)):
         self.width_screen, self.height_screen = screen.get_size()
         self.last_screen_size = (self.width_screen, self.height_screen)
         if 0 < percentage_padding[0] > 100 or 0 < percentage_padding[1] > 100:
