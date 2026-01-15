@@ -1,6 +1,6 @@
 from typing import Optional, Tuple
 import pygame
-from Kernel import kernel
+from Kernel import KernelPosition
 class MarginScreen:
     def __init__(self, width: int, height: int, border_percent: Optional[Tuple[float, float]], resizeable = 0):
         self.flags = pygame.RESIZABLE if resizeable else 0

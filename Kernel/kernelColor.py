@@ -111,4 +111,4 @@ class GradientGenerator:
             )
             gradient.extend(segment_grad)
 
-        return gradientd
+        return gradient
