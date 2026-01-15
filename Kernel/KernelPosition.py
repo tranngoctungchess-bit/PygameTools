@@ -52,11 +52,11 @@ class Margin:
     def __init__(self, screen ,percentage_padding: Optional[MathVal2] = None, padding: Optional[MathVal2] = (0, 0)):
         self.width_screen, self.height_screen = screen.get_size()
         self.last_screen_size = (self.width_screen, self.height_screen)
-        if 0 < percentage_padding[0] > 100 or 0 < percentage_padding[1] > 100:
-            raise ValueError('Your padding must in range from 0 to 100')
         self.padding = padding
         self.percentage = percentage_padding
         if self.percentage:
+            if 0 < percentage_padding[0] > 100 or 0 < percentage_padding[1] > 100:
+                raise ValueError('Your padding must in range from 0 to 100')
             self.padding = (self.width_screen * self.percentage[0] / 100, self.height_screen * self.percentage[1] / 100)
         self.cache = {}
         self.cache_pos = {}
