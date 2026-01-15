@@ -26,3 +26,8 @@ class BP:
     def convert_a_lot(self, vals: List[MathVal2]):
         values = np.array(vals, dtype=float)
         return values + np.array([self.dis_x, self.dis_y])
+class Object:
+    """
+    This is the base class of widget and all the Ui interface rectangle
+    """
+    pass
