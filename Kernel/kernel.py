@@ -1,12 +1,14 @@
 #Kernel 1(build 0.09)
 #Pre-alpha
 from collections import namedtuple
-from typing import Tuple, Union, Optional
+from typing import Tuple, Union, Optional, List
+import numpy as np
 import pygame
 from Kernel import kernal_Init
 import re
 from Kernel import kernel_color
-
+MathVal1 = Tuple[Union[int, float],Union[int, float],Union[int, float],Union[int, float]]
+MathVal2 = Tuple[Union[int, float],Union[int, float]]
 kernal_Init.init()
 #####
 #Margin
@@ -377,9 +379,10 @@ class BP:
     """
     This is a tool class that helps convert the position of widgets to their actual position on the screen.
     """
-    def __init__(self):
-        self.dis = None
-    def dis_set(self, x: Union[int, float], y: Union[int, float]):
-        self.dis = (x,y)
+    def __init__(self, dis: Optional[MathVal2] = None):
+        self.dis_x, self.dis_y = dis
     def convert(self, x, y):
-        return dis[0] + x, dis[1] + y
+        return dis_x + x, dis_y + y
+    def convert_a_lot(self, vals: List[MathVal2]):
+        values = np.array(vals, dtype=float)
+        return values + np.array([self.dis_x, self.dis_y])
