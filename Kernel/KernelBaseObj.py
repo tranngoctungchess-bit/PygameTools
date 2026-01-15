@@ -1,3 +1,7 @@
+import numpy as np
+from typing import Tuple, Union, Optional, List
+MathVal1 = Tuple[Union[int, float],Union[int, float],Union[int, float],Union[int, float]]
+MathVal2 = Tuple[Union[int, float],Union[int, float]]
 """
 ImmutableRect and MutableRect:
 the base object for any widget class as bar, button coming soon in this tool
