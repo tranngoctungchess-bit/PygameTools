@@ -71,7 +71,6 @@ class Margin:
 
         w_s, h_s = self.width_screen, self.height_screen
         b_x, b_y = self.padding
-
         left = b_x
         center_x = (w_s - w_o) // 2
         right = w_s - w_o - b_x
