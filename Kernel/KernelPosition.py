@@ -118,7 +118,6 @@ class Margin:
         if self.percentage:
             self.padding = (self.width_screen * self.percentage[0] / 100,
                             self.height_screen * self.percentage[1] / 100)
-        self.width_screen, self.height_screen = self.width_screen, self.height_screen
         self.cache_pos.clear()
 
     @property
