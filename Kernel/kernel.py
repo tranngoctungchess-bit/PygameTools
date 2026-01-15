@@ -361,13 +361,12 @@ class GradientGenerator:
         return gradientd
 
 """
-Rect:
+ImmutableRect:
 the base object for any widget class as bar, button coming soon in this tool
 x, y: the pos of rect
 width, height: the width and the height of this rect
-All the above values will be automatically converted to positive numbers.
 """
-Rect = namedtuple('Rect', ['x', 'y', 'w', 'h'])
+ImmutableRect = namedtuple('Rect', ['x', 'y', 'w', 'h'])
 class BP:
     """
     This is a tool class that helps convert the position of widgets to their actual position on the screen.
