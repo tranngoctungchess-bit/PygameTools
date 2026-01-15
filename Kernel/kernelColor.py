@@ -1,5 +1,5 @@
 from Kernel import color
-FLOAT_ERROR = 0.0
+FLOAT_ERROR = 0.0000005
 class ColorTools:
     def name_to_hex(self, name: str) -> str:
         if hex_value := NAMES_TO_HEX.get(name.lower()):
@@ -18,6 +18,16 @@ class ColorTools:
             hex_digits = "".join(2 * s for s in hex_digits)
         return f"#{hex_digits.lower()}"
 
+    def hue_to_rgb(self, v1, v2, vH):
+
+        while vH < 0: vH += 1
+        while vH > 1: vH -= 1
+
+        if 6 * vH < 1: return v1 + (v2 - v1) * 6 * vH
+        if 2 * vH < 1: return v2
+        if 3 * vH < 2: return v1 + (v2 - v1) * ((2.0 / 3) - vH) * 6
+
+        return v1
     def hsl_to_rgb(self, hsl):
         h, s, l = [float(v) for v in hsl]
 
@@ -36,9 +46,9 @@ class ColorTools:
 
         v1 = 2.0 * l - v2
 
-        r = _hue2rgb(v1, v2, h + (1.0 / 3))
-        g = _hue2rgb(v1, v2, h)
-        b = _hue2rgb(v1, v2, h - (1.0 / 3))
+        r = self.hue_to_rgb(v1, v2, h + (1.0 / 3))
+        g = self.hue_to_rgb(v1, v2, h)
+        b = self.hue_to_rgb(v1, v2, h - (1.0 / 3))
 
         return r, g, b
 
