@@ -5,7 +5,7 @@ import sys
 
 def bench_grid():
     import pygame
-    from Kernel.kernel import Grid
+    from Kernel.KernelPosition import Grid
     pygame.init()
     screen = pygame.Surface((800, 600))
     grid = Grid(12, 16, screen, (10, 10))
