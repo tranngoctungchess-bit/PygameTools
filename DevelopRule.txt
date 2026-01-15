@@ -8,7 +8,6 @@ Templates: As it is the primary tool reaching the user, it must possess the foll
             5. Alternatively, if you don't want to import the kernel, you can create your own automatic init function (not recommended).
             6. Your template may have a more advanced version, but please consider the need.
             7. Advanced templates should be separate modules when they introduce significantly new functionality
-            8. You need an .md file once you've finished developing a template. That .md file introduces the template or provides more information.
 mdFile: This is the structure of the md file in the original template(Not the custom template)
         ##<Your template> template
         <Your introduction>
