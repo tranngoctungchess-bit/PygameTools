@@ -361,20 +361,25 @@ class GradientGenerator:
         return gradientd
 
 """
-ImmutableRect:
+ImmutableRect and MutableRect:
 the base object for any widget class as bar, button coming soon in this tool
 x, y: the pos of rect
 width, height: the width and the height of this rect
 """
 ImmutableRect = namedtuple('Rect', ['x', 'y', 'w', 'h'])
+@dataclass(slots = True)
+class MutableRect:
+    x:Union[int, float]
+    y:Union[int,float]
+    width:Union[int, float]
+    height:Union[int,float]
 class BP:
     """
     This is a tool class that helps convert the position of widgets to their actual position on the screen.
     """
-    def __init__(self, screen):
-        self.screen = screen.get_size()
+    def __init__(self):
         self.dis = None
     def dis_set(self, x: Union[int, float], y: Union[int, float]):
         self.dis = (x,y)
     def convert(self, x, y):
-        return dis.x + x, dis.y + y
+        return dis[0] + x, dis[1] + y
