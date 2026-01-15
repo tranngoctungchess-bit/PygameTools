@@ -28,8 +28,6 @@ class Margin:
     Current screen width.
     height_screen : int
     Current screen height.
-    last_screen_size : tuple[int, int]
-    Last updated screen size.
     padding : tuple[float, float]
     Padding by pixels (x, y).
     percentage : tuple[float, float]
@@ -51,13 +49,12 @@ class Margin:
     __slots__ = ('width_screen', 'height_screen', 'last_screen_size', 'padding', 'percentage', 'cache', 'cache_pos')
     def __init__(self, screen ,percentage_padding: Optional[MathVal2] = None, padding: Optional[MathVal2] = (0, 0)):
         self.width_screen, self.height_screen = screen.get_size()
-        self.last_screen_size = (self.width_screen, self.height_screen)
-        self.padding = padding
         self.percentage = percentage_padding
         if self.percentage:
             if 0 < percentage_padding[0] > 100 or 0 < percentage_padding[1] > 100:
                 raise ValueError('Your padding must in range from 0 to 100')
             self.padding = (self.width_screen * self.percentage[0] / 100, self.height_screen * self.percentage[1] / 100)
+        self.padding = padding
         self.cache = {}
         self.cache_pos = {}
     def get_pos(self, obj: MathVal2, anchor: Optional[str]):
@@ -121,7 +118,7 @@ class Margin:
         if self.percentage:
             self.padding = (self.width_screen * self.percentage[0] / 100,
                             self.height_screen * self.percentage[1] / 100)
-        self.last_screen_size = (self.width_screen, self.height_screen)
+        self.width_screen, self.height_screen = self.width_screen, self.height_screen
         self.cache_pos.clear()
 
     @property
