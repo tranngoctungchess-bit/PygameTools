@@ -126,7 +126,6 @@ class Margin:
         left, top = self.padding
         width = self.width_screen - 2 * self.padding[0]
         height = self.height_screen - 2 * self.padding[1]
-        # Đảm bảo không âm
         width = max(0, width)
         height = max(0, height)
         return left, top, width, height
