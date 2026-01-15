@@ -54,3 +54,4 @@ Optimize performance all tools in templates, and kernels
 Add metadata to some class (sorry for everyone who Apologies to those who have to look at the code to understand what it does =)) )
 Add the mising function in kernelColor(hue2rgb)
 Fix all bug find in this lib (I not test =(( while develop in eight build )
+Adding the Rect class as the base object for any UI after that
