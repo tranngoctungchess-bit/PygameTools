@@ -1,6 +1,7 @@
-#v0.04
-import kernal_Init
+#v0.09
+from Kernel import kernal_Init
 import math
+from numba import njit
 kernal_Init.init()
 #wrap some useful function from a math lib
 sqrt = math.sqrt
@@ -10,28 +11,32 @@ radians = math.radians
 cos = math.cos
 sin = math.sin
 pi = math.pi
-def to_vector(pos_x, pos_y):
+@njit
+def to_vector(pos_x:float, pos_y:float):
     """change 2 pos to a vector"""
     return pos_y - pos_x
+@njit
 def magnitude(vec):
     """return the distance of two pos"""
     return math.sqrt(vec[0]**2 + vec[1]**2)
+@njit
 def vector_between(p1, p2):
     """return the vector between two pos"""
     return p2[0] - p1[0], p2[1] - p1[1]
+@njit
 def normalize(vec):
     """Return unit vector."""
     mag = magnitude(vec)
     if mag == 0:
         return 0.0, 0.0
     return vec[0] / mag, vec[1] / mag
-
+@njit
 def midpoint(p1, p2):
     """
     return the pos of the midpoint in the line
     """
     return (p1[0] + p2[0]) * 0.5, (p1[1] + p2[1]) * 0.5
-
+@njit
 def point_on_circle(center, radius, angle_deg):
     """
     return position of the point in the circle
@@ -39,13 +44,14 @@ def point_on_circle(center, radius, angle_deg):
     rad = math.radians(angle_deg)
     return (center[0] + radius * math.cos(rad),
             center[1] + radius * math.sin(rad))
-
+@njit
 def clamp_point(point, rect):
     """Clamp point to be inside rect (pygame.Rect or (x,y,w,h))."""
     x, y = point
     rx, ry, rw, rh = rect
     return (max(rx, min(x, rx + rw)),
             max(ry, min(y, ry + rh)))
+@njit
 def vector_to_angle(dx, dy):
     """
     Return angle in degrees (0° to 360°) of vector (dx, dy).
@@ -57,6 +63,7 @@ def vector_to_angle(dx, dy):
     # Normalize to 0–360
     return angle_deg % 360.0
 # Rect utilities
+@njit
 def rect_intersection(rect1, rect2):
     """Return overlapping rect as pygame.Rect, or None if no intersection."""
     x1 = max(rect1[0], rect2[0])
@@ -66,7 +73,7 @@ def rect_intersection(rect1, rect2):
     if x2 > x1 and y2 > y1:
         return x1, y1, x2 - x1, y2 - y1
     return None
-
+@njit
 def rect_union(rect1, rect2):
     """Return the smallest rect containing both rects."""
     x1 = min(rect1[0], rect2[0])
@@ -75,7 +82,7 @@ def rect_union(rect1, rect2):
     y2 = max(rect1[1] + rect1[3], rect2[1] + rect2[3])
     return x1, y1, x2 - x1, y2 - y1
 
-
+@njit
 def rotate_point(point, center, angle_deg):
     """
     Rotate a point around a center by a given angle (degrees).
@@ -97,23 +104,23 @@ def rotate_point(point, center, angle_deg):
 
     # Translate back
     return rx + cx, ry + cy
-
+@njit
 def pytagore(a, b):
     """Return sqrt(a² + b²) – Pythagorean distance for a right triangle."""
     return sqrt(a*a + b*b)
-
+@njit
 def law_of_cosines(a, b, angle_deg):
     """Return length of side c given sides a, b and included angle C in degrees."""
     rad = radians(angle_deg)
     return sqrt(a*a + b*b - 2*a*b*cos(rad))
-
+@njit
 def triangle_area(p1, p2, p3):
     """Area of triangle given three points (x, y)."""
     x1, y1 = p1
     x2, y2 = p2
     x3, y3 = p3
     return abs((x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2)) / 2.0)
-
+@njit
 def point_line_distance(point, line_p1, line_p2):
     """Distance from point to line defined by two points."""
     x0, y0 = point

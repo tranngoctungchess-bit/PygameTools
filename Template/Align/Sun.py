@@ -1,13 +1,13 @@
-#CodeName: Sun
+import warnings
+from Kernel.ObjType import MathVal2, MathVal1
 from Kernel.KernelPosition import LayoutHelper
 import math
 """
 ArroundLayout – Basic surrounding layout (3x3 grid around a center object).
 For advanced features (rotation, dynamic padding, auto‑spacing), see SunPro (available from v0.05).
 """
-#(Đây là biến thể của Next, nó thêm hỗ trợ chéo) <- Bản chất của Sun
 class AroundLayout:
-    def __init__(self, screen, center_obj: tuple, padding=10):
+    def __init__(self, screen, center_obj: MathVal1, padding=10):
         self.w_screen, self.h_screen = screen.get_size()
         self.x_obj, self.y_obj,self.width_obj,  self.length_obj = center_obj
         self.padding = padding
@@ -25,8 +25,6 @@ class AroundLayout:
                 )
             self.child_obj_pos[slot] = obj_size
             offset_x = cw + self.padding
-            # offset_y không cần vì 'Up'/'Down' đã tính đúng y
-
             if slot == 'TopLeft':
                 base = self.Helper.getpos_up((self.x_obj, self.y_obj, self.width_obj, self.length_obj),
                                            obj_size, (self.padding, self.padding))
@@ -48,7 +46,7 @@ class AroundLayout:
                 raise KeyError(f"Invalid slot: {slot}")
         except ValueError:
             raise ValueError('Cannot Put this Object because it is Out of Screen')
-    def change_first_obj(self, new_obj, warning = True):
+    def change_first_obj(self, new_obj: MathVal1, warning = True):
         self.x_obj, self.y_obj, self.width_obj, self.length_obj = new_obj
         failed_slots = []
         for slot in list(self.child_obj_pos.keys()):
@@ -65,41 +63,45 @@ class AroundLayout:
 
 
 class AroundLayoutPro:
-    def __init__(self, screen, center_obj: tuple, padding=10):
+    def __init__(self, screen, center_obj: MathVal1, padding=10):
         self.screen = screen
         self.center = center_obj
         self.padding = padding
-        self.basic = AroundLayout(screen, center_obj, padding)
         self.start_angle = 0
 
-    def circle(self, radius, defined_obj: list, angle='auto', padding=0):
+    def circle(self, radius, defined_obj: list, angle='auto', padding=0, warn = False):
         """
         defined_obj: list of (width, height).
         angle: starting angle in degrees, or 'auto' for even distribution.
         padding: minimum space between objects (tangential).
         Returns: list of (x, y) positions for each object.
         """
+        if radius > min(screen_size)/2 and warn:
+            warnings.warn("Your obj can be out of screen")
         cx = self.center[0] + self.center[2] // 2
         cy = self.center[1] + self.center[3] // 2
         n = len(defined_obj)
 
+        if n == 0:
+            return []
         if angle == 'auto':
-            start = 0
+            delta_angle = 2 * math.pi / n
+            start_angle = 0
         else:
-            start = math.radians(float(angle))
+            start_angle = math.radians(float(angle))
+            max_size = max(max(w, h) for w, h in defined_obj)
+            delta_angle = (max_size + padding) / max(radius, 1)
 
-        max_size = max(max(w, h) for w, h in defined_obj)
-        min_delta = (max_size + padding) / max(radius, 1)
-        total_angle = n * min_delta
-        if total_angle > 2 * math.pi:
-            raise ValueError("Objects too large or too many for the given radius and padding.")
+            if n * delta_angle > 2 * math.pi:
+                raise ValueError("Objects too large or too many for the given radius and padding.")
 
         positions = []
         for i in range(n):
-            theta = start + i * min_delta
+            theta = start_angle + i * delta_angle
             x = cx + radius * math.cos(theta) - defined_obj[i][0] // 2
             y = cy + radius * math.sin(theta) - defined_obj[i][1] // 2
             positions.append((x, y))
+
         return positions
 
     def rotate(self, count=1):
@@ -137,7 +139,7 @@ class AroundLayoutPro:
         new_center = (int(x), int(y), cw, ch)
         return AroundLayout(self.screen, new_center, self.padding)
 
-    def fix_align(self, objects: list, center_obj, layout_type='circle', layout_params=None):
+    def fix_align(self, objects: list, center_obj: MathVal1, layout_type='circle', layout_params=None):
         if layout_params is None:
             layout_params = {}
 
