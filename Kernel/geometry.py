@@ -1,5 +1,5 @@
 #v0.09
-import kernal_Init
+from Kernel import kernal_Init
 import math
 from numba import njit
 kernal_Init.init()
