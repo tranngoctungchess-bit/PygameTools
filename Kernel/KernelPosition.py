@@ -6,8 +6,7 @@ import numpy as np
 import pygame
 from Kernel import kernal_Init
 import re
-MathVal1 = Tuple[Union[int, float],Union[int, float],Union[int, float],Union[int, float]]
-MathVal2 = Tuple[Union[int, float],Union[int, float]]
+from ObjType import MathVal2, MathVal1
 kernal_Init.init()
 #####
 #Margin

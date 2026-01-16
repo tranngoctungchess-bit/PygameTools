@@ -5,7 +5,7 @@ class MarginScreen:
     def __init__(self, width: int, height: int, border_percent: Optional[Tuple[float, float]], resizeable = 0):
         self.flags = pygame.RESIZABLE if resizeable else 0
         self.display = pygame.display.set_mode((width, height), flags=self.flags)
-        self.margin_manager = kernel.Margin(self.display, padding=border_percent)
+        self.margin_manager = KernelPosition.Margin(self.display, padding=border_percent)
         self.width = width
         self.height = height
         self.resizeable = resizeable
@@ -19,7 +19,7 @@ class MarginScreen:
     def update(self):
         pygame.display.flip()
     def resize_screen_handle(self, event):
-        if event == pygame.VIDEORESIZE and self.resizeable:
+        if event.type == pygame.VIDEORESIZE and self.resizeable:
             self.display = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
             self.margin_manager.update_on_resize(self.display)
             self.width, self.height = event.w, event.h
