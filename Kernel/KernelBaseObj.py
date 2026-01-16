@@ -2,7 +2,7 @@ import numpy as np
 from typing import Tuple, Union, Optional, List
 from dataclasses import dataclass
 from collections import namedtuple
-from ObjType import MathVal2, MathVal1
+from Kernel.ObjType import MathVal2, MathVal1
 """
 ImmutableRect and MutableRect:
 the base object for any widget class as bar, button coming soon in this tool
