@@ -14,7 +14,6 @@ class VerticalStack:
         self.Manager = LayoutHelper(screen)
         self.reverse = reverse
     def push(self, objSize: Tuple[Union[int, float], Union[int, float]], padding = 0.0):
-        #stack này ko cho chỉnh padding của height và ko cho padding là số âm
         if padding < 0:
             warnings.warn("padding is negative, items may overlap.", stacklevel=2)
         try:
@@ -43,10 +42,8 @@ class VerticalStack:
         if not self.objects:
             return 0
         if self.reverse:
-            # Chiều từ dưới lên trên
             return abs(self.objects[0].bottom - self.objects[-1].top)
         else:
-            # Chiều từ trên xuống dưới
             return abs(self.objects[-1].bottom - self.objects[0].top)
 
     def clear(self):
