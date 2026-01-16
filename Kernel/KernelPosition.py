@@ -6,7 +6,7 @@ import numpy as np
 import pygame
 from Kernel import kernal_Init
 import re
-from ObjType import MathVal2, MathVal1
+from Kernel.ObjType import MathVal2, MathVal1
 kernal_Init.init()
 #####
 #Margin
