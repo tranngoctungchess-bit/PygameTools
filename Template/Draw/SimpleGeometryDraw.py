@@ -1,8 +1,19 @@
-#codename: Simple
 import pygame
 
 
 class SimpleDraw:
+    """
+    SimpleDraw provides a simplified interface for drawing basic shapes
+    with optional bounding‑box calculation.
+
+    All drawing methods accept a `flags` list that can contain:
+        'Draw': perform the drawing (default)
+        'ReturnPos': return the bounding rectangle (x, y, width, height)
+
+    If 'ReturnPos' is given, the method returns a tuple (x, y, width, height)
+    representing the smallest axis‑aligned rectangle enclosing the shape.
+    Otherwise, returns None.
+    """
     def __init__(self, screen):
         self.screen = screen
     def rect(self, rect_info, col=(255,255,255), flags=None):
