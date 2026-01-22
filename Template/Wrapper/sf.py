@@ -1,4 +1,5 @@
 from Kernel import kernal_Init
+import pygame
 kernal_Init.init()
 """Wrap some func from pygame to make it shorter"""
 screen = pygame.display.set_mode
