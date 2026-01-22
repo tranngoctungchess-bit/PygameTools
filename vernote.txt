@@ -55,3 +55,8 @@ Add metadata to some class (sorry for everyone who Apologies to those who have t
 Add the mising function in kernelColor(hue2rgb)
 Fix all bug find in this lib (I not test =(( while develop in eight build after)
 Adding the Rect class as the base object for any UI after that
+Build 10:
+Add metadata to some class
+temporary delete SunLayout because it is very buggy lmao #ko cần quan tâm dòng này
+Complete Widget class and a small Render(it will be extending soon, I think I definition a class and pass, I so tired lmao)
+Change BP from class to utility function
