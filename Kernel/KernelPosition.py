@@ -132,13 +132,36 @@ class Margin:
 #NEXT
 ######
 class LayoutHelper:
+    """
+    Docstring for LayoutHelper:
+    A utility class to calculate the position of a new object relative to an existing object's rectangle.
+    It supports positioning in four directions: 'Right', 'Left', 'Down', and 'Up', with optional padding.
+    Attributes:
+    screen_w : int
+        Current screen width.
+    screen_h : int
+        Current screen height.
+    Methods:
+    update_screen(screen):
+        Updates the stored screen dimensions.
+    get_pos(obj_rect, next_obj_size, direction, padding=(0, 0)):
+        Calculates the position for the new object based on the specified direction and padding.
+    getpos_up(obj_rect, next_obj_size, padding=(0, 0)):
+        Calculates the position above the existing object.
+    getpos_down(obj_rect, next_obj_size, padding=(0, 0)):
+        Calculates the position below the existing object.
+    getpos_right(obj_rect, next_obj_size, padding=(0, 0)):
+        Calculates the position to the right of the existing object.
+    getpos_left(obj_rect, next_obj_size, padding=(0, 0)):
+        Calculates the position to the left of the existing object.
+    """
     __slots__ = ('screen_w', 'screen_h')
     def __init__(self, screen):
         self.screen_w, self.screen_h = screen.get_size()
     def update_screen(self, screen):
         self.screen_w, self.screen_h = screen.get_size()
 
-    def get_pos(self, obj_rect: MathVal1, next_obj_size: MathVal2, direction, padding=(0, 0)):
+    def get_pos(self, obj_rect: MathVal1, next_obj_size: MathVal2, direction, padding=(0, 0)) -> Tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -168,7 +191,7 @@ class LayoutHelper:
             raise KeyError('Invalid direction')
 
         return x, y
-    def getpos_up(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0)):
+    def getpos_up(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -178,7 +201,7 @@ class LayoutHelper:
         if y < 0 or x > sw - nw or x < 0:
             raise ValueError('Out of screen')
         return x, y
-    def getpos_down(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0)):
+    def getpos_down(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -188,7 +211,7 @@ class LayoutHelper:
         if y > sh - nh or x > sw - nw or x < 0:
             raise ValueError('Out of screen')
         return x, y
-    def getpos_right(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0)):
+    def getpos_right(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -198,7 +221,7 @@ class LayoutHelper:
         if x + nw > sw or y + nh > sh or y < 0:
             raise ValueError('Out of screen')
         return x, y
-    def getpos_left(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0)):
+    def getpos_left(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -209,6 +232,32 @@ class LayoutHelper:
             raise ValueError('Out of screen')
         return x, y
 class Grid:
+    """
+    Docstring for Grid
+    A utility class to divide the screen into a grid layout and calculate cell positions.
+    Attributes:
+    rows : int
+        Number of rows in the grid.
+    cols : int
+        Number of columns in the grid.
+    screen : pygame.Surface
+        The screen surface to base the grid on.
+    margin_x : int
+        Horizontal margin around the grid.
+    margin_y : int
+        Vertical margin around the grid.
+    cell_width : float
+        Width of each grid cell.
+    cell_height : float
+        Height of each grid cell.
+    Methods:
+    get_cell_rect(row, col, span_rows=1, span_cols=1):
+        Returns the rectangle (x, y, w, h) of the specified cell, optionally spanning multiple rows/columns.
+    get_cell_center(row, col):
+        Returns the center (x, y) position of the specified cell.
+    iter_cells():
+        Yields (row, col, rect) for each cell in the grid.
+    """
     __slots__ = ('rows', 'cols', 'screen', 'margin_x', 'margin_y', 'cell_width', 'cell_height')
     def __init__(self, rows, cols, screen, margin=(0, 0)):
         self.rows = rows
@@ -226,14 +275,14 @@ class Grid:
         if self.cell_width <= 0 or self.cell_height <= 0:
             raise ValueError("Grid cells would have non‑positive size (check margin).")
 
-    def get_cell_rect(self, row, col, span_rows=1, span_cols=1):
+    def get_cell_rect(self, row, col, span_rows=1, span_cols=1) -> Tuple[float, float, float, float]:
         x = self.margin_x + col * self.cell_width
         y = self.margin_y + row * self.cell_height
         w = span_cols * self.cell_width
         h = span_rows * self.cell_height
         return x, y, w, h
 
-    def get_cell_center(self, row, col):
+    def get_cell_center(self, row, col) -> Tuple[float, float]:
         rect = self.get_cell_rect(row, col)
         return rect.x + rect.w, rect.y + rect.h
 
