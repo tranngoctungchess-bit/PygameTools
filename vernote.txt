@@ -60,3 +60,7 @@ Add metadata to some class
 temporary delete SunLayout because it is very buggy lmao #ko cần quan tâm dòng này
 Complete Widget class and a small Render(it will be extending soon, I think I definition a class and pass, I so tired lmao)
 Change BP from class to utility function
+Build 11:
+Complete the skeleton of render, 70% Widget plan complete
+Add metadata to template, remove some readme file and test file
+Build 12:
