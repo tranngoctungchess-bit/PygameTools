@@ -1,3 +1,44 @@
+"""
+Quickcolor Module
+=================
+
+A comprehensive color palette reference module providing CSS/Web color names and their hexadecimal values.
+
+This module contains a complete collection of standard web colors (X11 color names) commonly used
+in web development and graphics applications. All colors are defined as hexadecimal strings that can
+be directly used with pygame or other graphics libraries.
+
+Features
+--------
+- 140+ standard web color names
+- Direct hexadecimal color values
+- Easy-to-use color references for UI elements and graphics
+- Compatible with pygame color requirements
+
+Usage
+-----
+>>> from Template.Color.Quickcolor import red, blue, lightgray
+>>> color = red  # "#ff0000"
+>>> another_color = blue  # "#0000ff"
+>>> gray_color = lightgray  # "#d3d3d3"
+
+Notes
+-----
+- All colors are represented as hexadecimal strings (e.g., "#ff0000")
+- Some color names have multiple spellings (e.g., 'gray' and 'grey')
+- Colors are based on the W3C CSS Color Module Level 4 specification
+- All hex values are lowercase for consistency
+
+Color Categories
+-----------------
+- Basic colors: black, white, red, green, blue, etc.
+- Light variants: lightblue, lightgreen, lightyellow, etc.
+- Dark variants: darkblue, darkgreen, darkred, etc.
+- Medium variants: mediumblue, mediumgreen, mediumpurple, etc.
+- Web-safe colors: teal, navy, olive, lime, aqua, fuchsia, etc.
+
+"""
+
 aliceblue = "#f0f8ff"
 antiquewhite = "#faebd7"
 aqua = "#00ffff"
