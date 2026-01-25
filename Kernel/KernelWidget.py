@@ -6,6 +6,9 @@ import pygame
 from Kernel.ObjType import MathVal2, MathVal1
 from Kernel.UFlags import *
 from Kernel.VFlags import *
+class ValuePackTypeError(Exception):
+    def __init__(self, message):
+        super().__init__(message)
 """
 ImmutableRect and MutableRect:
 the base object for any widget class as bar, button coming soon in this tool
@@ -51,13 +54,13 @@ class Widget:
         return self.rect.x, self.rect.y
     def get_size(self):
         return self.rect.w, self.rect.h
-    def set_flags(self, *uflags, **vflags):
+    def set_flags(self, uflags: tuple=(), vflags: tuple=()):
         for uflag in uflags:
             self.uflags.add(uflag)
             self.dirty_uflags.add(uflag)
-        for flag, val in vflags.items():
-            self.vflags[flag] = val
-            self.dirty_vflags.add(flag)
+        for pack in vflags:
+            self.vflags[pack[0]] = pack[1]
+            self.dirty_vflags.add(pack[0])
         self.is_dirty = True
     def add_uflag(self, uflag):
         self.uflags.add(uflag)
@@ -107,12 +110,21 @@ def convert_a_lot(widget: Widget):
     Y = np.array(widget.pos_y)
     result_pos = (X + widget.rect.x, Y + widget.rect.y)
     return result_pos
+def createpairpack(Objname,valname1, valname2):
+    return namedtuple(Objname, [valname1, valname2])
 class PygameRender:
+    def __init__(self, widget: Widget, base_screen):
+        self.widget = widget
+        self.base_screen = base_screen
+    def render(self):
+        from Kernel.PygameRender.LinkRenderfunc import renderfunc
+        for flag in list(self.widget.dirty_vflags):
+            if flag in renderfunc:
+                renderfunc[flag](self.widget, self.base_screen)
+                pygame.display.flip()
+class SkiaRender:
     def __init__(self, widget: Widget):
         self.widget = widget
-    #Build 11 will come
-class SkiaRender:
-    pass
     #coming soon
 class UltraRender:
     def __init__(self):
