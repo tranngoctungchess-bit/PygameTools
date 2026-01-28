@@ -1,6 +1,4 @@
 import pygame
-
-from Kernel import text_Is_Bold, text_Is_Italic, text_is_underline, text_Is_strikethrough, text_Is_Antialias
 from Kernel.VFlags import *
 from Kernel.UFlags import *
 from Kernel.KernelWidget import Widget
