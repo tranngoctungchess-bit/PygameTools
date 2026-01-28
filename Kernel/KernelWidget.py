@@ -30,8 +30,8 @@ class Widget:
     is_dirty: whether this widget is changed
     uflags: the unchangeable flags set for this widget
     vflags: the changeable flags dict for this widget
-    dirty_uflags: the changed unchangeable flags set for this widget
-    dirty_vflags: the changed changeable flags set for this widget
+    dirty_uflags: the unvalueable flags set for this widget
+    dirty_vflags: the valueable flags set for this widget
     pos_x: the x positions list for all objects in this widget
     pos_y: the y positions list for all objects in this widget
     """
@@ -54,6 +54,9 @@ class Widget:
         return self.rect.x, self.rect.y
     def get_size(self):
         return self.rect.w, self.rect.h
+    def inrect(self, pos: MathVal2):
+        px, py = pos
+        return (self.rect.x <= px <= self.rect.x + self.rect.w) and (self.rect.y <= py <= self.rect.y + self.rect.h)
     def set_flags(self, uflags: tuple=(), vflags: tuple=()):
         for uflag in uflags:
             self.uflags.add(uflag)
