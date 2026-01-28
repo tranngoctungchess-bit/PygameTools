@@ -22,8 +22,10 @@ def draw_text(widget: Widget, screen):
     font = pygame.font.SysFont(valpack.Font, valpack.Size, text_Is_Bold in widget.uflags, text_Is_Italic in widget.uflags)
     if text_Is_Underline in widget.uflags:
         font.set_underline(True)
+        widget.dirty_uflags.remove(text_Is_Underline)
     if text_Is_Strikethrough in widget.uflags:
         font.set_strikethrough(True)
+        widget.dirty_uflags.remove(text_Is_strikethrough)
     if text_have_background in widget.uflags:
         if bg_color in widget.vflags:
             bg = widget.vflags[bg_color]
@@ -33,3 +35,10 @@ def draw_text(widget: Widget, screen):
         bg = None
     text_surface = font.render(valpack.Text, text_Is_Antialias in widget.uflags, valpack.Color, bg)
     screen.blit(text_surface, widget.get_pos())
+    widget.dirty_vflags.remove(textpack)
+    if text_Is_Bold in widget.dirty_uflags:
+        widget.dirty_uflags.remove(text_Is_Bold)
+    if text_Is_Antialias in widget.dirty_uflags:
+        widget.dirty_uflags.remove(text_Is_Antialias)
+    if text_Is_Italic in widget.dirty_uflags:
+        widget.dirty_uflags.remove(text_Is_Italic)
