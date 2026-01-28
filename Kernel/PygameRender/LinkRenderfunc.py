@@ -3,5 +3,6 @@ from Kernel.UFlags import *
 from Kernel.VFlags import *
 renderfunc = {
     bg_color: fill_bg,
-    border: set_border
+    border: set_border,
+    textpack: draw_text
 }
