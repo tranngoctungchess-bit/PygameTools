@@ -144,15 +144,15 @@ class LayoutHelper:
     Methods:
     update_screen(screen):
         Updates the stored screen dimensions.
-    get_pos(obj_rect, next_obj_size, direction, padding=(0, 0)):
+    Get_pos(obj_rect, next_obj_size, direction, padding=(0, 0)):
         Calculates the position for the new object based on the specified direction and padding.
-    getpos_up(obj_rect, next_obj_size, padding=(0, 0)):
+    Getpos_up(obj_rect, next_obj_size, padding=(0, 0)):
         Calculates the position above the existing object.
-    getpos_down(obj_rect, next_obj_size, padding=(0, 0)):
+    Getpos_down(obj_rect, next_obj_size, padding=(0, 0)):
         Calculates the position below the existing object.
-    getpos_right(obj_rect, next_obj_size, padding=(0, 0)):
+    Getpos_right(obj_rect, next_obj_size, padding=(0, 0)):
         Calculates the position to the right of the existing object.
-    getpos_left(obj_rect, next_obj_size, padding=(0, 0)):
+    Getpos_left(obj_rect, next_obj_size, padding=(0, 0)):
         Calculates the position to the left of the existing object.
     """
     __slots__ = ('screen_w', 'screen_h')
@@ -253,9 +253,9 @@ class Grid:
     Methods:
     get_cell_rect(row, col, span_rows=1, span_cols=1):
         Returns the rectangle (x, y, w, h) of the specified cell, optionally spanning multiple rows/columns.
-    get_cell_center(row, col):
+    Get_cell_center(row, col):
         Returns the center (x, y) position of the specified cell.
-    iter_cells():
+    Iter_cells():
         Yields (row, col, rect) for each cell in the grid.
     """
     __slots__ = ('rows', 'cols', 'screen', 'margin_x', 'margin_y', 'cell_width', 'cell_height')
