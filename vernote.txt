@@ -64,3 +64,8 @@ Build 11:
 Complete the skeleton of render, 70% Widget plan complete
 Add metadata to template, remove some readme file and test file
 Build 12:
+Add Text to PygameRender
+Divide the project to 2 branch: f and none:
+    fProject: The unstable project Build, using to test the faster way for PGT
+    Project: Develop the stable project and add almost feature to PGT
+Add some testing template(it might be remove after)
