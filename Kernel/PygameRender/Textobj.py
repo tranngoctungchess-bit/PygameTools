@@ -1,7 +1,8 @@
 from typing import Union
 import pygame
-from Kernel.KernelWidget import MutableRect, ImmutableRect, Widget
+from Kernel.KernelWidget import MutableRect, ImmutableRect, Widget, MainScreen
 from Kernel.ObjType import MathVal1, MathVal2, TextPack
+from Kernel.VFlags import textpack
 """
 Text has 6 uflags:
 - IsItalic
@@ -19,7 +20,10 @@ And 4 vflags:
 and 4 uflags must be exsist! so I can get a normal class
 """
 class Label(Widget):
-    def __init__(self, infomation_pack:  TextPack, Uflags: tuple, rect: MathVal1):
-        super().__init__(rect)
+    def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], infomation_pack:  TextPack, rect: MathVal1, Uflags: tuple = ()):
+        super().__init__(parent, rect)
         self.textpack = infomation_pack
+        self.add_vflag(textpack, infomation_pack)
         self.Uflags = Uflags
+        for uflag in Uflags:
+            self.add_uflag(uflag)
