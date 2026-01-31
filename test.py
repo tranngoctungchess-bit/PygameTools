@@ -1,24 +1,37 @@
-#import pygame
-from Template.Align import MarginScreen
-from Template.Align import Sun
-import Kernel.geometry as kg
-
-screen = MarginScreen.MarginScreen(800, 600, border_percent=(10, 10), resizeable=True)
-Suntst = Sun.AroundLayoutPro(screen.display, center_obj=(400, 300, 100, 100), padding=10)
-df = [(30, 30) for _ in range(12)]
-positions = Suntst.circle(100, df, padding=12)
-
+import pygame
+from Kernel import ObjType, Widget, corner_radius, border
+from Kernel.KernelWidget import PygameRender, MainScreen
+from Kernel.PygameRender import Textobj
+from Kernel.kernal_Init import should_fill
+from Kernel.VFlags import bg_color
+pack = ObjType.TextPack((255,0,0), 'Arial', 20, 'Hello World')
+rg = MainScreen((800,600))
+obj = Textobj.Label(rg, pack, rect=(100,100,100,100))
+render = PygameRender(obj)
 running = True
-
+rtext = True
+w = [obj]
 while running:
+    mouse = pygame.mouse.get_pos()
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        screen.resize_screen_handle(event)
-
-    screen.fill((0, 0, 0))
-    for pos_x, pos_y in positions:
-        pygame.draw.rect(screen.display, (255, 255, 255), (pos_x, pos_y, 30, 30))
-    screen.update()
-
-pygame.quit()
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if obj.inrect(mouse):
+                if rtext:
+                    w.pop()
+                    new = Widget(rg, (100, 100, 100, 100))
+                    new.set_flags(vflags=((bg_color, (255, 0, 0)),))
+                    w.append(new)
+                    render = PygameRender(w[0])
+                    rtext = False
+                else:
+                    w.pop()
+                    new = Textobj.Label(rg, pack, rect=(100, 100, 100, 100))
+                    w.append(new)
+                    render = PygameRender(w[0])
+                    rtext = True
+    if should_fill():
+        rg.fill((255, 255, 255))
+    render.render()
+    pygame.display.flip()
