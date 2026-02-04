@@ -1,4 +1,4 @@
-bg_color = 1
-border = 2
-corner_radius = 3
-textpack = 4
+bg_color = 1001
+border = bg_color + 1
+corner_radius = border + 1
+textpack = corner_radius + 1

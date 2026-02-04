@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from collections import namedtuple
 import pygame
 from Kernel.ObjType import MathVal2, MathVal1
+from Kernel.RFlags import rflags_to_uflags, rflags_to_vflags
 from Kernel.UFlags import *
 from Kernel.VFlags import *
 def valid_background(bg):
@@ -23,8 +24,9 @@ width, height: the width and the height of this rect
 """
 ImmutableRect = namedtuple('Rect', ['x', 'y', 'w', 'h'])
 Position = namedtuple('Pos', ['x', 'y']) #create to look code easier
-@dataclass(slots = True)
+@dataclass
 class MutableRect:
+    __slots__ = ('x', 'y', 'w', 'h')
     x:Union[int, float]
     y:Union[int,float]
     w:Union[int, float]
@@ -35,7 +37,7 @@ class MainScreen:
     """
     def __init__(self, size, flags=0):
         self.surface = pygame.display.set_mode(size, flags)
-        self.background = None
+        self.background = (0,0,0)
     def fill(self, color):
         self.surface.fill(color)
         self.background = color
@@ -55,15 +57,15 @@ class Widget:
     temp_bg: the bg of widget parent, if widget parent is pygame.Surface
     child: the dictionary of widget child
     """
-    __slots__ = ('parent' ,'rect', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'pos_x', 'pos_y', 'temp_bg', 'children')
+    __slots__ = ('parent' ,'rect', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'temp_bg', 'children')
     def __init__(self, parent, rect: MathVal1, bg=None, can_change = False):
         self.rect = ImmutableRect(*rect) if not can_change else MutableRect(*rect)
         self.parent = parent
-        self.is_dirty = False
         self.uflags = set()
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
+        self.dirty_auto_flag = set()
         self.pos_x = []
         self.pos_y = []
         self.children = {}
@@ -112,7 +114,7 @@ class Widget:
         bg = self.get_background()
         if isinstance(bg, tuple):
             surface = self.get_surface()
-            pygame.draw.rect(surface, bg, self.rect)
+            pygame.draw.rect(surface, bg, (self.rect.x,self.rect.y, self.rect.w, self.rect.y))
         elif isinstance(bg, pygame.Surface):
             surface = self.get_surface()
             surface.blit(bg, self.rect.topleft, self.rect)
@@ -126,40 +128,37 @@ class Widget:
         for pack in vflags:
             self.vflags[pack[0]] = pack[1]
             self.dirty_vflags.add(pack[0])
-        self.is_dirty = True
     def add_uflag(self, uflag):
         self.uflags.add(uflag)
         self.dirty_uflags.add(uflag)
-        self.is_dirty = True
     def add_vflag(self, vflag, val):
         self.vflags[vflag] = val
         self.dirty_vflags.add(vflag)
-        self.is_dirty = True
     def change_uflag(self, oldflag, newflag):
         try:
             self.uflags.remove(oldflag)
             self.uflags.add(newflag)
             self.dirty_uflags.add(newflag)
-            self.is_dirty = True
         except:
             raise KeyError(f'flag: {oldflag} is not found to change')
     def change_vflag(self, flag, newval):
         try:
             self.vflags[flag] = newval
             self.dirty_vflags.add(flag)
-            self.is_dirty = True
         except:
             raise KeyError(f'flag: {flag} is not found to change')
     def remove_uflag(self, flag):
         try:
+            rflag = rflags_to_uflags[flag]
             self.uflags.remove(flag)
-            self.is_dirty = True
-        except:
+            self.dirty_vflags.add(rflag)
+        except KeyError:
             raise KeyError(f'flag: {flag} is not found to change')
     def remove_vflag(self, flag):
         try:
+            rflag = rflags_to_vflags[flag]
             del self.vflags[flag]
-            self.is_dirty = True
+            self.dirty_vflags.add(rflag)
         except:
             raise KeyError(f'flag: {flag} is not found to change')
     def blank_flag(self):
@@ -167,9 +166,8 @@ class Widget:
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
-        self.is_dirty = False
 def convert(pos, offset):
-    return pos[x] + offset[x], pos[y] + offset[y]
+    return pos[0] + offset[0], pos[1] + offset[1]
 def convert_a_lot(widget: Widget):
     X = np.array(widget.pos_x)
     Y = np.array(widget.pos_y)
@@ -192,11 +190,22 @@ class PygameRender:
     def render(self):
         from Kernel.PygameRender.LinkRenderfunc import renderfunc
         try:
-            if self.widget.is_dirty:
-                for flag in list(self.widget.dirty_vflags):
+            if len(self.widget.uflags) == 0 and len(self.widget.vflags) == 0:
+                self.widget.hide_itself()
+            else:
+                for flag in self.widget.dirty_uflags:
+                    renderfunc[flag](self.widget)
+                for flag in self.widget.dirty_vflags:
                     renderfunc[flag](self.widget, self.widget.get_surface())
                     pygame.display.flip()
-            self.widget.is_dirty = False
+                for flag in self.widget.dirty_auto_flag:
+                    try:
+                        renderfunc[flag](self.widget, self.widget.get_surface())
+                    except TypeError:
+                        renderfunc[flag](self.widget)
+            self.widget.dirty_vflags.clear()
+            self.widget.dirty_uflags.clear()
+            self.widget.dirty_auto_flag.clear()
         except KeyError as e:
             raise ValueError(f"Flag {e} not found in renderfunc mapping. Check LinkRenderfunc.py")
 class SkiaRender:

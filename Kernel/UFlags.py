@@ -1,16 +1,13 @@
-action_when_click = -1
-action_when_hover = -2
-action_when_scroll_mouse = -3
-mutable_bg = -4
-must_blank = -5
-must_not_blank = -6
-VISIBLE = -7
-ENABLED = -8
-DRAGABLE = -9
-FOCUSABLE = -10
-text_Is_Bold = -11
-text_Is_Italic = -12
-text_Is_Underline = -13
-text_Is_Strikethrough = -14
-text_Is_Antialias = -15
-text_have_background = -16
+text_Is_Bold = 1
+text_Is_Italic = text_Is_Bold + 1
+text_Is_Underline = text_Is_Italic + 1
+text_Is_Strikethrough = text_Is_Underline + 1
+text_Is_Antialias = text_Is_Strikethrough + 1
+text_have_background = text_Is_Antialias + 1
+
+
+
+###########
+#Aflags
+###########
+text_auto_resize = 4001
