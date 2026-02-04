@@ -11,8 +11,16 @@ kernal_Init.init()
 #####
 #Margin
 #####
-
-
+class Anchor:
+     topleft = 'TopLeft'
+     topcenter = 'TopCenter'
+     topright = 'TopRight'
+     centerleft = 'CenterLeft'
+     center = 'Center'
+     centerright = 'CenterRight'
+     bottomleft = 'BottomLeft'
+     bottomcenter = 'BottomCenter'
+     bottomright = 'BottomRight'
 class Margin:
     """
     Manages margins and the display position of objects on the screen.
