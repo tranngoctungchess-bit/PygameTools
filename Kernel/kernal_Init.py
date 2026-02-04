@@ -7,11 +7,14 @@ def set_fill_mode(mode=False):
     _fill_mode = mode
 
 def should_fill():
-    return _fill_mode
+    global _fill_mode
+    tfill = _fill_mode
+    _fill_mode = False
+    return tfill
 def init():
     global init_state
     if not init_state:
         pygame.init()
         init_state = True
-    set_fill_mode()
+    set_fill_mode(_fill_mode)
 
