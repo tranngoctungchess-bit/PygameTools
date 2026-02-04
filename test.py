@@ -27,3 +27,4 @@ while running:
         rg.fill((255, 255, 255))
     render.render()
     pygame.display.flip()
+
