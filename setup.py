@@ -20,6 +20,6 @@ setup(
     ],
     python_requires=">=3.7",
     install_requires=[
-        "pygame>=2.0.0",
+        "pygame>=2.0.0", 'pyside6', 'numpy', 'numba'
     ],
 )
