@@ -1,9 +1,33 @@
-from typing import Union, Tuple
+from typing import Union
 import pygame
-from Kernel.UFlags import text_Is_Antialias
-from Kernel.KernelWidget import MutableRect, ImmutableRect, Widget, MainScreen
+from Kernel.Flags.UFlags import text_Is_Antialias
+from Kernel.KernelWidget import Widget, MainScreen
 from Kernel.ObjType import MathVal1, MathVal2, TextPack
-from Kernel.VFlags import textpack
+from Kernel.Flags.VFlags import textpack
+import re
+re_search = re.search
+re_findall = re.findall
+re_sub = re.sub
+re_split = re.split
+re_match = re.match
+re_compile = re.compile
+re_escape = re.escape
+EMAIL_PATTERN = re.compile(r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}')
+URL_PATTERN = re.compile(r'https?://\S+')
+HASHTAG_PATTERN = re.compile(r'#\w+')
+MENTION_PATTERN = re.compile(r'@\w+')
+def extract_emails(text):
+    return EMAIL_PATTERN.findall(text)
+def extract_urls(text):
+    return URL_PATTERN.findall(text)
+def extract_hashtags(text):
+    return HASHTAG_PATTERN.findall(text)
+def safe_substitute(text, pattern, replacement):
+    """Safe regex substitution với escape"""
+    return re_sub(re_escape(pattern), replacement, text)
+#wrap
+SysFont = pygame.font.SysFont
+Font = pygame.font.Font
 class Label(Widget):
     def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], infomation_pack:  TextPack,pos : MathVal2, Uflags: Union[set, tuple] = ()):
         self.font = pygame.font.SysFont(infomation_pack.Font, infomation_pack.Size)

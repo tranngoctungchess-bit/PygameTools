@@ -1,12 +1,13 @@
-import numpy as np
-from typing import Tuple, Union, Optional, List, Dict, Any
+from typing import Tuple, Union
 from dataclasses import dataclass
 from collections import namedtuple
 import pygame
+import array
+from Kernel.KernalInit import should_fill, set_fill_mode
 from Kernel.ObjType import MathVal2, MathVal1
-from Kernel.RFlags import rflags_to_uflags, rflags_to_vflags
-from Kernel.UFlags import *
-from Kernel.VFlags import *
+from Kernel.Flags.RFlags import rflags_to_uflags, rflags_to_vflags
+
+
 def valid_background(bg):
     """
     Check if it is a valid background
@@ -33,14 +34,16 @@ class MutableRect:
     h:Union[int,float]
 class MainScreen:
     """
-
     """
     def __init__(self, size, flags=0):
         self.surface = pygame.display.set_mode(size, flags)
         self.background = (0,0,0)
     def fill(self, color):
-        self.surface.fill(color)
+        if should_fill():
+            self.surface.fill(color)
         self.background = color
+    def blank(self, color):
+        self.surface.fill(color)
     def blit(self, source, dest):
         self.surface.blit(source, dest)
 class Widget:
@@ -169,10 +172,13 @@ class Widget:
 def convert(pos, offset):
     return pos[0] + offset[0], pos[1] + offset[1]
 def convert_a_lot(widget: Widget):
-    X = np.array(widget.pos_x)
-    Y = np.array(widget.pos_y)
-    result_pos = (X + widget.rect.x, Y + widget.rect.y)
-    return result_pos
+    X = array.array('f', widget.pos_x)
+    Y = array.array('f', widget.pos_y)
+    offset_x, offset_y = widget.rect.x, widget.rect.y
+    for i in range(len(X)):
+        X[i] += offset_x
+        Y[i] += offset_y
+    return X, Y
 class PygameRender:
     """
 

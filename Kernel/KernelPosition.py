@@ -2,12 +2,10 @@
 #Pre-alpha
 from collections import namedtuple
 from typing import Tuple, Union, Optional, List
-import numpy as np
 import pygame
-from Kernel import kernal_Init
-import re
+from Kernel.KernalInit import init
 from Kernel.ObjType import MathVal2, MathVal1
-kernal_Init.init()
+init()
 #####
 #Margin
 #####

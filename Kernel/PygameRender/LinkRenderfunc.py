@@ -1,7 +1,3 @@
-from Kernel.PygameRender.Render import *
-from Kernel.UFlags import *
-from Kernel.VFlags import *
-from Kernel.RFlags import *
 from Kernel.PygameRender.RRender import *
 renderfunc = {
     ###########

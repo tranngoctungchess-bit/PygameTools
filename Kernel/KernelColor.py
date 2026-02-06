@@ -1,4 +1,4 @@
-from Kernel import color
+from Kernel import colorsc
 FLOAT_ERROR = 0.0000005
 class ColorTools:
     def name_to_hex(self, name: str) -> str:
