@@ -24,11 +24,11 @@ class MissPoint:
 
     Methods
     -------
-    equilateral_triangle(p. 1, p2)
+    equilateral_triangle(p1, p2)
         Returns the third point of an equilateral triangle given two points.
-    parallelogram(p. 1, p2, p. 3)
+    parallelogram(p1, p2, p3)
         Returns the fourth point of a parallelogram given three points.
-    rect_from_diagonal(p. 1, p. 3)
+    rect_from_diagonal(p1, p3)
         Returns all four corners of a rectangle given two opposite corners.
     circle_points(center, radius, n)
         Generates n evenly spaced points around a circle.
@@ -86,7 +86,7 @@ class MissPoint:
         """
         Given three points p1, p2, p3 of a parallelogram (in order),
         return the fourth point p4.
-        p4 = p1 + (p. 3 - p. 2)
+        p. 4 = p. 1 + (p. 3 - p. 2)
         """
         x1, y1 = p1
         x2, y2 = p2
@@ -96,7 +96,7 @@ class MissPoint:
     def rect_from_diagonal(self, p1, p3):
         """
         Given two opposite corners of a rectangle (diagonal),
-        return all four corners in order: (p1, p2, p3, p4).
+        return all four corners in order: (p. 1, p. 2, p3, p. 4).
         """
         x1, y1 = p1
         x3, y3 = p3
