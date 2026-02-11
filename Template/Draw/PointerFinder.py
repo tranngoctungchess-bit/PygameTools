@@ -2,68 +2,7 @@ import math
 
 
 class MissPoint:
-    """
-    MissPoint Geometric Utility Class
-    ==================================
-
-    A utility class providing geometric calculations and point derivation methods for pygame.
-    This class contains methods to compute missing points in geometric shapes given partial information,
-    as well as other geometric transformations.
-
-    The class supports various geometric operations including:
-    - Computing the third vertex of an equilateral triangle from two points
-    - Finding the fourth corner of a parallelogram
-    - Deriving all corners of a rectangle from a diagonal
-    - Generating points around a circle
-    - Reflecting points across a line
-
-    Attributes
-    ----------
-    screen : pygame.Surface
-        The pygame screen/display surface (used for context in geometric calculations).
-
-    Methods
-    -------
-    equilateral_triangle(p1, p2)
-        Returns the third point of an equilateral triangle given two points.
-    parallelogram(p1, p2, p3)
-        Returns the fourth point of a parallelogram given three points.
-    rect_from_diagonal(p1, p3)
-        Returns all four corners of a rectangle given two opposite corners.
-    circle_points(center, radius, n)
-        Generates n evenly spaced points around a circle.
-    reflect_point(point, line_p1, line_p2)
-        Reflects a point across a line defined by two points.
-
-    Notes
-    -----
-    - All coordinates are represented as (x, y) tuples
-    - Angles are in radians
-    - The class provides pure geometric computations without side effects
-    """
     def __init__(self, screen):
-        """
-        Initialize the MissPoint geometric utility.
-
-        Parameters
-        ----------
-        screen : pygame.Surface
-            The pygame screen/display surface object for context.
-
-        Attributes
-        ----------
-        screen : pygame.Surface
-            Stores reference to the screen object for use in geometric calculations.
-
-        Examples
-        --------
-        >>> screen = pygame.display.set_mode((800, 600))
-        >>> geo = MissPoint(screen)
-        >>> p1 = (100, 100)
-        >>> p2 = (200, 100)
-        >>> p3 = geo.equilateral_triangle(p1, p2)
-        >>> circle_pts = geo.circle_points((400, 300), 100, 8)
-        """
         self.screen = screen
 
     def equilateral_triangle(self, p1, p2):
