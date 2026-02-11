@@ -1,14 +1,25 @@
 import pygame
-from Kernel import ObjType, ImagePack
+from Kernel import ObjType
 from Kernel.KernelWidget import PygameRender, MainScreen
+from Kernel.PygameRender import Textobj
+from Kernel.Flags.UFlags import *
+from Kernel.Flags.VFlags import *
+from Kernel.KernelRun import Thread
+pack = ObjType.TextPack((255,0,0), 'Arial', 20, 'Hello World')
 rg = MainScreen((800,600))
-haha = ImagePack('haha.png')
-haha.scale_resize(0.25)
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
+obj = Textobj.Label(rg, pack, (100, 100))
+obj.add_uflag(text_Is_Underline)
+obj.add_uflag(text_Is_Antialias)
+render = PygameRender(obj)
+def toogle(obj):
+    if text_Is_Underline in obj.uflags:
+        obj.remove_uflag(text_Is_Underline)
+    else:
+        obj.add_uflag(text_Is_Underline)
+obj.add_vflag(Downlclick, toogle)
+rg.addWidget(obj, 'obj')
+def Logic():
     rg.fill((255,255,255))
-    rg.blit(haha.get_image(), (100,100))
-    pygame.display.flip()
+    render.render()
+game = Thread(rg, [Logic])
+game.threadstart()
