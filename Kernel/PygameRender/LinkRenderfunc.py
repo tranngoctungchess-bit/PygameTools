@@ -1,4 +1,9 @@
 from Kernel.PygameRender.RRender import *
+from Kernel.Flags.VFlags import *
+from Kernel.Flags.UFlags import *
+from Kernel.Flags.RFlags import *
+def notingfunc(*args, **kwargs):
+    pass
 renderfunc = {
     ###########
     #UFLAG
@@ -28,8 +33,31 @@ renderfunc = {
     Rtext_Is_Strikethrough : Remove_textStrikethrough,
     Rtext_Is_Antialias : Remove_textAntialias,
     Rtext_have_background : Remove_textBg,
+    RDownrclick: notingfunc,
+    RDownlclick: notingfunc,
+    RDownscrollmouse: notingfunc,
+    RDownscrollup: notingfunc,
+    RDownscrolldown: notingfunc,
+    RUprclick: notingfunc,
+    RUplclick: notingfunc,
+    RUpscrollmouse: notingfunc,
+    RUpscrollup: notingfunc,
+    RUpscrolldown: notingfunc,
     #########
     #AFLAG
     #########
-    text_auto_resize: text_resize
+    text_auto_resize: text_resize,
+    ########
+    #EFLAG
+    ########
+    Downrclick : notingfunc,
+    Downlclick : notingfunc,
+    Downscrollmouse : notingfunc,
+    Downscrollup : notingfunc,
+    Downscrolldown  :notingfunc,
+    Uprclick :notingfunc ,
+    Uplclick  : notingfunc,
+    Upscrollmouse  :notingfunc,
+    Upscrollup : notingfunc,
+    Upscrolldown: notingfunc
 }

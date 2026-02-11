@@ -3,11 +3,16 @@ from dataclasses import dataclass
 from collections import namedtuple
 import pygame
 import array
+
+import Kernel.KernelPosition
+from Kernel import Margin
 from Kernel.KernalInit import should_fill, set_fill_mode
 from Kernel.ObjType import MathVal2, MathVal1
 from Kernel.Flags.RFlags import rflags_to_uflags, rflags_to_vflags
-
-
+from Kernel.KernalInit import init
+init()
+def trashfunc(*args, **kwargs):
+    pass
 def valid_background(bg):
     """
     Check if it is a valid background
@@ -32,20 +37,6 @@ class MutableRect:
     y:Union[int,float]
     w:Union[int, float]
     h:Union[int,float]
-class MainScreen:
-    """
-    """
-    def __init__(self, size, flags=0):
-        self.surface = pygame.display.set_mode(size, flags)
-        self.background = (0,0,0)
-    def fill(self, color):
-        if should_fill():
-            self.surface.fill(color)
-        self.background = color
-    def blank(self, color):
-        self.surface.fill(color)
-    def blit(self, source, dest):
-        self.surface.blit(source, dest)
 class Widget:
     """
     parent: the base contains this widget
@@ -169,6 +160,26 @@ class Widget:
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
+    def dispatch_mouse(self, mouse_pos, event):
+        from Kernel.KernelEvent import event2flags
+        for widget in list(reversed(self.children.values())):
+            if widget.inrect(mouse_pos):
+                func = widget.dispatch_mouse(mouse_pos, event)
+                if func:
+                    return func
+        if self.inrect(mouse_pos):
+            flag = event2flags.get(event.type, {}).get(event.button)
+            handler = self.vflags.get(flag, trashfunc)
+            if handler != trashfunc:
+                import inspect
+                param_count = len(inspect.signature(handler).parameters)
+
+                if param_count == 0:
+                    return lambda: handler()
+                else:
+                    return lambda: handler(self)
+
+        return trashfunc
 def convert(pos, offset):
     return pos[0] + offset[0], pos[1] + offset[1]
 def convert_a_lot(widget: Widget):
@@ -179,6 +190,38 @@ def convert_a_lot(widget: Widget):
         X[i] += offset_x
         Y[i] += offset_y
     return X, Y
+class MainScreen:
+    """
+    """
+    def __init__(self, size, flags=0):
+        self.surface = pygame.display.set_mode(size, flags)
+        self.background = (0,0,0)
+        self.child = {}
+        self.margin_manager = None
+    def set_margin(self, border_percent: MathVal2 | None, padding):
+        from Kernel.KernelPosition import Margin
+        self.margin_manager = Margin(self.surface, border_percent, padding)
+    def fill(self, color):
+        if should_fill():
+            self.surface.fill(color)
+        self.background = color
+    def blank(self, color):
+        self.surface.fill(color)
+    def blit(self, source, dest):
+        self.surface.blit(source, dest)
+    def blit_to_anchor(self, surface, anchor: str):
+        pos = self.surface.get_pos(surface.get_size(), anchor)
+        self.surface.blit(surface, pos)
+    def addWidget(self, widget: Widget, widget_id):
+        self.child[widget_id] = widget
+    def delWidget(self, widget_id):
+        del self.child[widget_id]
+    def getWidget(self, widget_id: str) -> Widget:
+        return self.child.get(widget_id)
+    def clearWidget(self):
+        for widget in self.child.values():
+            widget.destroy()
+        self.children.clear()
 class PygameRender:
     """
 

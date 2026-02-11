@@ -62,6 +62,8 @@ class Margin:
         self.padding = padding
         self.cache = {}
         self.cache_pos = {}
+    def update_padding(self, new_padding):
+        self.padding = new_padding
     def get_pos(self, obj: MathVal2, anchor: Optional[str]):
         if not anchor:
             if 'Anchor' in self.cache:
