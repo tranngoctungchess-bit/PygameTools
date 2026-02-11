@@ -1,20 +1,20 @@
 The Note for Templates developer and Users
 0.01:
--This was the first version of the project, then called PygameTools.
-- In the kernel, Margin was included, and an SFM template was added to create smart screens with integrated Margin.
+This was the first version of the project, then called PygameTools.
+In the kernel, Margin was included, and an SFM template was added to create smart screens with integrated Margin.
 0.02:
 - Added class LayoutHelper (formerly Next) in kernel
 Improved Margin class
 New templates:
-    • VerticalStack
-    • HorizontalStack
-- Kernel initialization is now automatic via kernal_Init (no need to call pygame.init() manually when using templates).
-- SFM renamed to MarginScreen
+    VerticalStack
+    HorizontalStack
+Kernel initialization is now automatic via kernal_Init (no need to call pygame.init() manually when using templates).
+SFM renamed to MarginScreen
 0.03:
-- Optimized kernel performance (Margin, LayoutHelper) – now only 1.1–1.3× slower than equivalent manual code.
-- Added SunLayout template – places objects in a 3×3 grid around a central object.
-- Updated DeveloperRule.txt with guidelines for template documentation and advanced versions.
-- This project changes its public name to **PGT** (Pygame Tools) for brevity.
+Optimized kernel performance (Margin, LayoutHelper) – now only 1.1–1.3× slower than equivalent manual code.
+Added SunLayout template – places objects in a 3×3 grid around a central object.
+Updated DeveloperRule.txt with guidelines for template documentation and advanced versions.
+This project changes its public name to **PGT** (Pygame Tools) for brevity.
 0.04:
 Added geometry.py to kernel (vector, point, angle, rect utilities).
 Added SimpleDraw template (basic drawing wrapper).
@@ -70,5 +70,9 @@ Added Thread class for managed game loops with FPS control and break conditions
 Added ImagePack utility for image loading/resizing/cropping
 Replaced numpy with array module for memory efficiency
 Removed numba dependency, geometry now pure Python
-Moved ImageObj to kernel root, kept Textobj renderer-specific
 MainScreen now auto call should_fill
+Build 16:
+Added EventDispatcher for auto manage event, so the annoy bug in Thread is removed
+Added trashfunc for safe flag removal
+Added Margin support for Mainscreen
+Added mouse event VFlags (left/right/middle click, scroll up/down)
