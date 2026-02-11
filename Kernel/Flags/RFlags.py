@@ -16,6 +16,16 @@ Rbg_color = bg_color + 2000
 Rborder = border + 2000
 Rcorner_radius = corner_radius + 2000
 Rtextpack = textpack + 2000
+RDownrclick = Downrclick + 2000
+RDownlclick = Downlclick + 2000
+RDownscrollmouse = Downscrollmouse + 2000
+RDownscrollup = Downscrollmouse + 2000
+RDownscrolldown = Downscrollup + 2000
+RUprclick = Downscrollmouse + 2000
+RUplclick =  Uprclick + 2000
+RUpscrollmouse = Uplclick + 2000
+RUpscrollup = Upscrollmouse + 2000
+RUpscrolldown = Upscrollup + 2000
 """
 Link Rflag to Uflag, Vflag
 """
@@ -32,4 +42,14 @@ rflags_to_vflags = {
     border: Rborder,
     corner_radius: Rcorner_radius,
     textpack: Rtextpack,
+    Downrclick: RDownrclick,
+    Downlclick: RDownlclick,
+    Downscrollmouse: RDownscrollmouse,
+    Downscrolldown: RDownscrolldown,
+    Downscrollup: RDownscrollup,
+    Uprclick: RUprclick,
+    Uplclick: RUplclick,
+    Upscrollmouse: RUpscrollmouse,
+    Upscrollup: RUpscrollup,
+    Upscrolldown: RUpscrolldown
 }
