@@ -7,3 +7,4 @@ from .KernalInit import *
 from .Flags import *
 from .PygameRender import *
 from .ImageObj import *
+from .KernelAudio import *

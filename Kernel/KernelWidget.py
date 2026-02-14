@@ -51,7 +51,7 @@ class Widget:
     temp_bg: the bg of widget parent, if widget parent is pygame.Surface
     child: the dictionary of widget child
     """
-    __slots__ = ('parent' ,'rect', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'temp_bg', 'children')
+    __slots__ = ('parent' ,'rect', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'temp_bg', 'child')
     def __init__(self, parent, rect: MathVal1, bg=None, can_change = False):
         self.rect = ImmutableRect(*rect) if not can_change else MutableRect(*rect)
         self.parent = parent
@@ -62,7 +62,7 @@ class Widget:
         self.dirty_auto_flag = set()
         self.pos_x = []
         self.pos_y = []
-        self.children = {}
+        self.child = {}
         if bg is not None and not valid_background(bg):
             raise ValueError("Invalid background format")
         self.temp_bg = bg
@@ -94,16 +94,16 @@ class Widget:
         else:
             return self.parent.get_surface()
     def add_child(self, widget, name):
-        self.children[name] = widget
+        self.child[name] = widget
     def destroy(self):
         self.hide_itself()
         if isinstance(self.parent, Widget):
-            for name, child in self.parent.children.items():
+            for name, child in self.parent.child.items():
                 if child is self:
-                    del self.parent.children[name]
+                    del self.parent.child[name]
                     break
         self.parent = None
-        self.children.clear()
+        self.child.clear()
     def hide_itself(self):
         bg = self.get_background()
         if isinstance(bg, tuple):
@@ -112,6 +112,26 @@ class Widget:
         elif isinstance(bg, pygame.Surface):
             surface = self.get_surface()
             surface.blit(bg, self.rect.topleft, self.rect)
+    def change_rect(self, rect: MathVal1):
+        self.change_pos((rect[0], rect[1]))
+        self.change_size((rect[2], rect[3]))
+    def change_pos(self, new_pos: MathVal2):
+        self.rerender()
+        if isinstance(self.rect, MutableRect):
+            self.rect.x, self.rect.y = new_pos
+            convert_a_lot(self)
+        else:
+            raise TypeError('Your widget pos and size is immutabe')
+    def change_size(self, new_size: MathVal2):
+        self.rerender()
+        if isinstance(self.rect, MutableRect):
+            self.rect.w, self.rect.h = new_size
+        else:
+            raise TypeError('Your widget pos and size is immutabe')
+    def rerender(self):
+        self.hide_itself()
+        self.dirty_vflags.update(self.vflags.keys())
+        self.dirty_uflags.update(self.uflags)
     def inrect(self, pos: MathVal2):
         px, py = pos
         return (self.rect.x <= px <= self.rect.x + self.rect.w) and (self.rect.y <= py <= self.rect.y + self.rect.h)
@@ -122,12 +142,15 @@ class Widget:
         for pack in vflags:
             self.vflags[pack[0]] = pack[1]
             self.dirty_vflags.add(pack[0])
-    def add_uflag(self, uflag):
-        self.uflags.add(uflag)
-        self.dirty_uflags.add(uflag)
-    def add_vflag(self, vflag, val):
-        self.vflags[vflag] = val
-        self.dirty_vflags.add(vflag)
+    def add_uflag(self, *uflags):
+        for uflag in uflags:
+            self.uflags.add(uflag)
+            self.dirty_uflags.add(uflag)
+    def add_vflag(self, *flagpacks):
+        for flagpack in flagpacks:
+            vflag, val = flagpack
+            self.vflags[vflag] = val
+            self.dirty_vflags.add(vflag)
     def change_uflag(self, oldflag, newflag):
         try:
             self.uflags.remove(oldflag)
@@ -162,7 +185,7 @@ class Widget:
         self.dirty_vflags = set()
     def dispatch_mouse(self, mouse_pos, event):
         from Kernel.KernelEvent import event2flags
-        for widget in list(reversed(self.children.values())):
+        for widget in list(reversed(self.child.values())):
             if widget.inrect(mouse_pos):
                 func = widget.dispatch_mouse(mouse_pos, event)
                 if func:
@@ -221,7 +244,7 @@ class MainScreen:
     def clearWidget(self):
         for widget in self.child.values():
             widget.destroy()
-        self.children.clear()
+        self.child.clear()
 class PygameRender:
     """
 

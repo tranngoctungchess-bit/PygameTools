@@ -1,6 +1,4 @@
-#CodeName : Verista
 from typing import Tuple, Union
-
 import Kernel.KernelPosition
 import pygame
 import warnings
