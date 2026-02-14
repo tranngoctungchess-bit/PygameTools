@@ -73,6 +73,9 @@ Removed numba dependency, geometry now pure Python
 MainScreen now auto call should_fill
 Build 16:
 Added EventDispatcher for auto manage event, so the annoy bug in Thread is removed
-Added trashfunc for safe flag removal
 Added Margin support for Mainscreen
 Added mouse event VFlags (left/right/middle click, scroll up/down)
+Build 17:
+Added change pos, change size,change all function to widget class
+Added Basic Audio
+Removed some templates and moved some templates to kernel
