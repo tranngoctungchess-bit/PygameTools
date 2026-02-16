@@ -15,7 +15,7 @@ def to_vector(pos_x:float, pos_y:float):
     return pos_y - pos_x
 def magnitude(vec):
     """return the distance of two pos"""
-    return math.sqrt(vec[0]**2 + vec[1]**2)
+    return math.sqrt(vec[0]*vec[0] + vec[1]*vec[1])
 def vector_between(p1, p2):
     """return the vector between two pos"""
     return p2[0] - p1[0], p2[1] - p1[1]

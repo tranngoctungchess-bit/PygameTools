@@ -5,7 +5,7 @@ import pygame
 from Kernel.KernelWidget import MainScreen
 from Kernel.KernelEvent import EventDispatcher
 
-
+quitnow = pygame.QUIT
 class BreakThread(Exception):
     def __init__(self, message):
         super().__init__(message)

@@ -24,16 +24,27 @@ class EventDispatcher:
     def __init__(self, screen: MainScreen):
         self.screen = screen
     def event_passdown(self):
+        mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
             if event.type in( pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
-                mouse_pos = event.pos
                 for widget in list(reversed(self.screen.child.values())):
                     if widget.inrect(mouse_pos):
-                        func = widget.dispatch_mouse(mouse_pos, event)
+                        func = widget.dispatch_click(mouse_pos, event)
                         func()
                         break
             elif event.type == pygame.QUIT:
                 return False
+            for widget in list(reversed(self.screen.child.values())):
+                if widget.inrect(mouse_pos) and hasattr(widget, 'is_hovered'):
+                    func = widget.dispatch_hover(mouse_pos)
+                    func()
+                    widget.is_hovered = True
+                    break
+                else:
+                    if widget.is_hovered:
+                        func = widget.dispatch_realease(mouse_pos)
+                        func()
+                        widget.is_hovered = False
         return True
 
 

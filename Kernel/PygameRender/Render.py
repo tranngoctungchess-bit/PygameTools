@@ -1,18 +1,22 @@
 import pygame
+
 from Kernel.Flags.VFlags import *
 from Kernel.Flags.UFlags import *
-from Kernel.KernelWidget import Widget
+from Kernel.KernelWidget import Widget, MainScreen
 from Kernel.PygameRender.Textobj import Label
 
 """
 Surface
 """
-def fill_bg(widget: Widget, screen):
-    col = widget.vflags[bg_color]
-    if corner_radius in widget.vflags:
-        pygame.draw.rect(screen,col, widget.get_rect(), border_radius=widget.vflags[corner_radius])
-    else:
-        pygame.draw.rect(screen,col, widget.get_rect())
+def fill_bg(widget: Widget, screen: pygame.Surface):
+    bg = widget.vflags[bg_widget]
+    if isinstance(bg, tuple):
+        pygame.draw.rect(screen, bg, (widget.rect.x, widget.rect.y, widget.rect.w, widget.rect.h))
+    elif isinstance(bg, pygame.Surface):
+        size = bg.get_size()
+        if size[0] != widget.rect.w or size[1] != widget.rect.h:
+            bg = pygame.transform.scale(bg, (widget.rect.w, widget.rect.h))
+        screen.blit(bg, (widget.rect.x,widget.rect.y))
 def set_border(widget: Widget, screen):
     valpack = widget.vflags[border]
     if corner_radius in widget.vflags:

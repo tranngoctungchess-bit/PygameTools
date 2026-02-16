@@ -22,6 +22,7 @@ class ImagePack:
     def get_size(self):
         return self.surface.get_size()
     def resize(self, size: MathVal2):
+        old_surface = self.surface
         self.surface = pygame.transform.scale(self.surface, size)
         return self
     def scale_resize(self, scale):

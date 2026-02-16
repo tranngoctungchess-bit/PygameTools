@@ -1,3 +1,5 @@
+from encodings import normalize_encoding
+
 from Kernel.PygameRender.RRender import *
 from Kernel.Flags.VFlags import *
 from Kernel.Flags.UFlags import *
@@ -17,14 +19,14 @@ renderfunc = {
     ##########
     #VFLAG
     ##########
-    bg_color: fill_bg,
+    bg_widget: fill_bg,
     border: set_border,
     corner_radius: set_border,
     textpack: draw_text,
     ###########
     #RFLAG
     ###########
-    Rbg_color : Remove_bg,
+    Rbg_widget : Remove_bg,
     Rborder : Remove_border,
     Rcorner_radius : corner_radius,
     Rtext_Is_Bold : Remove_textBold,
@@ -43,6 +45,10 @@ renderfunc = {
     RUpscrollmouse: notingfunc,
     RUpscrollup: notingfunc,
     RUpscrolldown: notingfunc,
+    RHover_func : notingfunc,
+    Rhover_bg : notingfunc,
+    Rpressed_bg: notingfunc,
+    RRealeasefunc: notingfunc,
     #########
     #AFLAG
     #########
@@ -59,5 +65,9 @@ renderfunc = {
     Uplclick  : notingfunc,
     Upscrollmouse  :notingfunc,
     Upscrollup : notingfunc,
-    Upscrolldown: notingfunc
+    Upscrolldown: notingfunc,
+    hover_bg: notingfunc,
+    pressed_bg: notingfunc,
+    Hoverfunc: notingfunc,
+    Realeasefunc: notingfunc
 }

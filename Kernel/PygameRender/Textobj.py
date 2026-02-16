@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Tuple
 import pygame
 from Kernel.Flags.UFlags import text_Is_Antialias
 from Kernel.KernelWidget import Widget, MainScreen
@@ -29,15 +29,18 @@ def safe_substitute(text, pattern, replacement):
 SysFont = pygame.font.SysFont
 Font = pygame.font.Font
 class Label(Widget):
-    def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], infomation_pack:  TextPack,pos : MathVal2, Uflags: Union[set, tuple] = ()):
-        self.font = pygame.font.SysFont(infomation_pack.Font, infomation_pack.Size)
-        text_surface = self.font.render(infomation_pack.Text, False, infomation_pack.Color)
+    __slots__ = ('font', 'textpack', 'smooth', 'bg')
+    def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], infomation_pack:  TextPack | tuple,
+                 pos : MathVal2,name, Uflags: Union[set, tuple] = ()):
+        self.textpack = TextPack(*infomation_pack)
+        print(self.textpack)
+        self.font = pygame.font.SysFont(self.textpack.Font, self.textpack.Size)
+        text_surface = self.font.render(self.textpack.Text, False, self.textpack.Color)
         pygameRect = text_surface.get_rect()
         x, y = pos
         tuple_rect = (x,y,pygameRect.w, pygameRect.h)
-        super().__init__(parent, tuple_rect, can_change=True)
-        self.textpack = infomation_pack
-        self.add_vflag(textpack, infomation_pack)
+        super().__init__(parent, tuple_rect,name= name, can_change=True)
+        self.add_vflag((textpack, infomation_pack))
         if isinstance(Uflags, set):
             self.uflags = Uflags
             self.dirty_uflags = Uflags

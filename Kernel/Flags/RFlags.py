@@ -12,7 +12,7 @@ Rtext_have_background = text_have_background + 2000
 """
 RVflags
 """
-Rbg_color = bg_color + 2000
+Rbg_widget = bg_widget + 2000
 Rborder = border + 2000
 Rcorner_radius = corner_radius + 2000
 Rtextpack = textpack + 2000
@@ -26,6 +26,10 @@ RUplclick =  Uprclick + 2000
 RUpscrollmouse = Uplclick + 2000
 RUpscrollup = Upscrollmouse + 2000
 RUpscrolldown = Upscrollup + 2000
+Rhover_bg = hover_bg + 2000
+Rpressed_bg = pressed_bg + 2000
+RHover_func = Hoverfunc + 2000
+RRealeasefunc = Realeasefunc + 2000
 """
 Link Rflag to Uflag, Vflag
 """
@@ -38,7 +42,7 @@ rflags_to_uflags = {
     text_have_background: Rtext_have_background,
 }
 rflags_to_vflags = {
-    bg_color: Rbg_color,
+    bg_widget: Rbg_widget,
     border: Rborder,
     corner_radius: Rcorner_radius,
     textpack: Rtextpack,
@@ -51,5 +55,7 @@ rflags_to_vflags = {
     Uplclick: RUplclick,
     Upscrollmouse: RUpscrollmouse,
     Upscrollup: RUpscrollup,
-    Upscrolldown: RUpscrolldown
+    Upscrolldown: RUpscrolldown,
+    Hoverfunc: RHover_func,
+    Realeasefunc: RRealeasefunc
 }

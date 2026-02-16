@@ -1,14 +1,14 @@
-from typing import Tuple, Union
+from typing import Tuple, Union, Dict
 from dataclasses import dataclass
 from collections import namedtuple
 import pygame
 import array
-
-import Kernel.KernelPosition
-from Kernel import Margin
+from Kernel.KernelPosition import Margin
 from Kernel.KernalInit import should_fill, set_fill_mode
 from Kernel.ObjType import MathVal2, MathVal1
-from Kernel.Flags.RFlags import rflags_to_uflags, rflags_to_vflags
+from Kernel.Flags.RFlags import *
+from Kernel.Flags.VFlags import *
+from Kernel.Flags.UFlags import *
 from Kernel.KernalInit import init
 init()
 def trashfunc(*args, **kwargs):
@@ -37,11 +37,12 @@ class MutableRect:
     y:Union[int,float]
     w:Union[int, float]
     h:Union[int,float]
+
+
 class Widget:
     """
     parent: the base contains this widget
     rect: the rect of this widget
-    is_dirty: whether this widget is changed
     uflags: the unchangeable flags set for this widget
     vflags: the changeable flags dict for this widget
     dirty_uflags: the unvalueable flags set for this widget
@@ -51,10 +52,11 @@ class Widget:
     temp_bg: the bg of widget parent, if widget parent is pygame.Surface
     child: the dictionary of widget child
     """
-    __slots__ = ('parent' ,'rect', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'temp_bg', 'child')
-    def __init__(self, parent, rect: MathVal1, bg=None, can_change = False):
+    __slots__ = ('parent' ,'rect', 'name', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'temp_bg', 'child')
+    def __init__(self, parent: Union["MainScreen", "Widget", pygame.Surface], rect: MathVal1,name: str, bg=None, can_change = False):
         self.rect = ImmutableRect(*rect) if not can_change else MutableRect(*rect)
         self.parent = parent
+        self.name = name
         self.uflags = set()
         self.vflags = {}
         self.dirty_uflags = set()
@@ -62,7 +64,13 @@ class Widget:
         self.dirty_auto_flag = set()
         self.pos_x = []
         self.pos_y = []
-        self.child = {}
+        self.child: Dict[str, "Widget"] = {}
+        if hasattr(parent, 'child') and isinstance(parent, (MainScreen, Widget)):
+            parent.child[name] = self
+            if isinstance(parent, Widget):
+                self.parent.pos_x.append(rect[0])
+                self.parent.pos_y.append(rect[1])
+        self.parent.child[name] = self
         if bg is not None and not valid_background(bg):
             raise ValueError("Invalid background format")
         self.temp_bg = bg
@@ -77,9 +85,6 @@ class Widget:
             return self.parent.background
         else:
             raise ValueError("Your widget parent must be the widget, pygame.Surface or MainScreen class")
-    def add_obj(self, pos: MathVal2):
-        self.pos_x.append(pos[0])
-        self.pos_y.append(pos[1])
     def get_rect(self) -> pygame.Rect:
         return pygame.Rect(self.rect.x, self.rect.y, self.rect.w, self.rect.h)
     def get_pos(self):
@@ -93,8 +98,6 @@ class Widget:
             return self.parent.surface
         else:
             return self.parent.get_surface()
-    def add_child(self, widget, name):
-        self.child[name] = widget
     def destroy(self):
         self.hide_itself()
         if isinstance(self.parent, Widget):
@@ -108,7 +111,7 @@ class Widget:
         bg = self.get_background()
         if isinstance(bg, tuple):
             surface = self.get_surface()
-            pygame.draw.rect(surface, bg, (self.rect.x,self.rect.y, self.rect.w, self.rect.y))
+            pygame.draw.rect(surface, bg, (self.rect.x,self.rect.y, self.rect.w, self.rect.h))
         elif isinstance(bg, pygame.Surface):
             surface = self.get_surface()
             surface.blit(bg, self.rect.topleft, self.rect)
@@ -129,12 +132,26 @@ class Widget:
         else:
             raise TypeError('Your widget pos and size is immutabe')
     def rerender(self):
-        self.hide_itself()
         self.dirty_vflags.update(self.vflags.keys())
         self.dirty_uflags.update(self.uflags)
+        for chd in self.child.values():
+            chd.rerender()
+        self.hide_itself()
     def inrect(self, pos: MathVal2):
         px, py = pos
         return (self.rect.x <= px <= self.rect.x + self.rect.w) and (self.rect.y <= py <= self.rect.y + self.rect.h)
+    def replace_itself(self, new_widget: "Widget"):
+        self.name = new_widget.name
+        self.uflags = new_widget.uflags.copy()
+        self.dirty_uflags = new_widget.dirty_uflags.copy()
+        self.vflags = new_widget.vflags.copy()
+        self.dirty_vflags = new_widget.dirty_vflags.copy()
+        self.dirty_auto_flag = new_widget.dirty_auto_flag
+        self.parent.child[self.name] = new_widget
+        self.pos_x = new_widget.pos_x
+        self.pos_y = new_widget.pos_y
+        self.child = new_widget.child
+        self.rerender()
     def set_flags(self, uflags: tuple=(), vflags: Tuple[tuple]=(())):
         for uflag in uflags:
             self.uflags.add(uflag)
@@ -183,7 +200,7 @@ class Widget:
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
-    def dispatch_mouse(self, mouse_pos, event):
+    def dispatch_click(self, mouse_pos, event):
         from Kernel.KernelEvent import event2flags
         for widget in list(reversed(self.child.values())):
             if widget.inrect(mouse_pos):
@@ -191,8 +208,61 @@ class Widget:
                 if func:
                     return func
         if self.inrect(mouse_pos):
+            if pressed_bg in self.vflags and hasattr(self, "bg"):
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    self.vflags[bg_widget] = self.vflags[pressed_bg]
+                    self.lock_hover = True
+                    self.rerender()
+                elif event.type == pygame.MOUSEBUTTONUP:
+                    self.lock_hover = False
+                    self.add_vflag((bg_widget, self.bg))
+                    self.rerender()
             flag = event2flags.get(event.type, {}).get(event.button)
             handler = self.vflags.get(flag, trashfunc)
+            if handler != trashfunc:
+                import inspect
+                param_count = len(inspect.signature(handler).parameters)
+
+                if param_count == 0:
+                    return lambda: handler()
+                else:
+                    return lambda: handler(self)
+
+        return trashfunc
+    def dispatch_hover(self, mouse_pos):
+        for widget in list(reversed(self.child.values())):
+            if widget.inrect(mouse_pos):
+                func = widget.dispatch_hover(mouse_pos)
+                if func:
+                    return func
+        if self.inrect(mouse_pos):
+            if hover_bg in self.vflags and hasattr(self, "bg"):
+                if not self.lock_hover:
+                    self.add_vflag((bg_widget, self.vflags[hover_bg]))
+                    self.rerender()
+            handler = self.vflags.get(Hoverfunc, trashfunc)
+            if handler != trashfunc:
+                import inspect
+                param_count = len(inspect.signature(handler).parameters)
+
+                if param_count == 0:
+                    return lambda: handler()
+                else:
+                    return lambda: handler(self)
+
+        return trashfunc
+    def dispatch_realease(self, mouse_pos):
+        for widget in list(reversed(self.child.values())):
+            if not widget.inrect(mouse_pos):
+                func = widget.dispatch_realease(mouse_pos)
+                if func:
+                    return func
+        if not self.inrect(mouse_pos):
+            if hasattr(self, "bg"):
+                self.vflags[bg_widget] = self.bg
+                self.lock_hover = False
+                self.rerender()
+            handler = self.vflags.get(Realeasefunc, trashfunc)
             if handler != trashfunc:
                 import inspect
                 param_count = len(inspect.signature(handler).parameters)
@@ -269,12 +339,12 @@ class PygameRender:
                     renderfunc[flag](self.widget)
                 for flag in self.widget.dirty_vflags:
                     renderfunc[flag](self.widget, self.widget.get_surface())
-                    pygame.display.flip()
                 for flag in self.widget.dirty_auto_flag:
                     try:
                         renderfunc[flag](self.widget, self.widget.get_surface())
                     except TypeError:
                         renderfunc[flag](self.widget)
+            pygame.display.flip()
             self.widget.dirty_vflags.clear()
             self.widget.dirty_uflags.clear()
             self.widget.dirty_auto_flag.clear()

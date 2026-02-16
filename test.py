@@ -1,24 +1,12 @@
-import pygame
-from Kernel import ObjType
 from Kernel.KernelWidget import PygameRender, MainScreen
-from Kernel.PygameRender import Textobj
-from Kernel.Flags.UFlags import *
-from Kernel.Flags.VFlags import *
-from Kernel.KernelRun import Thread
-pack = ObjType.TextPack((255,0,0), 'Arial', 20, 'Hello World')
-rg = MainScreen((800,600))
-obj = Textobj.Label(rg, pack, (100, 100))
-obj.add_uflag(text_Is_Underline, text_Is_Antialias)
-render = PygameRender(obj)
-def toogle(obj):
-    if text_Is_Underline in obj.uflags:
-        obj.remove_uflag(text_Is_Underline)
-    else:
-        obj.add_uflag(text_Is_Underline)
-obj.add_vflag((Downlclick, toogle))
-rg.addWidget(obj, 'obj')
+from Kernel.PygameRender import ButtonObj
+from Kernel.KernelRun import Thread, quitnow
+screen = MainScreen((800, 600))
+btn = ButtonObj.FixedButton(parent=screen,name="test_btn",rect=(100, 100, 200, 50),bg=(0,255,0),hoverbg=(255,255,0),pressbg=(255,125,0))
+render = PygameRender(btn)
+screen.addWidget(btn, "test_btn")
 def Logic():
-    rg.fill((255,255,255))
+    screen.fill((255,255,255))
     render.render()
-game = Thread(rg, [Logic])
+game = Thread(screen, [Logic], quitnow)
 game.threadstart()
