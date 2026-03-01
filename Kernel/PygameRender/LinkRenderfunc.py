@@ -1,5 +1,3 @@
-from encodings import normalize_encoding
-
 from Kernel.PygameRender.RRender import *
 from Kernel.Flags.VFlags import *
 from Kernel.Flags.UFlags import *
@@ -49,10 +47,12 @@ renderfunc = {
     Rhover_bg : notingfunc,
     Rpressed_bg: notingfunc,
     RRealeasefunc: notingfunc,
+    Rhave_margin: notingfunc,
     #########
     #AFLAG
     #########
     text_auto_resize: text_resize,
+    have_margin: notingfunc,
     ########
     #EFLAG
     ########

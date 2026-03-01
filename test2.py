@@ -35,5 +35,5 @@ def merge_code_files(source_dir, output_file, extensions=None):
 # --- CẤU HÌNH TẠI ĐÂY ---
 folder_path = 'D:/Python/PygameTools/Kernel'  # Thay bằng đường dẫn thư mục của bạn
 my_extensions = ['.py']  # Chỉ lấy các file này
-
+result_name = 'haha'
 merge_code_files(folder_path, result_name, my_extensions)

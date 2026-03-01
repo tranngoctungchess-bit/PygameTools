@@ -9,6 +9,7 @@ Rtext_Is_Underline = text_Is_Underline + 2000
 Rtext_Is_Strikethrough = text_Is_Strikethrough + 2000
 Rtext_Is_Antialias = text_Is_Antialias + 2000
 Rtext_have_background = text_have_background + 2000
+Rhave_margin = have_margin + 2000
 """
 RVflags
 """
@@ -40,6 +41,7 @@ rflags_to_uflags = {
     text_Is_Strikethrough: Rtext_Is_Strikethrough,
     text_Is_Antialias: Rtext_Is_Antialias,
     text_have_background: Rtext_have_background,
+    have_margin: Rhave_margin
 }
 rflags_to_vflags = {
     bg_widget: Rbg_widget,

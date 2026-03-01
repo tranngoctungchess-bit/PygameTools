@@ -1,7 +1,17 @@
 import pygame
 from functools import partial
+from Kernel.KernelWidget import MainScreen
 from Kernel.Flags.VFlags import *
-event2flags = {
+def _handle_resize(self: "EventDispatcher"):
+    self.screen.blank()
+    for widget in list(reversed(self.screen.child.values())):
+        if widget.margin_manager:
+            widget.margin_manager.update_on_resize(self.screen)
+        widget.anchor_to_pos(widget.anchor)
+        widget.rerender()
+def _handle_quit(self: "EventDispatcher"):
+    return False
+mouse_event2flags = {
     pygame.MOUSEBUTTONUP : {
         1: Uplclick,
         2: Upscrollmouse,
@@ -17,23 +27,30 @@ event2flags = {
         5 : Downscrolldown,
     }
 }
+special_event_to_handle = {
+    pygame.VIDEORESIZE: _handle_resize,
+    pygame.QUIT: _handle_quit,
+}
 def extra_parameter(handler, *args, **kwargs):
     return partial(handler, *args, **kwargs)
 class EventDispatcher:
-    from Kernel.KernelWidget import MainScreen
     def __init__(self, screen: MainScreen):
         self.screen = screen
     def event_passdown(self):
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
-            if event.type in( pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
+            if event.type in(pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
                 for widget in list(reversed(self.screen.child.values())):
                     if widget.inrect(mouse_pos):
-                        func = widget.dispatch_click(mouse_pos, event)
-                        func()
+                        if hasattr(widget, 'dispatch_click'):
+                            func = widget.dispatch_click(mouse_pos, event)
+                            func()
                         break
-            elif event.type == pygame.QUIT:
-                return False
+            elif event.type in special_event_to_handle:
+                result_func = special_event_to_handle[event.type]
+                is_off = result_func(self)
+                if is_off is False:
+                    return False
             for widget in list(reversed(self.screen.child.values())):
                 if widget.inrect(mouse_pos) and hasattr(widget, 'is_hovered'):
                     func = widget.dispatch_hover(mouse_pos)

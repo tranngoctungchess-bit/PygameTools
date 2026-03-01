@@ -1,3 +1,3 @@
 Kernel: This component serves as a foundation upon which to build another component.
          Therefore, its features are not exclusive to other templates or components.
-Templates: As it is the primary tool reaching the user, it must possess the following characteristics:
+Templates: As it is the primary tool reaching the user

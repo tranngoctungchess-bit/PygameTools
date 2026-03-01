@@ -1,8 +1,7 @@
-from typing import Union, Callable, List
+from typing import Union, Callable, List, Tuple
 import concurrent.futures
 import pygame
-
-from Kernel.KernelWidget import MainScreen
+from Kernel.KernelWidget import MainScreen, Widget
 from Kernel.KernelEvent import EventDispatcher
 
 quitnow = pygame.QUIT
@@ -22,8 +21,8 @@ class Thread:
         if self.quitcondition or self.fps > 0:
             try:
                 while self.running and not self.break_requested:
-                    if not self.event_manager.event_passdown() and self.quitcondition == pygame.QUIT:
-                        self.running = False
+                    if self.quitcondition == pygame.QUIT:
+                        self.running = self.event_manager.event_passdown()
                     if callable(self.quitcondition) and self.quitcondition():
                         self.running = False
                     for func in self.functions:

@@ -83,3 +83,6 @@ Build 18:
 Add Button to Kernel
 Add Hover handler and Realease handler
 Some Optimize to geometry =)
+Build 19:
+merge Margin screen template to MainScreen and Widget, and now, delete this template
+Delete some template

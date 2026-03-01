@@ -31,7 +31,7 @@ Font = pygame.font.Font
 class Label(Widget):
     __slots__ = ('font', 'textpack', 'smooth', 'bg')
     def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], infomation_pack:  TextPack | tuple,
-                 pos : MathVal2,name, Uflags: Union[set, tuple] = ()):
+                 pos : MathVal2 | MathVal1,name, Uflags: Union[set, tuple] = ()):
         self.textpack = TextPack(*infomation_pack)
         print(self.textpack)
         self.font = pygame.font.SysFont(self.textpack.Font, self.textpack.Size)
@@ -39,7 +39,7 @@ class Label(Widget):
         pygameRect = text_surface.get_rect()
         x, y = pos
         tuple_rect = (x,y,pygameRect.w, pygameRect.h)
-        super().__init__(parent, tuple_rect,name= name, can_change=True)
+        super().__init__(parent, rect=tuple_rect,name=name, can_change=True)
         self.add_vflag((textpack, infomation_pack))
         if isinstance(Uflags, set):
             self.uflags = Uflags

@@ -3,12 +3,11 @@ from dataclasses import dataclass
 from collections import namedtuple
 import pygame
 import array
+
+
 from Kernel.KernelPosition import Margin
-from Kernel.KernalInit import should_fill, set_fill_mode
 from Kernel.ObjType import MathVal2, MathVal1
 from Kernel.Flags.RFlags import *
-from Kernel.Flags.VFlags import *
-from Kernel.Flags.UFlags import *
 from Kernel.KernalInit import init
 init()
 def trashfunc(*args, **kwargs):
@@ -41,19 +40,13 @@ class MutableRect:
 
 class Widget:
     """
-    parent: the base contains this widget
-    rect: the rect of this widget
-    uflags: the unchangeable flags set for this widget
-    vflags: the changeable flags dict for this widget
-    dirty_uflags: the unvalueable flags set for this widget
-    dirty_vflags: the valueable flags set for this widget
-    pos_x: the x positions list for all objects in this widget
-    pos_y: the y positions list for all objects in this widget
-    temp_bg: the bg of widget parent, if widget parent is pygame.Surface
-    child: the dictionary of widget child
+
     """
-    __slots__ = ('parent' ,'rect', 'name', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'temp_bg', 'child')
-    def __init__(self, parent: Union["MainScreen", "Widget", pygame.Surface], rect: MathVal1,name: str, bg=None, can_change = False):
+    __slots__ = ('parent' ,'rect', 'name', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags', 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'child', 'margin_manager', 'anchor')
+    def __init__(self, parent: Union["MainScreen", "Widget", pygame.Surface],name: str, rect: Union[MathVal1, MathVal2],can_change = False):
+        if len(rect) == 2:
+            w, h = rect
+            rect = (0, 0, w, h)
         self.rect = ImmutableRect(*rect) if not can_change else MutableRect(*rect)
         self.parent = parent
         self.name = name
@@ -71,16 +64,11 @@ class Widget:
                 self.parent.pos_x.append(rect[0])
                 self.parent.pos_y.append(rect[1])
         self.parent.child[name] = self
-        if bg is not None and not valid_background(bg):
-            raise ValueError("Invalid background format")
-        self.temp_bg = bg
+        self.margin_manager: None | Margin = None
+        self.anchor = None
     def get_background(self):
         if isinstance(self.parent, Widget):
             return self.parent.get_background()
-        elif isinstance(self.parent, pygame.Surface):
-            if self.temp_bg is None:
-                raise ValueError("Widget with pygame.Surface parent must provide bg color in __init__")
-            return self.temp_bg
         elif isinstance(self.parent, MainScreen):
             return self.parent.background
         else:
@@ -114,7 +102,7 @@ class Widget:
             pygame.draw.rect(surface, bg, (self.rect.x,self.rect.y, self.rect.w, self.rect.h))
         elif isinstance(bg, pygame.Surface):
             surface = self.get_surface()
-            surface.blit(bg, self.rect.topleft, self.rect)
+            surface.blit(bg, (0,0), self.rect)
     def change_rect(self, rect: MathVal1):
         self.change_pos((rect[0], rect[1]))
         self.change_size((rect[2], rect[3]))
@@ -124,13 +112,13 @@ class Widget:
             self.rect.x, self.rect.y = new_pos
             convert_a_lot(self)
         else:
-            raise TypeError('Your widget pos and size is immutabe')
+            raise TypeError('Your widget pos and size is immutable')
     def change_size(self, new_size: MathVal2):
         self.rerender()
         if isinstance(self.rect, MutableRect):
             self.rect.w, self.rect.h = new_size
         else:
-            raise TypeError('Your widget pos and size is immutabe')
+            raise TypeError('Your widget pos and size is immutable')
     def rerender(self):
         self.dirty_vflags.update(self.vflags.keys())
         self.dirty_uflags.update(self.uflags)
@@ -152,6 +140,14 @@ class Widget:
         self.pos_y = new_widget.pos_y
         self.child = new_widget.child
         self.rerender()
+    def set_margin(self, percentage_padding: None| MathVal2 = None, padding: None | MathVal2 = (0, 0)):
+        self.margin_manager = Margin(self.parent, percentage_padding, padding)
+    def anchor_to_pos(self, anchor: str):
+        if self.margin_manager:
+            pos_x, pos_y = self.margin_manager.get_pos(self.get_size(), anchor)
+            if not isinstance(self.rect, MutableRect):
+                self.rect = ImmutableRect(pos_x, pos_y, self.rect.w, self.rect.h)
+        self.anchor = anchor
     def set_flags(self, uflags: tuple=(), vflags: Tuple[tuple]=(())):
         for uflag in uflags:
             self.uflags.add(uflag)
@@ -200,111 +196,55 @@ class Widget:
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
-    def dispatch_click(self, mouse_pos, event):
-        from Kernel.KernelEvent import event2flags
-        for widget in list(reversed(self.child.values())):
-            if widget.inrect(mouse_pos):
-                func = widget.dispatch_mouse(mouse_pos, event)
-                if func:
-                    return func
-        if self.inrect(mouse_pos):
-            if pressed_bg in self.vflags and hasattr(self, "bg"):
-                if event.type == pygame.MOUSEBUTTONDOWN:
-                    self.vflags[bg_widget] = self.vflags[pressed_bg]
-                    self.lock_hover = True
-                    self.rerender()
-                elif event.type == pygame.MOUSEBUTTONUP:
-                    self.lock_hover = False
-                    self.add_vflag((bg_widget, self.bg))
-                    self.rerender()
-            flag = event2flags.get(event.type, {}).get(event.button)
-            handler = self.vflags.get(flag, trashfunc)
-            if handler != trashfunc:
-                import inspect
-                param_count = len(inspect.signature(handler).parameters)
-
-                if param_count == 0:
-                    return lambda: handler()
-                else:
-                    return lambda: handler(self)
-
-        return trashfunc
-    def dispatch_hover(self, mouse_pos):
-        for widget in list(reversed(self.child.values())):
-            if widget.inrect(mouse_pos):
-                func = widget.dispatch_hover(mouse_pos)
-                if func:
-                    return func
-        if self.inrect(mouse_pos):
-            if hover_bg in self.vflags and hasattr(self, "bg"):
-                if not self.lock_hover:
-                    self.add_vflag((bg_widget, self.vflags[hover_bg]))
-                    self.rerender()
-            handler = self.vflags.get(Hoverfunc, trashfunc)
-            if handler != trashfunc:
-                import inspect
-                param_count = len(inspect.signature(handler).parameters)
-
-                if param_count == 0:
-                    return lambda: handler()
-                else:
-                    return lambda: handler(self)
-
-        return trashfunc
-    def dispatch_realease(self, mouse_pos):
-        for widget in list(reversed(self.child.values())):
-            if not widget.inrect(mouse_pos):
-                func = widget.dispatch_realease(mouse_pos)
-                if func:
-                    return func
-        if not self.inrect(mouse_pos):
-            if hasattr(self, "bg"):
-                self.vflags[bg_widget] = self.bg
-                self.lock_hover = False
-                self.rerender()
-            handler = self.vflags.get(Realeasefunc, trashfunc)
-            if handler != trashfunc:
-                import inspect
-                param_count = len(inspect.signature(handler).parameters)
-
-                if param_count == 0:
-                    return lambda: handler()
-                else:
-                    return lambda: handler(self)
-
-        return trashfunc
+    def dispatch_resize(self):
+        pass
 def convert(pos, offset):
     return pos[0] + offset[0], pos[1] + offset[1]
 def convert_a_lot(widget: Widget):
-    X = array.array('f', widget.pos_x)
-    Y = array.array('f', widget.pos_y)
+    x = array.array('f', widget.pos_x)
+    y = array.array('f', widget.pos_y)
     offset_x, offset_y = widget.rect.x, widget.rect.y
-    for i in range(len(X)):
-        X[i] += offset_x
-        Y[i] += offset_y
-    return X, Y
+    for i in range(len(x)):
+        x[i] += offset_x
+        y[i] += offset_y
+    return x, y
 class MainScreen:
     """
     """
-    def __init__(self, size, flags=0):
-        self.surface = pygame.display.set_mode(size, flags)
-        self.background = (0,0,0)
+    def __init__(self, size, flags=0, bg = (0,0,0), fixed = False):
+        if fixed:
+            self.surface = pygame.display.set_mode(size, flags)
+        else:
+            self.surface = pygame.display.set_mode(size, pygame.RESIZABLE | flags)
+        if valid_background(bg):
+            self.background = bg
         self.child = {}
         self.margin_manager = None
+        self.blank(bg)
+    def get_size(self):
+        return self.surface.get_size()
     def set_margin(self, border_percent: MathVal2 | None, padding):
         from Kernel.KernelPosition import Margin
         self.margin_manager = Margin(self.surface, border_percent, padding)
-    def fill(self, color):
-        if should_fill():
-            self.surface.fill(color)
-        self.background = color
-    def blank(self, color):
-        self.surface.fill(color)
+    def blank(self, new_bg=None):
+        if not new_bg:
+            if not isinstance(self.background, pygame.Surface):
+                self.surface.fill(self.background)
+            else:
+                self.blit(self.background, (0,0))
+        else:
+            if not isinstance(new_bg, pygame.Surface):
+                self.surface.fill(new_bg)
+            else:
+                self.blit(new_bg, (0,0))
     def blit(self, source, dest):
         self.surface.blit(source, dest)
-    def blit_to_anchor(self, surface, anchor: str):
-        pos = self.surface.get_pos(surface.get_size(), anchor)
-        self.surface.blit(surface, pos)
+    def blit_to_anchor(self,surface, anchor: str):
+        if self.margin_manager:
+            pos = self.margin_manager.get_pos(surface.get_size(), anchor)
+            self.surface.blit(surface, pos)
+        else:
+            raise ValueError("you must set the margin manager after blit to anchor")
     def addWidget(self, widget: Widget, widget_id):
         self.child[widget_id] = widget
     def delWidget(self, widget_id):
@@ -323,8 +263,6 @@ class PygameRender:
         self.widget = widget
         if isinstance(self.widget.parent, Widget):
             self.bg = self.widget.parent.get_background()
-        elif isinstance(self.widget.parent, pygame.Surface):
-            self.bg = self.widget.temp_bg
         elif isinstance(self.widget.parent, MainScreen):
             self.bg = self.widget.parent.background
         else:

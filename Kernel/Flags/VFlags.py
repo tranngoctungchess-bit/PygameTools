@@ -1,7 +1,17 @@
-bg_widget = 1001
-border = bg_widget + 1
-corner_radius = border + 1
+##########
+#COMMON
+##########
+
+bg_widget = 1001 # Not for Label
+border = bg_widget + 1 # Not for Label
+corner_radius = border + 1 # Not for Label
+#########
+#LABEL
+########
 textpack = corner_radius + 1
+##########
+#BUTTON
+##########
 Downrclick = textpack + 1
 Downlclick = Downrclick + 1
 Downscrollmouse = Downlclick + 1
