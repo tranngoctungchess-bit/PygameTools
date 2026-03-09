@@ -30,7 +30,7 @@ class FixedButton(Widget):
         from Kernel.KernelEvent import mouse_event2flags
         for widget in list(reversed(self.child.values())):
             if widget.inrect(mouse_pos):
-                func = widget.dispatch_mouse(mouse_pos, event)
+                func = widget.dispatch_click(mouse_pos, event)
                 if func:
                     return func
         if self.inrect(mouse_pos):
@@ -77,10 +77,10 @@ class FixedButton(Widget):
                     return lambda: handler(self)
 
         return trashfunc
-    def dispatch_realease(self, mouse_pos):
+    def dispatch_release(self, mouse_pos):
         for widget in list(reversed(self.child.values())):
             if not widget.inrect(mouse_pos):
-                func = widget.dispatch_realease(mouse_pos)
+                func = widget.dispatch_release(mouse_pos)
                 if func:
                     return func
         if not self.inrect(mouse_pos):

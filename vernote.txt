@@ -86,3 +86,7 @@ Some Optimize to geometry =)
 Build 19:
 merge Margin screen template to MainScreen and Widget, and now, delete this template
 Delete some template
+Build 20:
+Change the widget Immutable Rect from namedtuple to class
+fix the margin bug(bug: the resize not effect to child widget)
+allow the single parameter to Label instead of textpack

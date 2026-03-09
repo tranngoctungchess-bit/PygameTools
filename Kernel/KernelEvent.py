@@ -1,14 +1,13 @@
 import pygame
 from functools import partial
+
+from Kernel import Widget
 from Kernel.KernelWidget import MainScreen
 from Kernel.Flags.VFlags import *
 def _handle_resize(self: "EventDispatcher"):
     self.screen.blank()
     for widget in list(reversed(self.screen.child.values())):
-        if widget.margin_manager:
-            widget.margin_manager.update_on_resize(self.screen)
-        widget.anchor_to_pos(widget.anchor)
-        widget.rerender()
+        widget.resize_from_margin()
 def _handle_quit(self: "EventDispatcher"):
     return False
 mouse_event2flags = {
@@ -55,13 +54,15 @@ class EventDispatcher:
                 if widget.inrect(mouse_pos) and hasattr(widget, 'is_hovered'):
                     func = widget.dispatch_hover(mouse_pos)
                     func()
-                    widget.is_hovered = True
+                    if hasattr(widget, 'is_hovered'):
+                        widget.is_hovered = True
                     break
                 else:
-                    if widget.is_hovered:
-                        func = widget.dispatch_realease(mouse_pos)
-                        func()
-                        widget.is_hovered = False
+                    if hasattr(widget, 'is_hovered'):
+                        if widget.is_hovered:
+                            func = widget.dispatch_release(mouse_pos)
+                            func()
+                            widget.is_hovered = False
         return True
 
 

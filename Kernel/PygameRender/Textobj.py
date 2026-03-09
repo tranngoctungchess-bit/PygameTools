@@ -5,6 +5,8 @@ from Kernel.KernelWidget import Widget, MainScreen
 from Kernel.ObjType import MathVal1, MathVal2, TextPack
 from Kernel.Flags.VFlags import textpack
 import re
+def trashfunc(*args, **kwargs):
+    pass
 re_search = re.search
 re_findall = re.findall
 re_sub = re.sub
@@ -30,17 +32,17 @@ SysFont = pygame.font.SysFont
 Font = pygame.font.Font
 class Label(Widget):
     __slots__ = ('font', 'textpack', 'smooth', 'bg')
-    def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], infomation_pack:  TextPack | tuple,
-                 pos : MathVal2 | MathVal1,name, Uflags: Union[set, tuple] = ()):
-        self.textpack = TextPack(*infomation_pack)
-        print(self.textpack)
+    def __init__(self, parent: Union[Widget, pygame.Surface, MainScreen], color,
+                 font, size, text,
+                 name, Uflags: Union[set, tuple] = (), pos : MathVal2=(0,0)):
+        self.textpack = TextPack(color, font, size, text)
         self.font = pygame.font.SysFont(self.textpack.Font, self.textpack.Size)
         text_surface = self.font.render(self.textpack.Text, False, self.textpack.Color)
         pygameRect = text_surface.get_rect()
-        x, y = pos
+        x,y = pos
         tuple_rect = (x,y,pygameRect.w, pygameRect.h)
         super().__init__(parent, rect=tuple_rect,name=name, can_change=True)
-        self.add_vflag((textpack, infomation_pack))
+        self.add_vflag((textpack, TextPack(color, font, size, text)))
         if isinstance(Uflags, set):
             self.uflags = Uflags
             self.dirty_uflags = Uflags
