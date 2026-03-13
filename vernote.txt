@@ -90,4 +90,3 @@ Build 20:
 Change the widget Immutable Rect from namedtuple to class
 fix the margin bug(bug: the resize not effect to child widget)
 allow the single parameter to Label instead of textpack
-(so this is the final build to complete the pre-alpha phase)
