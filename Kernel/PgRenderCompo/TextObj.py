@@ -1,9 +1,9 @@
-from typing import Union, Tuple
+from typing import Union
 import pygame
-from Kernel.Flags.UFlags import text_Is_Antialias
+from Kernel.UFlags import text_Is_Antialias
 from Kernel.KernelWidget import Widget, MainScreen
 from Kernel.ObjType import MathVal1, MathVal2, TextPack
-from Kernel.Flags.VFlags import textpack
+from Kernel.VFlags import textpack
 import re
 def trashfunc(*args, **kwargs):
     pass

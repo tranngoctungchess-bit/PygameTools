@@ -1,9 +1,7 @@
 import pygame
 from functools import partial
-
-from Kernel import Widget
 from Kernel.KernelWidget import MainScreen
-from Kernel.Flags.VFlags import *
+from Kernel.VFlags import *
 def _handle_resize(self: "EventDispatcher"):
     self.screen.blank()
     for widget in list(reversed(self.screen.child.values())):

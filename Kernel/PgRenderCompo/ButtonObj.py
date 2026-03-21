@@ -1,6 +1,5 @@
-from typing import Tuple
-from Kernel import Widget, valid_background, Downrclick, PygameRender
-from Kernel.Flags.VFlags import *
+from Kernel import Widget, valid_background
+from Kernel.VFlags import *
 from Kernel.ObjType import MathVal1, MathVal2
 import pygame
 def trashfunc(*args, **kwargs):

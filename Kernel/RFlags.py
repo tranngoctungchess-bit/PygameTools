@@ -1,5 +1,5 @@
-from Kernel.Flags.UFlags import *
-from Kernel.Flags.VFlags import *
+from Kernel.UFlags import *
+from Kernel.VFlags import *
 """
 RUFLAGS
 """

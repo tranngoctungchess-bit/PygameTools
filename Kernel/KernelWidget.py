@@ -3,7 +3,7 @@ from dataclasses import dataclass
 import pygame
 from Kernel.KernelPosition import Margin
 from Kernel.ObjType import MathVal2, MathVal1
-from Kernel.Flags.RFlags import *
+from Kernel.RFlags import *
 from Kernel.KernalInit import init
 init()
 def trashfunc(*args, **kwargs):
@@ -308,7 +308,7 @@ class PygameRender:
         else:
             raise ValueError("Your widget parent must be the widget, pygame.Surface or MainScreen class")
     def render(self):
-        from Kernel.PygameRender.LinkRenderfunc import renderfunc
+        from Kernel.PgRenderCompo.LinkRenderfunc import renderfunc
         try:
             if len(self.widget.uflags) == 0 and len(self.widget.vflags) == 0:
                 self.widget.hide_itself()

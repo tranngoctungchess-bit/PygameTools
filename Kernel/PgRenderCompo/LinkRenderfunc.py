@@ -1,7 +1,5 @@
-from Kernel.PygameRender.RRender import *
-from Kernel.Flags.VFlags import *
-from Kernel.Flags.UFlags import *
-from Kernel.Flags.RFlags import *
+from Kernel.PgRenderCompo.RRender import *
+from Kernel.RFlags import *
 def notingfunc(*args, **kwargs):
     pass
 renderfunc = {

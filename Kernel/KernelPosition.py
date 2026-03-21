@@ -1,8 +1,6 @@
 #Kernel 1(build 0.09)
 #Pre-alpha
-from collections import namedtuple
-from typing import Tuple, Union, Optional, List
-import pygame
+from typing import Tuple, Optional
 from Kernel.KernalInit import init
 from Kernel.ObjType import MathVal2, MathVal1
 init()

@@ -1,7 +1,7 @@
-from typing import Union, Callable, List, Tuple
+from typing import Union, Callable
 import concurrent.futures
 import pygame
-from Kernel.KernelWidget import MainScreen, Widget
+from Kernel.KernelWidget import MainScreen
 from Kernel.KernelEvent import EventDispatcher
 
 quitnow = pygame.QUIT

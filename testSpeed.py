@@ -1,8 +1,8 @@
 from Kernel.KernelWidget import PygameRender, MainScreen
-from Kernel.PygameRender.Textobj import Label
-from Kernel.PygameRender import ButtonObj
+from Kernel.PgRenderCompo.TextObj import Label
+from Kernel.PgRenderCompo import ButtonObj
 from Kernel.KernelRun import Thread, quitnow
-from Kernel.Flags.UFlags import *
+from Kernel.UFlags import *
 from Kernel.KernelPosition import Anchor
 screen = MainScreen((800, 600), bg=(255,255,255))
 WelcomeText = Label(screen, (0,0,0), 'Arial', 24, 'WelcomeToDemo','wlcTxt', (text_Is_Antialias, text_Is_Bold))

@@ -4,7 +4,11 @@ from .geometry import *
 from .KernelWidget import *
 from .ObjType import *
 from .KernalInit import *
-from .Flags import *
-from .PygameRender import *
+from .PgRenderCompo import *
 from .ImageObj import *
 from .KernelAudio import *
+from .KernelLayout import *
+from .KernelRun import *
+from .VFlags import *
+from .UFlags import *
+from .RFlags import *

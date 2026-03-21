@@ -1,9 +1,9 @@
 import pygame
 
-from Kernel.Flags.VFlags import *
-from Kernel.Flags.UFlags import *
-from Kernel.KernelWidget import Widget, MainScreen
-from Kernel.PygameRender.Textobj import Label
+from Kernel.VFlags import *
+from Kernel.UFlags import *
+from Kernel.KernelWidget import Widget
+from Kernel.PgRenderCompo.TextObj import Label
 
 """
 Surface
