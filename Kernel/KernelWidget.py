@@ -45,7 +45,7 @@ class Widget:
     """
     __slots__ = ('parent' ,'rect', 'name', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags',
                  'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'child',
-                 'margin_manager', 'anchor', 'render_engine')
+                 'margin_manager', 'anchor', 'render_engine', 'render_engine_type')
     def __init__(self, parent: Union["MainScreen", "Widget"],name: str, rect: Union[MathVal1, MathVal2],can_change = False):
         if len(rect) == 2:
             w, h = rect
@@ -71,7 +71,11 @@ class Widget:
             self.parent.pos_y.append(rect[1])
         self.margin_manager: None | Margin = None
         self.anchor = None
-        self.render_engine = None
+        self.render_engine_type = None
+        if self.parent.render_engine_type:
+            self.render_engine = self.parent.render_engine_type(self)
+        else:
+            self.render_engine = None
     def set_render_engine(self, engine):
         self.render_engine = engine(self)
     def render(self):
@@ -223,16 +227,18 @@ class Widget:
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
-    def resize_from_margin(self):
+    def dispatch_resize(self):
         if self.margin_manager:
             self.margin_manager.update_on_resize(self.parent)
             if self.anchor:
                 self.anchor_to_pos(self.anchor)
             else:
-                raise ValueError("You must set the Anchor after")
+                print(f"Warning: Widget {self.name} has margin but no anchor.")
+            self.rerender()
+        else:
             self.rerender()
         for child in self.child.values():
-            child.resize_from_margin()
+            child.dispatch_resize()
     def dispatch_click(self, *args):
         return trashfunc
     def dispatch_release(self, *args):
@@ -259,6 +265,7 @@ class MainScreen:
         self.child = {}
         self.margin_manager = None
         self.blank(bg)
+        self.render_engine_type = None
     def get_size(self):
         return self.surface.get_size()
     def set_margin(self, border_percent: MathVal2 | None, padding):
@@ -295,6 +302,10 @@ class MainScreen:
         for widget in self.child.values():
             widget.destroy()
         self.child.clear()
+    def set_common_engine(self, engine):
+        self.render_engine_type = engine
+    def flip(self):
+        pygame.display.flip()
 class PygameRender:
     """
 
@@ -322,7 +333,6 @@ class PygameRender:
                         renderfunc[flag](self.widget, self.widget.get_surface())
                     except TypeError:
                         renderfunc[flag](self.widget)
-            pygame.display.flip()
             self.widget.dirty_vflags.clear()
             self.widget.dirty_uflags.clear()
             self.widget.dirty_auto_flag.clear()

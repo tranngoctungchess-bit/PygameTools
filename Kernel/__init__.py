@@ -8,6 +8,7 @@ from .PgRenderCompo import *
 from .ImageObj import *
 from .KernelAudio import *
 from .KernelLayout import *
+from .KernelEvent import *
 from .KernelRun import *
 from .VFlags import *
 from .UFlags import *

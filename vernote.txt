@@ -1,9 +1,4 @@
 The Note
-Build 8:
-A small initial build: Provides a wrapper for pygame's long tasks, making the code more concise.
-Add some shortcuts to your code shorter
-Add ColorTools to the kernel
-Add QuickColor Template: the template that you can import and use the color quickly
 Build 9:
 Optimize performance all tools in templates, and kernels
 Add the mising function in kernelColor(hue2rgb)
@@ -61,3 +56,8 @@ Change the widget Immutable Rect from namedtuple to class
 fix the margin bug(bug: the resize not effect to child widget)
 allow the single parameter to Label instead of textpack
 Rewrite the vertical stack and horizontal stack(horizontal and veritical layout) and add grid layout
+Build 21
+add MainApplication and ToogleButton
+add delta to Thread
+move pygame.display.filp to the foot of _main_render function to optimize the rendering
+add flip function to Mainscreen

@@ -1,8 +1,8 @@
 from typing import Union, Callable
 import concurrent.futures
 import pygame
-from Kernel.KernelWidget import MainScreen
-from Kernel.KernelEvent import EventDispatcher
+
+from Kernel import PygameRender, MainScreen, EventDispatcher
 
 quitnow = pygame.QUIT
 class BreakThread(Exception):
@@ -17,10 +17,12 @@ class Thread:
         self.clock = pygame.time.Clock()
         self.break_requested = False
         self.event_manager = EventDispatcher(screen)
+        self.dt = 1.0 / fps if fps > 0 else 0.016
     def threadstart(self):
         if self.quitcondition or self.fps > 0:
             try:
                 while self.running and not self.break_requested:
+                    self.dt = self.clock.tick(self.fps) / 1000.0
                     if self.quitcondition == pygame.QUIT:
                         self.running = self.event_manager.event_passdown()
                     if callable(self.quitcondition) and self.quitcondition():
@@ -37,7 +39,6 @@ class Thread:
             for func in self.functions:
                 func()
             self.running = False
-
     def threadbreak(self):
         self.break_requested = True
     def immediate_break(self):
@@ -50,3 +51,28 @@ class Thread:
         if future.done():
             return future.result()
         return None
+class MainApplication(Thread):
+    def __init__(self, screen_size, screen_flags=0, screen_bg = (0,0,0),
+                 fixed = False, quitcondition: Union[int, Callable[..., bool], None] = quitnow,
+                 fps: int | float=60, render_engine = PygameRender, caption = None, functions = None):
+        user_functions = functions if functions is not None else []
+        screen = MainScreen(screen_size, screen_flags, screen_bg, fixed)
+        screen.set_common_engine(render_engine)
+        if caption:
+            screen.set_caption(caption)
+        super().__init__(screen, user_functions, quitcondition, fps)
+        self.screen = screen
+        self.functions.append(self._main_render)
+    def _main_render(self):
+        for widget in self.screen.child.values():
+            widget.render()
+            if widget.child:
+                self._recursive_render(widget)
+        pygame.display.flip()
+    def add_action(self, func):
+        self.functions.append(func)
+    def _recursive_render(self, parent_widget):
+        for widget in parent_widget.child.values():
+            widget.render()
+            if widget.child:
+                self._recursive_render(widget)

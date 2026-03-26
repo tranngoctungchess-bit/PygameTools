@@ -1,18 +1,29 @@
 import os
 
+pass_file = ['KernelColor.py', '__init__.py']
 
-def merge_code_files(source_dir, output_file, extensions=None):
+
+def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
     """
     Gom tất cả các file code trong thư mục vào một file duy nhất.
 
     :param source_dir: Đường dẫn thư mục chứa code.
     :param output_file: Tên file kết quả.
-    :param extensions: Danh sách đuôi file muốn lấy (vd: ['.py', '.js']). Nếu None sẽ lấy tất cả.
+    :param extensions: Danh sách đuôi file muốn lấy (vd: ['.py']). Nếu None sẽ lấy tất cả.
+    :param skip_files: Danh sách tên file muốn bỏ qua.
     """
+
+    if skip_files is None:
+        skip_files = []
 
     with open(output_file, 'w', encoding='utf-8') as outfile:
         for root, dirs, files in os.walk(source_dir):
             for file in files:
+                # Kiểm tra nếu file nằm trong danh sách bỏ qua
+                if file in skip_files:
+                    print(f"Bỏ qua: {file_path if 'file_path' in locals() else file}")
+                    continue
+
                 # Kiểm tra định dạng file
                 if extensions is None or any(file.endswith(ext) for ext in extensions):
                     file_path = os.path.join(root, file)
@@ -35,5 +46,5 @@ def merge_code_files(source_dir, output_file, extensions=None):
 # --- CẤU HÌNH TẠI ĐÂY ---
 folder_path = 'D:/Python/PygameTools/Kernel'  # Thay bằng đường dẫn thư mục của bạn
 my_extensions = ['.py']  # Chỉ lấy các file này
-result_name = 'haha'
-merge_code_files(folder_path, result_name, my_extensions)
+result_name = 'haha.txt'
+merge_code_files(folder_path, result_name, my_extensions, pass_file)

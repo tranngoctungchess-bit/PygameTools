@@ -5,7 +5,7 @@ from Kernel.VFlags import *
 def _handle_resize(self: "EventDispatcher"):
     self.screen.blank()
     for widget in list(reversed(self.screen.child.values())):
-        widget.resize_from_margin()
+        widget.dispatch_resize()
 def _handle_quit(self: "EventDispatcher"):
     return False
 mouse_event2flags = {
@@ -33,6 +33,7 @@ def extra_parameter(handler, *args, **kwargs):
 class EventDispatcher:
     def __init__(self, screen: MainScreen):
         self.screen = screen
+        self.current_hovered = None
     def event_passdown(self):
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
@@ -48,19 +49,21 @@ class EventDispatcher:
                 is_off = result_func(self)
                 if is_off is False:
                     return False
-            for widget in list(reversed(self.screen.child.values())):
-                if widget.inrect(mouse_pos) and hasattr(widget, 'is_hovered'):
-                    func = widget.dispatch_hover(mouse_pos)
-                    func()
-                    if hasattr(widget, 'is_hovered'):
-                        widget.is_hovered = True
-                    break
-                else:
-                    if hasattr(widget, 'is_hovered'):
-                        if widget.is_hovered:
-                            func = widget.dispatch_release(mouse_pos)
-                            func()
-                            widget.is_hovered = False
+        new_hovered = None
+        for widget in list(reversed(self.screen.child.values())):
+            if hasattr(widget, 'is_hovered') and widget.inrect(mouse_pos):
+                new_hovered = widget
+                break
+
+        if new_hovered != self.current_hovered:
+            if self.current_hovered:
+                self.current_hovered.dispatch_release(mouse_pos)()
+                self.current_hovered.is_hovered = False
+
+            if new_hovered:
+                new_hovered.dispatch_hover(mouse_pos)()
+                new_hovered.is_hovered = True
+
+            self.current_hovered = new_hovered
+
         return True
-
-

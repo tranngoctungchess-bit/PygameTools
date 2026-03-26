@@ -1,68 +1,37 @@
-from Kernel import Thread, quitnow, Downlclick, Uplclick, GridLayout, PygameRender, MainScreen
-from Kernel.PgRenderCompo import ButtonObj
+from Kernel import MainApplication, GridLayout
+from Kernel.PgRenderCompo.ButtonObj import ToggleButton
 
-# Tạo màn hình chính
-screen = MainScreen((800,800), bg=(255, 255, 255))
-screen.set_caption("Grid Layout Test - 9x9 Color Pattern")
+# 1. Khởi tạo App (800x800)
+# Nền tối sâu (Deep Dark) để làm nổi bật các ô sáng
+app = MainApplication(
+    screen_size=(800, 800),
+    screen_bg=(15, 15, 15),
+    caption="Stress Test: 20x20 Toggle Grid (400 Buttons)"
+)
 
-# Tạo GridLayout 9x9
-grid = GridLayout(9, 9, (760, 760), (20, 20), padding=5)
+grid = GridLayout(20, 20, (760, 760), (20, 20), padding=2)
 
-# List để lưu tất cả renders
-renders = []
+# 4. Tạo 400 ToggleButtons
+for i in range(400):
+    r, c = divmod(i, 20)  # Tính dòng và cột từ 0-19
+    btn_name = f"t_{r}_{c}"
 
+    # Tạo hiệu ứng màu Gradient cho trạng thái ON (TrueBg)
+    # Màu sẽ chuyển dần từ Xanh Cyan sang Tím Magenta theo tọa độ
+    on_red = int(r * 12.7)  # 0 -> 255
+    on_green = int(c * 12.7)  # 0 -> 255
+    on_blue = 200  # Giữ xanh cố định
 
-# Hàm xử lý cho các button
-def create_cell_function(row, col):
-    def cell_click():
-        print(f"Cell clicked at position ({row}, {col})")
+    btn = ToggleButton(
+        parent=app.screen,
+        name=btn_name,
+        rect=(grid.cell_width - 2, grid.cell_height - 2),
+        fbg=(40, 40, 40),  # Màu khi Tắt (Xám đậm)
+        tbg=(on_red, on_green, on_blue),  # Màu khi Bật (Gradient Cyan-Purple)
+        hoverbg=(60, 60, 60)  # Màu khi di chuột qua (Xám sáng)
+    )
 
-    return cell_click
-
-
-def cell_release():
-    print("Cell released")
-
-
-# Tạo các button theo grid
-for i in range(9):
-    for j in range(9):
-        # Tạo màu theo quy luật gradient
-        red = int(100 + (i * 15))
-        green = int(100 + (j * 15))
-        blue = 200 - (i * 10)
-
-        hover_red = min(red + 50, 255)
-        hover_green = min(green + 50, 255)
-        hover_blue = min(blue + 50, 255)
-
-        press_red = max(red - 50, 0)
-        press_green = max(green - 50, 0)
-        press_blue = max(blue - 50, 0)
-
-        btn_name = f"cell_{i}_{j}"
-        btn = ButtonObj.FixedButton(
-            parent=screen,
-            name=btn_name,
-            rect=(grid.cell_width - 10, grid.cell_height - 10),
-            bg=(red, green, blue),
-            hoverbg=(hover_red, hover_green, hover_blue),
-            pressbg=(press_red, press_green, press_blue)
-        )
-
-        grid.setpos(btn, (i, j))
-
-        btn.add_vflag(
-            (Downlclick, create_cell_function(i, j)),
-            (Uplclick, cell_release)
-        )
-
-        screen.addWidget(btn, btn_name)
-
-        # Tạo render riêng cho mỗi button và thêm vào list
-        btn_render = PygameRender(btn)
-        renders.append(btn_render.render)
-
-# Tạo thread với tất cả các renders
-game = Thread(screen, renders, quitnow)
-game.threadstart()
+    grid.setpos(btn, (r, c))
+    # Thêm vào Screen (MainApplication sẽ tự động Render đệ quy)
+    app.screen.addWidget(btn, btn_name)
+app.threadstart()
