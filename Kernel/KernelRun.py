@@ -51,6 +51,8 @@ class Thread:
         if future.done():
             return future.result()
         return None
+    def get_event(self):
+        return self.event_manager.event
 class MainApplication(Thread):
     def __init__(self, screen_size, screen_flags=0, screen_bg = (0,0,0),
                  fixed = False, quitcondition: Union[int, Callable[..., bool], None] = quitnow,

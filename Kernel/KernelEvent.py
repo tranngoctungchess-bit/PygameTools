@@ -34,9 +34,11 @@ class EventDispatcher:
     def __init__(self, screen: MainScreen):
         self.screen = screen
         self.current_hovered = None
+        self.event = None
     def event_passdown(self):
         mouse_pos = pygame.mouse.get_pos()
         for event in pygame.event.get():
+            self.event = event
             if event.type in(pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP):
                 for widget in list(reversed(self.screen.child.values())):
                     if widget.inrect(mouse_pos):
@@ -49,6 +51,7 @@ class EventDispatcher:
                 is_off = result_func(self)
                 if is_off is False:
                     return False
+        self.event = None
         new_hovered = None
         for widget in list(reversed(self.screen.child.values())):
             if hasattr(widget, 'is_hovered') and widget.inrect(mouse_pos):
