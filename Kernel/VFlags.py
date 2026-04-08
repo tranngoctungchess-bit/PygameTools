@@ -26,4 +26,3 @@ hover_bg = Upscrolldown + 1
 pressed_bg = hover_bg + 1
 Hoverfunc = pressed_bg + 1
 Realeasefunc = Hoverfunc + 1
-print(Downlclick)
