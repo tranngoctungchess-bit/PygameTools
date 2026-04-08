@@ -15,6 +15,7 @@ def init():
     global init_state
     if not init_state:
         pygame.init()
+        pygame.key.set_repeat(500, 50)
         init_state = True
     set_fill_mode(_fill_mode)
 

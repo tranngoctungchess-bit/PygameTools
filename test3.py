@@ -1,1 +1,2 @@
-import __hello__
+t = "ttttwwww"
+print(t[:-1])

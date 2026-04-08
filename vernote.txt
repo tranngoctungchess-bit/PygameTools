@@ -64,3 +64,9 @@ add flip function to Mainscreen
 Build 22
 add ToogleButton
 add event instance to User operation
+Build 23
+change The default flags in Label declare from {} to {Text_Is_Antillias}
+add LineEdit (It only can type, backspace, and clear text and It didn't have the cursor lmao)
+change all project to python 3.10(it only support 3.10 +)
+change Border pack to class(end of namedtuple - fixed pack)
+fix the big bug in fixedbutton(on 3 func, realease, click, hover)

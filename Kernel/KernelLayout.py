@@ -1,10 +1,9 @@
-from typing import Tuple
 from Kernel.KernelWidget import Widget, ImmutableRect
-from Kernel.ObjType import MathVal2
+from Kernel.ObjType import PosTuple
 
 
 class GridLayout:
-    def __init__(self, width_grid: int, height_grid: int, size: MathVal2, pos: MathVal2 | None = None, padding=20):
+    def __init__(self, width_grid: int, height_grid: int, size: PosTuple, pos: PosTuple | None = None, padding=20):
         self.width_grid = width_grid
         self.height_grid = height_grid
         self.total_width, self.total_height = size
@@ -34,7 +33,7 @@ class GridLayout:
             self.cells.append(row_cells)
             cur_pos_x += self.cell_width
 
-    def setpos(self, widget: Widget, cell_pos=Tuple[int, int], center = True):
+    def setpos(self, widget: Widget, cell_pos=tuple[int, int], center = True):
         xpos, ypos = cell_pos
         cell_x, cell_y = self.cells[xpos][ypos]
         w, h = widget.rect.w, widget.rect.h
@@ -52,8 +51,8 @@ class GridLayout:
             widget.rect.y = final_y
 
 class HorizontalLayout(GridLayout):
-    def __init__(self, length : int, size: MathVal2, pos : MathVal2, padding=20):
+    def __init__(self, length : int, size: PosTuple, pos : PosTuple, padding=20):
         super().__init__(length, 1, size, pos, padding)
 class VerticalLayout(GridLayout):
-    def __init__(self, length: int , size: MathVal2, pos: MathVal2, padding=20):
+    def __init__(self, length: int, size: PosTuple, pos: PosTuple, padding=20):
         super().__init__(1, length, size, pos, padding)

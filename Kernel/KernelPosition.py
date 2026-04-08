@@ -2,7 +2,7 @@
 #Pre-alpha
 from typing import Tuple, Optional
 from Kernel.KernalInit import init
-from Kernel.ObjType import MathVal2, MathVal1
+from Kernel.ObjType import PosTuple, RectTuple
 init()
 #####
 #Margin
@@ -50,7 +50,7 @@ class Margin:
     Returns the remaining content area after subtracting padding.
     """
     __slots__ = ('width_screen', 'height_screen', 'last_screen_size', 'padding', 'percentage', 'cache', 'cache_pos')
-    def __init__(self, screen ,percentage_padding: Optional[MathVal2] = None, padding: Optional[MathVal2] = (0, 0)):
+    def __init__(self, screen, percentage_padding: PosTuple | None = None, padding: PosTuple | None = (0, 0)):
         self.width_screen, self.height_screen = screen.get_size()
         self.percentage = percentage_padding
         if self.percentage:
@@ -62,7 +62,7 @@ class Margin:
         self.cache_pos = {}
     def update_padding(self, new_padding):
         self.padding = new_padding
-    def get_pos(self, obj: MathVal2, anchor: Optional[str]):
+    def get_pos(self, obj: PosTuple, anchor: str | None):
         if not anchor:
             if 'Anchor' in self.cache:
                 anchor = self.cache['Anchor']
@@ -79,27 +79,27 @@ class Margin:
         top = b_y
         center_y = (h_s - h_o) // 2
         bottom = h_s - h_o - b_y
-
-        if anchor == 'TopLeft':
-            pos = (left, top)
-        elif anchor == 'TopCenter':
-            pos = (center_x, top)
-        elif anchor == 'TopRight':
-            pos = (right, top)
-        elif anchor == 'CenterLeft':
-            pos = (left, center_y)
-        elif anchor == 'Center':
-            pos = (center_x, center_y)
-        elif anchor == 'CenterRight':
-            pos = (right, center_y)
-        elif anchor == 'BottomLeft':
-            pos = (left, bottom)
-        elif anchor == 'BottomCenter':
-            pos = (center_x, bottom)
-        elif anchor == 'BottomRight':
-            pos = (right, bottom)
-        else:
-            raise KeyError(f'Invalid anchor: {anchor}')
+        match anchor:
+            case 'TopLeft':
+                pos = (left, top)
+            case 'TopCenter':
+                pos = (center_x, top)
+            case 'TopRight':
+                pos = (right, top)
+            case 'CenterLeft':
+                pos = (left, center_y)
+            case 'Center':
+                pos = (center_x, center_y)
+            case 'CenterRight':
+                pos = (right, center_y)
+            case 'BottomLeft':
+                pos = (left, bottom)
+            case 'BottomCenter':
+                pos = (center_x, bottom)
+            case 'BottomRight':
+                pos = (right, bottom)
+            case _:  # Trường hợp mặc định (tương đương else)
+                raise KeyError(f'Invalid anchor: {anchor}')
 
         self.cache_pos[(w_o, h_o, anchor)] = pos
         return pos
@@ -167,37 +167,29 @@ class LayoutHelper:
     def update_screen(self, screen):
         self.screen_w, self.screen_h = screen.get_size()
 
-    def get_pos(self, obj_rect: MathVal1, next_obj_size: MathVal2, direction, padding=(0, 0)) -> Tuple[float, float]:
+    def get_pos(self, obj_rect: RectTuple, next_obj_size: PosTuple, direction, padding=(0, 0)) -> tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
         sw, sh = self.screen_w, self.screen_h
 
-        if direction == 'Right':
-            x = ox + ow + px
-            y = oy + py
-            if x + nw > sw or y + nh > sh or y < 0:
-                raise ValueError('Out of screen')
-        elif direction == 'Left':
-            x = ox - px - nw
-            y = oy + py
-            if x < 0 or y > sh - nh or y < 0:
-                raise ValueError('Out of screen')
-        elif direction == 'Down':
-            x = ox + px
-            y = oy + oh + py
-            if y > sh - nh or x  > sw - nw or x < 0:
-                raise ValueError('Out of screen')
-        elif direction == 'Up':
-            x = ox + px
-            y = oy - py - nh
-            if y < 0 or x > sw - nw or x < 0:
-                raise ValueError('Out of screen')
-        else:
-            raise KeyError('Invalid direction')
+        match direction:
+            case 'Right':
+                x, y = ox + ow + px, oy + py
+            case 'Left':
+                x, y = ox - px - nw, oy + py
+            case 'Down':
+                x, y = ox + px, oy + oh + py
+            case 'Up':
+                x, y = ox + px, oy - py - nh
+            case _:
+                raise KeyError('Invalid direction')
+
+        if x < 0 or y < 0 or (x + nw > sw) or (y + nh > sh):
+            raise ValueError('Out of screen')
 
         return x, y
-    def getpos_up(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
+    def getpos_up(self, obj_rect: RectTuple, next_obj_size: PosTuple, padding=(0, 0))-> tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -207,7 +199,7 @@ class LayoutHelper:
         if y < 0 or x > sw - nw or x < 0:
             raise ValueError('Out of screen')
         return x, y
-    def getpos_down(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
+    def getpos_down(self, obj_rect: RectTuple, next_obj_size: PosTuple, padding=(0, 0))-> tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -217,7 +209,7 @@ class LayoutHelper:
         if y > sh - nh or x > sw - nw or x < 0:
             raise ValueError('Out of screen')
         return x, y
-    def getpos_right(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
+    def getpos_right(self, obj_rect: RectTuple, next_obj_size: PosTuple, padding=(0, 0))-> tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding
@@ -227,7 +219,7 @@ class LayoutHelper:
         if x + nw > sw or y + nh > sh or y < 0:
             raise ValueError('Out of screen')
         return x, y
-    def getpos_left(self, obj_rect: MathVal1, next_obj_size: MathVal2, padding=(0, 0))-> Tuple[float, float]:
+    def getpos_left(self, obj_rect: RectTuple, next_obj_size: PosTuple, padding=(0, 0))-> tuple[float, float]:
         ox, oy, ow, oh = obj_rect
         nw, nh = next_obj_size
         px, py = padding

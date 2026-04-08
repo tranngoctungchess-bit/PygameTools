@@ -5,10 +5,9 @@ from Kernel.PgRenderCompo.TextObj import Label
 def Remove_bg(widget: Widget, screen):
     if border in widget.vflags:
         set_border(widget, screen)
-    else:
-        widget.hide_itself()
+    widget.hide_itself()
 def Remove_border(widget: Widget, screen):
-    if bg_color in widget.vflags:
+    if bg_widget in widget.vflags:
         fill_bg(widget, screen)
     else:
         widget.hide_itself()
@@ -17,7 +16,7 @@ def Remove_corner_radius(widget: Widget, screen):
         valpack = widget.vflags[border]
         pygame.draw.rect(screen, valpack.border_col, widget.get_rect(), valpack.border_width)
 def Remove_textpack(label: Label, screen):
-    if bg_color in label.vflags:
+    if bg_widget in label.vflags:
         fill_bg(label, screen)
     elif border in label.vflags:
         set_border(label, screen)
@@ -25,7 +24,7 @@ def Remove_textpack(label: Label, screen):
         widget.hide_itself()
 def Remove_textBold(label: Label, screen):
     label.dirty_auto_flag.add(text_auto_resize)
-    if bg_color in label.vflags:
+    if bg_widget in label.vflags:
         fill_bg(label, screen)
     else:
         label.hide_itself()
@@ -34,7 +33,7 @@ def Remove_textBold(label: Label, screen):
     screen.blit(text_surface, label.get_pos())
 def Remove_textItalic(label: Label, screen):
     label.dirty_auto_flag.add(text_auto_resize)
-    if bg_color in label.vflags:
+    if bg_widget in label.vflags:
         fill_bg(label, screen)
     else:
         label.hide_itself()
@@ -43,7 +42,7 @@ def Remove_textItalic(label: Label, screen):
     screen.blit(text_surface, label.get_pos())
 def Remove_textUnderline(label:Label, screen):
     label.dirty_auto_flag.add(text_auto_resize)
-    if bg_color in label.vflags:
+    if bg_widget in label.vflags:
         fill_bg(label, screen)
     else:
         label.hide_itself()
@@ -52,7 +51,7 @@ def Remove_textUnderline(label:Label, screen):
     screen.blit(text_surface, label.get_pos())
 def Remove_textStrikethrough(label:Label, screen):
     label.dirty_auto_flag.add(text_auto_resize)
-    if bg_color in label.vflags:
+    if bg_widget in label.vflags:
         fill_bg(label, screen)
     else:
         label.hide_itself()
@@ -60,7 +59,7 @@ def Remove_textStrikethrough(label:Label, screen):
     text_surface = label.font.render(label.textpack.Text, label.smooth, label.textpack.Color)
     screen.blit(text_surface, label.get_pos())
 def Remove_textAntialias(label : Label, screen):
-    if bg_color in label.vflags:
+    if bg_widget in label.vflags:
         fill_bg(label, screen)
     else:
         label.hide_itself()

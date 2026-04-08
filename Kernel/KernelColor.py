@@ -178,7 +178,7 @@ class ColorTools:
 
         return v1
     def hsl_to_rgb(self, hsl):
-        h, s, l = [float(v) for v in hsl]
+        h, s, l = (float(v) for v in hsl)
 
         if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
             raise ValueError("Saturation must be between 0 and 1.")
@@ -202,7 +202,7 @@ class ColorTools:
         return r, g, b
 
     def rgb_to_hsl(self, rgb):
-        r, g, b = [float(v) for v in rgb]
+        r, g, b = (float(v) for v in rgb)
 
         for name, v in {'Red': r, 'Green': g, 'Blue': b}.items():
             if not (0 - FLOAT_ERROR <= v <= 1 + FLOAT_ERROR):

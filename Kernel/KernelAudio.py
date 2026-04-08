@@ -2,7 +2,6 @@ import pygame
 import miniaudio
 import os
 
-
 class Audio:
     def __init__(self, filepath: str):
         ext = os.path.splitext(filepath)[1].lower()

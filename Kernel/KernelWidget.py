@@ -2,7 +2,7 @@ from typing import Tuple, Union, Dict
 from dataclasses import dataclass
 import pygame
 from Kernel.KernelPosition import Margin
-from Kernel.ObjType import MathVal2, MathVal1
+from Kernel.ObjType import PosTuple, RectTuple
 from Kernel.RFlags import *
 from Kernel.KernalInit import init
 init()
@@ -21,22 +21,22 @@ def valid_background(bg):
 ImmutableRect and MutableRect:
 the base object for any widget class as bar, button coming soon in this tool
 x, y: the pos of rect
-width, height: the width and the height of this rect
+w, h: the width and the height of this rect
 """
 @dataclass(frozen=True)
 class ImmutableRect:
     __slots__ = ('x', 'y', 'w', 'h')
-    x:Union[int, float]
-    y:Union[int,float]
-    w:Union[int, float]
-    h:Union[int,float]
+    x:int | float
+    y:int |float
+    w:int | float
+    h:int |float
 @dataclass
 class MutableRect:
     __slots__ = ('x', 'y', 'w', 'h')
-    x:Union[int, float]
-    y:Union[int,float]
-    w:Union[int, float]
-    h:Union[int,float]
+    x:int | float
+    y:int |float
+    w:int | float
+    h:int |float
 
 
 class Widget:
@@ -45,8 +45,9 @@ class Widget:
     """
     __slots__ = ('parent' ,'rect', 'name', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags',
                  'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'child',
-                 'margin_manager', 'anchor', 'render_engine', 'render_engine_type')
-    def __init__(self, parent: Union["MainScreen", "Widget"],name: str, rect: Union[MathVal1, MathVal2],can_change = False):
+                 'margin_manager', 'anchor', 'render_engine', 'render_engine_type', 'focused')
+    def __init__(self, parent: Union["MainScreen", "Widget"], rect: RectTuple | PosTuple,
+                 can_change = False, name: str | None = None):
         if len(rect) == 2:
             w, h = rect
             rect = (0, 0, w, h)
@@ -56,7 +57,7 @@ class Widget:
                 rect = (x + parent.rect.x, y +parent.rect.y, w, h)
         self.rect = ImmutableRect(*rect) if not can_change else MutableRect(*rect)
         self.parent = parent
-        self.name = name
+        self.name = name if name else str(id(self))
         self.uflags = set()
         self.vflags = {}
         self.dirty_uflags = set()
@@ -64,24 +65,28 @@ class Widget:
         self.dirty_auto_flag = set()
         self.pos_x = []
         self.pos_y = []
-        self.child: Dict[str, "Widget"] = {}
-        self.parent.child[name] = self
+        self.child: dict[str, "Widget"] = {}
+        if isinstance(parent, (MainScreen, Widget)):
+            parent.child[self.name] = self
         if isinstance(parent, Widget):
             self.parent.pos_x.append(rect[0])
             self.parent.pos_y.append(rect[1])
         self.margin_manager: None | Margin = None
         self.anchor = None
-        self.render_engine_type = None
+        self.render_engine_type = self.parent.render_engine_type
         if self.parent.render_engine_type:
             self.render_engine = self.parent.render_engine_type(self)
         else:
             self.render_engine = None
+        self.focused = True
     def set_render_engine(self, engine):
         self.render_engine = engine(self)
     def render(self):
         self.render_engine.render()
     def get_background(self):
         if isinstance(self.parent, Widget):
+            if bg_widget in self.parent.vflags:
+                return self.parent.vflags[bg_widget]
             return self.parent.get_background()
         elif isinstance(self.parent, MainScreen):
             return self.parent.background
@@ -117,17 +122,17 @@ class Widget:
         elif isinstance(bg, pygame.Surface):
             surface = self.get_surface()
             surface.blit(bg, (0,0), (self.rect.x,self.rect.y, self.rect.w, self.rect.h))
-    def change_rect(self, rect: MathVal1):
+    def change_rect(self, rect: RectTuple):
         self.change_pos((rect[0], rect[1]))
         self.change_size((rect[2], rect[3]))
-    def change_pos(self, new_pos: MathVal2):
+    def change_pos(self, new_pos: PosTuple):
         self.rerender()
         if isinstance(self.rect, MutableRect):
             self.rect.x, self.rect.y = new_pos
             convert_a_lot(self)
         else:
             raise TypeError('Your widget pos and size is immutable')
-    def change_size(self, new_size: MathVal2):
+    def change_size(self, new_size: PosTuple):
         self.rerender()
         if isinstance(self.rect, MutableRect):
             self.rect.w, self.rect.h = new_size
@@ -139,7 +144,7 @@ class Widget:
         for chd in self.child.values():
             chd.rerender()
         self.hide_itself()
-    def inrect(self, pos: MathVal2):
+    def inrect(self, pos: PosTuple):
         px, py = pos
         return (self.rect.x <= px <= self.rect.x + self.rect.w) and (self.rect.y <= py <= self.rect.y + self.rect.h)
     def replace_itself(self, new_widget: "Widget"):
@@ -154,7 +159,7 @@ class Widget:
         self.pos_y = new_widget.pos_y
         self.child = new_widget.child
         self.rerender()
-    def set_margin(self, anchor, percentage_padding: None| MathVal2 = None, padding: None | MathVal2 = (0, 0)):
+    def set_margin(self, anchor, percentage_padding: None | PosTuple = None, padding: None | PosTuple = (0, 0)):
         self.margin_manager = Margin(self.parent, percentage_padding, padding)
         if self.margin_manager:
             pos_x, pos_y = self.margin_manager.get_pos(self.get_size(), anchor)
@@ -179,7 +184,7 @@ class Widget:
                 self.rect.x = pos_x
                 self.rect.y = pos_y
         self.anchor = anchor
-    def set_flags(self, uflags: tuple=(), vflags: Tuple[tuple]=(())):
+    def set_flags(self, uflags: tuple=(), vflags: tuple[tuple]=(())):
         for uflag in uflags:
             self.uflags.add(uflag)
             self.dirty_uflags.add(uflag)
@@ -266,9 +271,10 @@ class MainScreen:
         self.margin_manager = None
         self.blank(bg)
         self.render_engine_type = None
+        self.focused = False
     def get_size(self):
         return self.surface.get_size()
-    def set_margin(self, border_percent: MathVal2 | None, padding):
+    def set_margin(self, border_percent: PosTuple | None, padding):
         from Kernel.KernelPosition import Margin
         self.margin_manager = Margin(self.surface, border_percent, padding)
     def set_caption(self, caption: str):

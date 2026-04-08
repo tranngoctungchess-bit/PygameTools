@@ -1,4 +1,6 @@
-from typing import Union, Callable
+from typing import Union
+
+from collections.abc import Callable
 import concurrent.futures
 import pygame
 
@@ -9,7 +11,8 @@ class BreakThread(Exception):
     def __init__(self, message):
         super().__init__(message)
 class Thread:
-    def __init__(self, screen: MainScreen, functions: list, quitcondition: Union[int, Callable[..., bool], None] = pygame.QUIT, fps=60):
+    def __init__(self, screen: MainScreen, functions: list,
+                 quitcondition: int | Callable[..., bool] | None = pygame.QUIT, fps: int| float=60):
         self.functions = functions
         self.quitcondition = quitcondition
         self.running = True
@@ -18,23 +21,21 @@ class Thread:
         self.break_requested = False
         self.event_manager = EventDispatcher(screen)
         self.dt = 1.0 / fps if fps > 0 else 0.016
+    def _loop_start(self):
+        while self.running and not self.break_requested:
+            self.dt = self.clock.tick(self.fps) / 1000.0
+            if self.quitcondition == pygame.QUIT:
+                self.running = self.event_manager.event_passdown()
+            if callable(self.quitcondition) and self.quitcondition():
+                self.running = False
+            for func in self.functions:
+                func()
     def threadstart(self):
-        if self.quitcondition or self.fps > 0:
+        if self.quitcondition is not None or self.fps > 0:
             try:
-                while self.running and not self.break_requested:
-                    self.dt = self.clock.tick(self.fps) / 1000.0
-                    if self.quitcondition == pygame.QUIT:
-                        self.running = self.event_manager.event_passdown()
-                    if callable(self.quitcondition) and self.quitcondition():
-                        self.running = False
-                    for func in self.functions:
-                        func()
-                    self.clock.tick(self.fps)
+                self._loop_start()
             except BreakThread:
                 self.running = False
-            except Exception as e:
-                print(f"Thread error: {e}")
-                raise
         else:
             for func in self.functions:
                 func()
@@ -55,7 +56,7 @@ class Thread:
         return self.event_manager.event
 class MainApplication(Thread):
     def __init__(self, screen_size, screen_flags=0, screen_bg = (0,0,0),
-                 fixed = False, quitcondition: Union[int, Callable[..., bool], None] = quitnow,
+                 fixed = False, quitcondition: int | Callable[..., bool] | None = quitnow,
                  fps: int | float=60, render_engine = PygameRender, caption = None, functions = None):
         user_functions = functions if functions is not None else []
         screen = MainScreen(screen_size, screen_flags, screen_bg, fixed)

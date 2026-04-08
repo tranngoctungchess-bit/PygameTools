@@ -1,13 +1,12 @@
-from typing import List
 from Kernel import Widget, valid_background
 from Kernel.VFlags import *
-from Kernel.ObjType import MathVal1, MathVal2
+from Kernel.ObjType import RectTuple, PosTuple
 import pygame
 from collections import deque
 def trashfunc(*args, **kwargs):
     pass
 class FixedButton(Widget):
-    def __init__(self, parent,name,  rect: MathVal1 | MathVal2, bg=None, hoverbg=None, pressbg=None):
+    def __init__(self, parent, rect: RectTuple | PosTuple, bg=None, hoverbg=None, pressbg=None,name: str| None = None):
         super().__init__(parent, rect=rect, name=name)
         self.is_hovered = False
         self.lock_hover = False
@@ -30,12 +29,12 @@ class FixedButton(Widget):
 
     def dispatch_click(self, mouse_pos, event):
         #dispatch recursion
+        result_func = trashfunc
         from Kernel.KernelEvent import mouse_event2flags
         for widget in list(reversed(self.child.values())):
             if widget.inrect(mouse_pos):
                 func = widget.dispatch_click(mouse_pos, event)
-                if func:
-                    return func
+                result_func = func
 
         if self.inrect(mouse_pos):
             self.handle_click_event(event)
@@ -43,7 +42,7 @@ class FixedButton(Widget):
             flag = mouse_event2flags.get(event.type, {}).get(event.button)
             return self._get_handler(flag)
 
-        return trashfunc
+        return result_func
 
     def handle_click_event(self, event):
         if pressed_bg in self.vflags:
@@ -74,60 +73,62 @@ class FixedButton(Widget):
         self.lock_hover = False
         self.rerender()
     def dispatch_hover(self, mouse_pos):
+        result_func = trashfunc
+        if not hasattr(self, 'text'):
+             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_HAND)
         for widget in list(reversed(self.child.values())):
             if widget.inrect(mouse_pos):
                 func = widget.dispatch_hover(mouse_pos)
-                if func:
-                    return func
+                result_func = func
         if self.inrect(mouse_pos):
             if hover_bg in self.vflags:
                 if not self.lock_hover:
                     self.add_vflag((bg_widget, self.vflags[hover_bg]))
                     self.rerender()
             return self._get_handler(Hoverfunc)
-        return trashfunc
+        return result_func
     def dispatch_release(self, mouse_pos):
+        result_func = trashfunc
+        if not hasattr(self, 'text'):
+             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_ARROW)
         for widget in list(reversed(self.child.values())):
             if not widget.inrect(mouse_pos):
                 func = widget.dispatch_release(mouse_pos)
-                if func:
-                    return func
+                result_func = func
         if not self.inrect(mouse_pos):
             self.handle_realease_visual()
             return self._get_handler(Realeasefunc)
-        return trashfunc
+        return result_func
 
 
 class ToggleButton(FixedButton):
-    def __init__(self, parent, name, rect, fbg=None, tbg=None, hoverbg=None, lock_toogle=False):
-        super().__init__(parent, name, rect, fbg, hoverbg, tbg)
+    def __init__(self, parent, rect,name: str| None = None, fbg=None, tbg=None, hoverbg=None, lock_toogle=False):
+        super().__init__(parent, rect, fbg, hoverbg, tbg, name=name)
         self.lock_toogle = lock_toogle
         self.state = False
         self.group = None
 
     def handle_click_event(self, event):
         if self.lock_toogle: return
-
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            # Feedback hình ảnh tạm thời
-            next_visual = not self.state
-            self.vflags[bg_widget] = self.vflags[pressed_bg] if next_visual else self.bg
-            self.lock_hover = True
-            self.rerender()
-
-        elif event.type == pygame.MOUSEBUTTONUP:
-            if self.group:
-                if not self.state:
-                    self.state = self.group.handle_request_on(self)
+        match event.type:
+            case pygame.MOUSEBUTTONDOWN:
+                next_visual = not self.state
+                self.vflags[bg_widget] = self.vflags[pressed_bg] if next_visual else self.bg
+                self.lock_hover = True
+                self.rerender()
+            case pygame.MOUSEBUTTONUP:
+                if self.group:
+                    if not self.state:
+                        self.state = self.group.handle_request_on(self)
+                    else:
+                        self.state = False
+                        self.group.handle_request_off(self)
                 else:
-                    self.state = False
-                    self.group.handle_request_off(self)
-            else:
-                self.state = not self.state
+                    self.state = not self.state
 
-            self.lock_hover = self.state
-            self.vflags[bg_widget] = self.vflags[pressed_bg] if self.state else self.bg
-            self.rerender()
+                self.lock_hover = self.state
+                self.vflags[bg_widget] = self.vflags[pressed_bg] if self.state else self.bg
+                self.rerender()
 
     def handle_realease_visual(self):
         if self.state:

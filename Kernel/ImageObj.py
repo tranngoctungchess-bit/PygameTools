@@ -1,5 +1,5 @@
 import pygame
-from Kernel.ObjType import MathVal1, MathVal2
+from Kernel.ObjType import RectTuple, PosTuple
 import os
 pygame_load = pygame.image.load
 convert_alpha = pygame.Surface.convert_alpha
@@ -21,8 +21,7 @@ class ImagePack:
         return self.surface.get_rect()
     def get_size(self):
         return self.surface.get_size()
-    def resize(self, size: MathVal2):
-        old_surface = self.surface
+    def resize(self, size: PosTuple):
         self.surface = pygame.transform.scale(self.surface, size)
         return self
     def scale_resize(self, scale):
@@ -32,7 +31,7 @@ class ImagePack:
     def rotate(self, angle):
         self.surface = pygame.transform.rotate(self.surface, angle)
         return self
-    def crop(self, rect: MathVal1):
+    def crop(self, rect: RectTuple):
         if (rect[0] < 0 or rect[1] < 0 or
                 rect[0] + rect[2] > self.surface.get_width() or
                 rect[1] + rect[3] > self.surface.get_height()):
@@ -40,7 +39,7 @@ class ImagePack:
         else:
             self.surface = self.surface.subsurface(rect)
         return self
-    def take_from_crop(self, rect: MathVal1):
+    def take_from_crop(self, rect: RectTuple):
         return self.surface.subsurface(rect).copy()
     def get_image(self):
         return self.surface

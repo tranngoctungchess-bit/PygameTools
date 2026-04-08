@@ -1,6 +1,7 @@
 import os
 
-pass_file = ['KernelColor.py', '__init__.py']
+pass_file = ['KernelColor.py', '__init__.py', 'geometry.py', 'KernelAudio.py', 'KernelColor.py', 'ImageObj.py'
+             'KernelLayout.py', 'KernelPosition.py', 'VFlags.py', 'Uflags.py', 'RFlags.py']
 
 
 def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
@@ -21,7 +22,6 @@ def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
             for file in files:
                 # Kiểm tra nếu file nằm trong danh sách bỏ qua
                 if file in skip_files:
-                    print(f"Bỏ qua: {file_path if 'file_path' in locals() else file}")
                     continue
 
                 # Kiểm tra định dạng file
@@ -32,16 +32,10 @@ def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
                     outfile.write(f"\n{'=' * 50}\n")
                     outfile.write(f" FILE: {file_path}\n")
                     outfile.write(f"{'=' * 50}\n\n")
-
-                    try:
-                        with open(file_path, 'r', encoding='utf-8') as infile:
-                            outfile.write(infile.read())
-                        print(f"Đã thêm: {file_path}")
-                    except Exception as e:
-                        print(f"Lỗi khi đọc file {file_path}: {e}")
+                    with open(file_path, encoding='utf-8') as infile:
+                        outfile.write(infile.read())
 
                     outfile.write("\n")
-
 
 # --- CẤU HÌNH TẠI ĐÂY ---
 folder_path = 'D:/Python/PygameTools/Kernel'  # Thay bằng đường dẫn thư mục của bạn
