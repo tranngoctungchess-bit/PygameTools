@@ -1,8 +1,8 @@
-#Kernel 1(build 0.09)
+#pgtkb 1(build 0.09)
 #Pre-alpha
 from typing import Tuple, Optional
-from Kernel.KernalInit import init
-from Kernel.ObjType import PosTuple, RectTuple
+from pgtkb.KernalInit import init
+from pgtkb.ObjType import PosTuple, RectTuple
 init()
 #####
 #Margin

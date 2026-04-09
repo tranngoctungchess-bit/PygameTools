@@ -1,10 +1,10 @@
 import pygame
 
-from Kernel.PgRenderCompo.ButtonObj import FixedButton
-from Kernel.UFlags import *
-from Kernel.KernelWidget import Widget, MainScreen
-from Kernel.ObjType import RectTuple, PosTuple, TextPack, Border
-from Kernel.VFlags import *
+from pgtkb.PgRenderCompo.ButtonObj import FixedButton
+from pgtkb.UFlags import *
+from pgtkb.KernelWidget import Widget, MainScreen
+from pgtkb.ObjType import RectTuple, PosTuple, TextPack, Border
+from pgtkb.VFlags import *
 import re
 def trashfunc(*args, **kwargs):
     pass

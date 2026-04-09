@@ -1,5 +1,5 @@
-from Kernel.KernelWidget import Widget, ImmutableRect
-from Kernel.ObjType import PosTuple
+from pgtkb.KernelWidget import Widget, ImmutableRect
+from pgtkb.ObjType import PosTuple
 
 
 class GridLayout:

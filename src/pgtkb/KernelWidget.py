@@ -1,10 +1,10 @@
 from typing import Tuple, Union, Dict
 from dataclasses import dataclass
 import pygame
-from Kernel.KernelPosition import Margin
-from Kernel.ObjType import PosTuple, RectTuple
-from Kernel.RFlags import *
-from Kernel.KernalInit import init
+from pgtkb.KernelPosition import Margin
+from pgtkb.ObjType import PosTuple, RectTuple
+from pgtkb.RFlags import *
+from pgtkb.KernalInit import init
 init()
 def trashfunc(*args, **kwargs):
     pass
@@ -275,7 +275,7 @@ class MainScreen:
     def get_size(self):
         return self.surface.get_size()
     def set_margin(self, border_percent: PosTuple | None, padding):
-        from Kernel.KernelPosition import Margin
+        from pgtkb.KernelPosition import Margin
         self.margin_manager = Margin(self.surface, border_percent, padding)
     def set_caption(self, caption: str):
         pygame.display.set_caption(caption)
@@ -325,7 +325,7 @@ class PygameRender:
         else:
             raise ValueError("Your widget parent must be the widget, pygame.Surface or MainScreen class")
     def render(self):
-        from Kernel.PgRenderCompo.LinkRenderfunc import renderfunc
+        from pgtkb.PgRenderCompo.LinkRenderfunc import renderfunc
         try:
             if len(self.widget.uflags) == 0 and len(self.widget.vflags) == 0:
                 self.widget.hide_itself()

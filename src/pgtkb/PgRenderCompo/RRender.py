@@ -1,7 +1,7 @@
-from Kernel.PgRenderCompo.Render import *
-from Kernel.RFlags import *
-from Kernel.KernelWidget import Widget
-from Kernel.PgRenderCompo.TextObj import Label
+from pgtkb.PgRenderCompo.Render import *
+from pgtkb.RFlags import *
+from pgtkb.KernelWidget import Widget
+from pgtkb.PgRenderCompo.TextObj import Label
 def Remove_bg(widget: Widget, screen):
     if border in widget.vflags:
         set_border(widget, screen)

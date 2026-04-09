@@ -1,6 +1,6 @@
 [project]
 name = "PGTKernelBasic"
-version = "0.23.6"
+version = "0.23.8"
 description = "hello"
 readme = "README.md"
 authors = [
@@ -10,5 +10,10 @@ requires-python = ">=3.10"
 dependencies = []
 
 [build-system]
-requires = ["uv_build>=0.10.10,<0.11.0"]
-build-backend = "uv_build"
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["Kernel*"]
+exclude = ["tests*", "examples*"]

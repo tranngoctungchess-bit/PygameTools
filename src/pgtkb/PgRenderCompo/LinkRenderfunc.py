@@ -1,5 +1,5 @@
-from Kernel.PgRenderCompo.RRender import *
-from Kernel.RFlags import *
+from pgtkb.PgRenderCompo.RRender import *
+from pgtkb.RFlags import *
 def notingfunc(*args, **kwargs):
     pass
 renderfunc = {

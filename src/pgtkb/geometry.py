@@ -1,5 +1,5 @@
 #v0.09
-from Kernel import KernalInit
+from pgtkb import KernalInit
 import math
 KernalInit.init()
 #wrap some useful function from a math lib

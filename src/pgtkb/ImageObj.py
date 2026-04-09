@@ -1,5 +1,5 @@
 import pygame
-from Kernel.ObjType import RectTuple, PosTuple
+from pgtkb.ObjType import RectTuple, PosTuple
 import os
 pygame_load = pygame.image.load
 convert_alpha = pygame.Surface.convert_alpha

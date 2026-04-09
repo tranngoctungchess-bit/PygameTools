@@ -1,8 +1,8 @@
 import pygame
 from functools import partial
 
-from Kernel.KernelWidget import MainScreen
-from Kernel.VFlags import *
+from pgtkb.KernelWidget import MainScreen
+from pgtkb.VFlags import *
 
 
 def _handle_resize(self: "EventDispatcher"):

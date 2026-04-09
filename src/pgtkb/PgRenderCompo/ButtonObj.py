@@ -1,6 +1,6 @@
-from Kernel import Widget, valid_background
-from Kernel.VFlags import *
-from Kernel.ObjType import RectTuple, PosTuple
+from pgtkb import Widget, valid_background
+from pgtkb.VFlags import *
+from pgtkb.ObjType import RectTuple, PosTuple
 import pygame
 from collections import deque
 def trashfunc(*args, **kwargs):
@@ -30,7 +30,7 @@ class FixedButton(Widget):
     def dispatch_click(self, mouse_pos, event):
         #dispatch recursion
         result_func = trashfunc
-        from Kernel.KernelEvent import mouse_event2flags
+        from pgtkb.KernelEvent import mouse_event2flags
         for widget in list(reversed(self.child.values())):
             if widget.inrect(mouse_pos):
                 func = widget.dispatch_click(mouse_pos, event)

@@ -1,13 +1,13 @@
 import pygame
-from Kernel.KernelRun import MainApplication
-from Kernel.PgRenderCompo.TextObj import LineEdit
-from Kernel.UFlags import text_Is_Antialias
-from Kernel import Downlclick
+from pgtkb.KernelRun import MainApplication
+from pgtkb.PgRenderCompo.TextObj import LineEdit
+from pgtkb.UFlags import text_Is_Antialias
+from pgtkb import Downlclick
 
 app = MainApplication(
     screen_size=(800, 600),
     screen_bg=(240, 240, 245),
-    caption="Kernel Framework - Dual LineEdit Test",
+    caption="pgtkb Framework - Dual LineEdit Test",
     fps=60
 )
 
@@ -40,7 +40,7 @@ input_password = LineEdit(
     name="password_input"
 )
 
-from Kernel.PgRenderCompo.TextObj import Label
+from pgtkb.PgRenderCompo.TextObj import Label
 
 label_username = Label(
     parent=app.screen,
@@ -89,7 +89,7 @@ hint_label = Label(
 )
 
 try:
-    from Kernel.PgRenderCompo.ButtonObj import FixedButton
+    from pgtkb.PgRenderCompo.ButtonObj import FixedButton
 
 
     def clear_all():

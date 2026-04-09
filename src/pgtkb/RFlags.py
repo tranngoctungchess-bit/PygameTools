@@ -1,5 +1,5 @@
-from Kernel.UFlags import *
-from Kernel.VFlags import *
+from pgtkb.UFlags import *
+from pgtkb.VFlags import *
 """
 RUFLAGS
 """

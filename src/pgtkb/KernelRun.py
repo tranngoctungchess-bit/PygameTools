@@ -4,7 +4,7 @@ from collections.abc import Callable
 import concurrent.futures
 import pygame
 
-from Kernel import PygameRender, MainScreen, EventDispatcher
+from pgtkb import PygameRender, MainScreen, EventDispatcher
 
 quitnow = pygame.QUIT
 class BreakThread(Exception):

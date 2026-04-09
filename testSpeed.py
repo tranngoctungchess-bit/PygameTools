@@ -1,9 +1,9 @@
-from Kernel.KernelWidget import PygameRender, MainScreen
-from Kernel.PgRenderCompo.TextObj import Label
-from Kernel.PgRenderCompo import ButtonObj
-from Kernel.KernelRun import Thread, quitnow
-from Kernel.UFlags import *
-from Kernel.KernelPosition import Anchor
+from pgtkb.KernelWidget import PygameRender, MainScreen
+from pgtkb.PgRenderCompo.TextObj import Label
+from pgtkb.PgRenderCompo import ButtonObj
+from pgtkb.KernelRun import Thread, quitnow
+from pgtkb.UFlags import *
+from pgtkb.KernelPosition import Anchor
 screen = MainScreen((800, 600), bg=(255,255,255))
 WelcomeText = Label(screen, (0,0,0), 'Arial', 24, 'WelcomeToDemo','wlcTxt', (text_Is_Antialias, text_Is_Bold))
 WelcomeText.set_render_engine(PygameRender)
