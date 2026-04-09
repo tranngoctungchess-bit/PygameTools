@@ -1,0 +1,21 @@
+import pygame
+init_state = False
+_fill_mode = True
+
+def set_fill_mode(mode=False):
+    global _fill_mode
+    _fill_mode = mode
+
+def should_fill():
+    global _fill_mode
+    tfill = _fill_mode
+    _fill_mode = False
+    return tfill
+def init():
+    global init_state
+    if not init_state:
+        pygame.init()
+        pygame.key.set_repeat(500, 50)
+        init_state = True
+    set_fill_mode(_fill_mode)
+
