@@ -1,7 +1,7 @@
 [project]
-name = "pygametools"
-version = "0.2.0"
-description = "Add your description here"
+name = "PGTKernelBasic"
+version = "0.23.6"
+description = "hello"
 readme = "README.md"
 authors = [
     { name = "tranngoctungchess-bit", email = "tranngoctung.chess@gmail.com" }
@@ -12,3 +12,5 @@ dependencies = []
 [build-system]
 requires = ["uv_build>=0.10.10,<0.11.0"]
 build-backend = "uv_build"
+[tool.uv]
+package-dir = "."
