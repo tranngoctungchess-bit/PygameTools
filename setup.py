@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="PGTKernelbasic",
-    version="0.23.1",
+    version="0.23.2",
     author="Your Name",
     description="Lightweight UI framework for Pygame",
     packages=find_packages(),
