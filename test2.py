@@ -38,7 +38,7 @@ def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
                     outfile.write("\n")
 
 # --- CẤU HÌNH TẠI ĐÂY ---
-folder_path = 'D:/Python/PygameTools/Kernel'  # Thay bằng đường dẫn thư mục của bạn
+folder_path = '/src/Kernel'  # Thay bằng đường dẫn thư mục của bạn
 my_extensions = ['.py']  # Chỉ lấy các file này
 result_name = 'haha.txt'
 merge_code_files(folder_path, result_name, my_extensions)
