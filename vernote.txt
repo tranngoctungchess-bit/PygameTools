@@ -70,3 +70,6 @@ add LineEdit (It only can type, backspace, and clear text and It didn't have the
 change all project to python 3.10(it only support 3.10 +)
 change Border pack to class(end of namedtuple - fixed pack)
 fix the big bug in fixedbutton(on 3 func, realease, click, hover)
+Build 24
+add the enter and insert key support for line_edit
+add the cursor for line_edit

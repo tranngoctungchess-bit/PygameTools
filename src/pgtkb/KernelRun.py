@@ -66,12 +66,21 @@ class MainApplication(Thread):
         super().__init__(screen, user_functions, quitcondition, fps)
         self.screen = screen
         self.functions.append(self._main_render)
+
     def _main_render(self):
+        for widget in self.screen.child.values():
+            self._recursive_update(widget, self.dt)
         for widget in self.screen.child.values():
             widget.render()
             if widget.child:
                 self._recursive_render(widget)
         pygame.display.flip()
+
+    def _recursive_update(self, parent_widget, dt):
+        if hasattr(parent_widget, 'update'):
+            parent_widget.update(dt)
+        for widget in parent_widget.child.values():
+            self._recursive_update(widget, dt)
     def add_action(self, func):
         self.functions.append(func)
     def _recursive_render(self, parent_widget):

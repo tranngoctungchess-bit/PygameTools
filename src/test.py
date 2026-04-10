@@ -122,11 +122,5 @@ except ImportError:
     print("FixedButton not available, skipping clear button")
 
 if __name__ == "__main__":
-    print("\n=== Dual LineEdit Test ===")
-    print("1. Click on Username field to type")
-    print("2. Click on Password field to type")
-    print("3. Watch real-time updates below")
-    print("4. Press BACKSPACE to delete")
-    print("===========================\n")
 
     app.threadstart()

@@ -73,6 +73,22 @@ class EventDispatcher:
                 for widget in self.focused_widget:
                     if hasattr(widget, 'process_backspace'):
                         widget.process_backspace()
+            case pygame.K_RIGHT:
+                for widget in self.focused_widget:
+                    if hasattr(widget, 'change_cursor_pos'):
+                        widget.change_cursor_pos(1)
+            case pygame.K_LEFT:
+                for widget in self.focused_widget:
+                    if hasattr(widget, 'change_cursor_pos'):
+                        widget.change_cursor_pos(-1)
+            case pygame.K_RETURN | pygame.K_KP_ENTER:
+                for widget in self.focused_widget:
+                    if hasattr(widget, 'on_enter'):
+                        widget.on_enter()
+            case pygame.K_INSERT:
+                for widget in self.focused_widget:
+                    if hasattr(widget, 'on_insert'):
+                        widget.on_insert()
     def _dispacth_hover(self, mouse_pos):
         self.event = None
         new_hovered = None

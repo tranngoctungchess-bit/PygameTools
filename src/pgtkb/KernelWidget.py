@@ -78,7 +78,7 @@ class Widget:
             self.render_engine = self.parent.render_engine_type(self)
         else:
             self.render_engine = None
-        self.focused = True
+        self.focused = False
     def set_render_engine(self, engine):
         self.render_engine = engine(self)
     def render(self):
@@ -94,7 +94,7 @@ class Widget:
             raise ValueError("Your widget parent must be the widget, pygame.Surface or MainScreen class")
     def get_rect(self) -> pygame.Rect:
         return pygame.Rect(self.rect.x, self.rect.y, self.rect.w, self.rect.h)
-    def get_pos(self):
+    def get_pos(self) -> PosTuple:
         return self.rect.x, self.rect.y
     def get_size(self):
         return self.rect.w, self.rect.h

@@ -69,9 +69,12 @@ class Label(Widget):
         self.Size_update((new_w, new_h))
         self.dirty_vflags.add(textpack)
 class LineEdit(FixedButton):
+    __slots__ = ("label", "text", "display_text", "fully", "display_start", "pad_x", "pad_y", "cursor", "cursor_idx",
+                        "cursor_timer", "blink_speed")
     def __init__(self, parent,  text_size, width_line_edit ,pos: PosTuple=(0,0), bg=(255,255,255),
                  text_color=(0,0,0), border_radius=4, border_width=1, border_color = (0,0,0),
-                 text_font="timesnewroman", text_uflags=None, pad_x=8, pad_y=4, name: str | None = None):
+                 text_font="timesnewroman", text_uflags=None, pad_x=8, pad_y=4, name: str | None = None,
+                 cursor_color=(0,0,0)):
         text_uflags = {text_Is_Antialias} if not text_uflags else text_uflags
         text_pos = (pad_x + border_width, pad_y + border_width)
         temp_font = pygame.font.SysFont(text_font, text_size)
@@ -87,7 +90,12 @@ class LineEdit(FixedButton):
         self.display_start = 0
         self.pad_x = pad_x
         self.pad_y = pad_y
-
+        cursor_rect = (pad_x- 2, pad_y, 1, self.label.font.size(self.label.textpack.Text)[1])
+        self.cursor = Cursor(self, cursor_color, cursor_rect)
+        self.cursor_idx = 0
+        self.cursor_timer = 0
+        self.blink_speed = 0.5
+        self.is_key_insert = False
     def _update_display_offset(self):
         b_width = self.vflags[border].border_width
         max_width = self.rect.w - self.pad_x * 2 - b_width * 2
@@ -107,13 +115,24 @@ class LineEdit(FixedButton):
         if self.display_start == 0:
             self.fully = False
         self.label.change_text(self.text[self.display_start:])
+
     def process_addchar(self, char: str):
-        self.text += char
+        if self.is_key_insert and self.cursor_idx < len(self.text):
+            self.text = self.text[:self.cursor_idx] + char + self.text[self.cursor_idx + 1:]
+        else:
+            self.text = self.text[:self.cursor_idx] + char + self.text[self.cursor_idx:]
+
+        self.cursor_idx += 1
         self._update_display_offset()
+        self._update_cursor_width()
+        self.change_cursor_pos(0)
+
     def process_backspace(self):
-        if len(self.text) > 0:
-            self.text = self.text[:-1]
+        if self.cursor_idx > 0:
+            self.text = self.text[:self.cursor_idx - 1] + self.text[self.cursor_idx:]
+            self.cursor_idx -= 1
             self._update_display_offset()
+            self.change_cursor_pos(0)
 
     def dispatch_hover(self, mouse_pos):
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_IBEAM)
@@ -125,3 +144,75 @@ class LineEdit(FixedButton):
     def clear_text(self):
         self.text = ""
         self._update_display_offset()
+    def change_cursor_pos(self, addition_idx):
+        self.cursor.hide_itself()
+        # max(0, ...) ensures it doesn't go back past the beginning of the string,
+        # min(..., len) ensures it doesn't go past the end of the string.
+        self.cursor_idx = max(0, min(len(self.text), self.cursor_idx + addition_idx))
+        self._update_cursor_width()
+        text_segment = self.text[self.display_start: self.cursor_idx]
+        width_to_cursor = self.label.font.size(text_segment)[0]
+        new_x = self.label.rect.x + width_to_cursor
+        #update widget cursor pos
+        self.cursor.change_loc(new_x)
+        self.label.rerender()
+        self._reset_cursor_blink()
+
+    def update(self, dt):
+        if not self.focused:
+            if self.cursor.visible:
+                self.cursor.make_invisible()
+            return
+        self.cursor_timer += dt
+        if self.cursor_timer >= self.blink_speed:
+            self.cursor.visible = not self.cursor.visible
+            if self.cursor.visible:
+                self.cursor.make_visible()
+            else:
+                self.cursor.make_invisible()
+            self.label.rerender()
+            self.cursor_timer = 0
+    def _reset_cursor_blink(self):
+        self.cursor_timer = 0
+        self.cursor.visible = True
+        self.cursor.make_visible()
+    def on_enter(self):
+        pass
+
+    def on_insert(self):
+        self.is_key_insert = not self.is_key_insert
+        self._update_cursor_width()
+        self._reset_cursor_blink()
+
+    def _update_cursor_width(self):
+        if self.is_key_insert:
+            if self.cursor_idx >= len(self.text):
+                self.cursor.rect.w = 8
+            else:
+                char_to_overwrite = self.text[self.cursor_idx]
+                char_w = self.label.font.size(char_to_overwrite)[0]
+                self.cursor.rect.w = max(char_w, 8)
+        else:
+            self.cursor.rect.w = 1
+        self.cursor.rerender()
+class Cursor(Widget):
+    def __init__(self,parent: FixedButton, color, rect):
+        self.color = color
+        super().__init__(parent, rect,can_change=True)
+        self.visible = False
+    def make_visible(self):
+        self.add_vflag((bg_widget, self.color))
+        self.visible = True
+    def make_invisible(self):
+        self.visible = False
+        self.hide_itself()
+    def change_loc(self, new_loc: int | float | PosTuple, pos_type: str = 'x'):
+        if not isinstance(new_loc, int) and not isinstance(new_loc, float):
+            self.change_pos(new_loc)
+        else:
+            if pos_type == 'x':
+                self.rect.x = new_loc
+            elif pos_type == 'y':
+                self.rect.y = new_loc
+            else:
+                raise ValueError("invalid pos type")
