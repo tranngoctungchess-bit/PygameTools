@@ -164,15 +164,16 @@ class Widget:
         self.child = new_widget.child
         self.rerender()
 
-    def push_margin(self, anchor, percentage_padding: None | PosTuple = None, padding: None | PosTuple = (0, 0)):
+    def push_margin(self, anchor):
         from pgtkb.KernelPosition import Margin
-        self.margin_manager = Margin(self.parent, percentage_padding, padding)
         if self.margin_manager:
             pos_x, pos_y = self.margin_manager.get_pos(self.get_size(), anchor)
             if isinstance(self.parent, Widget):
                 pos_x += self.parent.rect.x
                 pos_y += self.parent.rect.y
             self.change_pos((pos_x, pos_y))
+        else:
+            raise ValueError("You need to set_margin to widget parent before push margin")
         self.anchor = anchor
     def set_margin(self, padding, border_percent: PosTuple | None=None):
         from pgtkb.KernelPosition import Margin
@@ -277,7 +278,7 @@ class MainScreen:
         self.focused = False
     def get_size(self):
         return self.surface.get_size()
-    def set_margin(self, padding, border_percent: PosTuple | None= None):
+    def set_margin(self, padding: PosTuple | None = None, border_percent: PosTuple | None= None):
         from pgtkb.KernelPosition import Margin
         self.margin_manager = Margin(self.surface, border_percent, padding)
     def set_caption(self, caption: str):
