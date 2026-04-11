@@ -73,3 +73,6 @@ fix the big bug in fixedbutton(on 3 func, realease, click, hover)
 Build 24
 add the enter and insert key support for line_edit
 add the cursor for line_edit
+fix the big bug in widget margin(the annoy parameter in set_margin and the widget margin support error)
+remove the pos_x and pos_y attr in Widget
+fix the change_pos to make it change the child pos

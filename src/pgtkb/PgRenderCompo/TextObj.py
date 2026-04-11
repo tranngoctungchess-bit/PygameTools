@@ -180,6 +180,7 @@ class LineEdit(FixedButton):
         pass
 
     def on_insert(self):
+        self.cursor.make_invisible()
         self.is_key_insert = not self.is_key_insert
         self._update_cursor_width()
         self._reset_cursor_blink()

@@ -44,7 +44,7 @@ class Widget:
 
     """
     __slots__ = ('parent' ,'rect', 'name', 'is_dirty', 'uflags', 'vflags', 'dirty_uflags',
-                 'dirty_vflags', 'dirty_auto_flag','pos_x', 'pos_y', 'child',
+                 'dirty_vflags', 'dirty_auto_flag', 'child',
                  'margin_manager', 'anchor', 'render_engine', 'render_engine_type', 'focused')
     def __init__(self, parent: Union["MainScreen", "Widget"], rect: RectTuple | PosTuple,
                  can_change = False, name: str | None = None):
@@ -63,14 +63,9 @@ class Widget:
         self.dirty_uflags = set()
         self.dirty_vflags = set()
         self.dirty_auto_flag = set()
-        self.pos_x = []
-        self.pos_y = []
         self.child: dict[str, "Widget"] = {}
         if isinstance(parent, (MainScreen, Widget)):
             parent.child[self.name] = self
-        if isinstance(parent, Widget):
-            self.parent.pos_x.append(rect[0])
-            self.parent.pos_y.append(rect[1])
         self.margin_manager: None | Margin = None
         self.anchor = None
         self.render_engine_type = self.parent.render_engine_type
@@ -125,19 +120,30 @@ class Widget:
     def change_rect(self, rect: RectTuple):
         self.change_pos((rect[0], rect[1]))
         self.change_size((rect[2], rect[3]))
+
     def change_pos(self, new_pos: PosTuple):
+        dx = new_pos[0] - self.rect.x
+        dy = new_pos[1] - self.rect.y
+
+        if dx == 0 and dy == 0:
+            return
+
         self.rerender()
         if isinstance(self.rect, MutableRect):
             self.rect.x, self.rect.y = new_pos
-            convert_a_lot(self)
         else:
-            raise TypeError('Your widget pos and size is immutable')
+            self.rect = ImmutableRect(new_pos[0], new_pos[1], self.rect.w, self.rect.h)
+
+        for chd in self.child.values():
+            new_chd_x = chd.rect.x + dx
+            new_chd_y = chd.rect.y + dy
+            chd.change_pos((new_chd_x, new_chd_y))
     def change_size(self, new_size: PosTuple):
         self.rerender()
         if isinstance(self.rect, MutableRect):
             self.rect.w, self.rect.h = new_size
         else:
-            raise TypeError('Your widget pos and size is immutable')
+            self.rect = ImmutableRect(self.rect.x, self.rect.y, new_size[0], new_size[1])
     def rerender(self):
         self.dirty_vflags.update(self.vflags.keys())
         self.dirty_uflags.update(self.uflags)
@@ -155,34 +161,31 @@ class Widget:
         self.dirty_vflags = new_widget.dirty_vflags.copy()
         self.dirty_auto_flag = new_widget.dirty_auto_flag
         self.parent.child[self.name] = new_widget
-        self.pos_x = new_widget.pos_x
-        self.pos_y = new_widget.pos_y
         self.child = new_widget.child
         self.rerender()
-    def set_margin(self, anchor, percentage_padding: None | PosTuple = None, padding: None | PosTuple = (0, 0)):
+
+    def push_margin(self, anchor, percentage_padding: None | PosTuple = None, padding: None | PosTuple = (0, 0)):
+        from pgtkb.KernelPosition import Margin
         self.margin_manager = Margin(self.parent, percentage_padding, padding)
         if self.margin_manager:
             pos_x, pos_y = self.margin_manager.get_pos(self.get_size(), anchor)
             if isinstance(self.parent, Widget):
                 pos_x += self.parent.rect.x
                 pos_y += self.parent.rect.y
-            if isinstance(self.rect, ImmutableRect):
-                self.rect = ImmutableRect(pos_x, pos_y, self.rect.w, self.rect.h)
-            else:
-                self.rect.x = pos_x
-                self.rect.y = pos_y
+            self.change_pos((pos_x, pos_y))
         self.anchor = anchor
+    def set_margin(self, padding, border_percent: PosTuple | None=None):
+        from pgtkb.KernelPosition import Margin
+        self.margin_manager = Margin(self.parent, border_percent, padding)
+
     def anchor_to_pos(self, anchor: str):
         if self.margin_manager:
             pos_x, pos_y = self.margin_manager.get_pos(self.get_size(), anchor)
             if isinstance(self.parent, Widget):
                 pos_x += self.parent.rect.x
                 pos_y += self.parent.rect.y
-            if isinstance(self.rect, ImmutableRect):
-                self.rect = ImmutableRect(pos_x, pos_y, self.rect.w, self.rect.h)
-            else:
-                self.rect.x = pos_x
-                self.rect.y = pos_y
+
+            self.change_pos((pos_x, pos_y))
         self.anchor = anchor
     def set_flags(self, uflags: tuple=(), vflags: tuple[tuple]=(())):
         for uflag in uflags:
@@ -232,18 +235,18 @@ class Widget:
         self.vflags = {}
         self.dirty_uflags = set()
         self.dirty_vflags = set()
+
     def dispatch_resize(self):
         if self.margin_manager:
             self.margin_manager.update_on_resize(self.parent)
             if self.anchor:
-                self.anchor_to_pos(self.anchor)
-            else:
-                print(f"Warning: Widget {self.name} has margin but no anchor.")
+                self.push_margin(self.anchor, self.margin_manager.percentage, self.margin_manager.padding)
             self.rerender()
         else:
             self.rerender()
         for child in self.child.values():
-            child.dispatch_resize()
+            if not child.margin_manager:
+                child.dispatch_resize()
     def dispatch_click(self, *args):
         return trashfunc
     def dispatch_release(self, *args):
@@ -274,7 +277,7 @@ class MainScreen:
         self.focused = False
     def get_size(self):
         return self.surface.get_size()
-    def set_margin(self, border_percent: PosTuple | None, padding):
+    def set_margin(self, padding, border_percent: PosTuple | None= None):
         from pgtkb.KernelPosition import Margin
         self.margin_manager = Margin(self.surface, border_percent, padding)
     def set_caption(self, caption: str):
