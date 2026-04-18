@@ -1,7 +1,7 @@
 #pgtkb 1(build 0.09)
 #Pre-alpha
 from typing import Tuple, Optional
-from pgtkb.KernalInit import init
+from pgtkb.KernelInit import init
 from pgtkb.ObjType import PosTuple, RectTuple
 init()
 #####
@@ -51,13 +51,19 @@ class Margin:
     """
     __slots__ = ('width_screen', 'height_screen', 'last_screen_size', 'padding', 'percentage', 'cache', 'cache_pos')
     def __init__(self, screen, percentage_padding: PosTuple | None = None, padding: PosTuple | None = (0, 0)):
-        self.width_screen, self.height_screen = screen.get_size()
+        if hasattr(screen, 'get_size'):
+            self.width_screen, self.height_screen = screen.get_size()
+        else:
+            self.width_screen, self.height_screen = screen.get_width(), screen.get_height()
+
         self.percentage = percentage_padding
+
         if self.percentage:
-            if 0 < percentage_padding[0] > 100 or 0 < percentage_padding[1] > 100:
-                raise ValueError('Your padding must in range from 0 to 100')
-            self.padding = (self.width_screen * self.percentage[0] / 100, self.height_screen * self.percentage[1] / 100)
-        self.padding = padding
+            self.padding = (self.width_screen * self.percentage[0] / 100,
+                            self.height_screen * self.percentage[1] / 100)
+        else:
+            self.padding = padding if padding is not None else (0, 0)
+
         self.cache = {}
         self.cache_pos = {}
     def update_padding(self, new_padding):
@@ -118,13 +124,18 @@ class Margin:
             self.cache['Anchor'] = anchor
         else:
             raise KeyError(f'Invalid anchor: {anchor}')
-    def update_on_resize(self, screen):
-        self.width_screen, self.height_screen = screen.get_size()
+
+    def update_on_resize(self, container):
+        if hasattr(container, 'get_size'):
+            self.width_screen, self.height_screen = container.get_size()
+        elif hasattr(container, 'get_width'):
+            self.width_screen, self.height_screen = container.get_width(), container.get_height()
+
         if self.percentage:
             self.padding = (self.width_screen * self.percentage[0] / 100,
                             self.height_screen * self.percentage[1] / 100)
-        self.cache_pos.clear()
 
+        self.cache_pos.clear()
     @property
     def content_rect(self):
         left, top = self.padding

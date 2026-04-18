@@ -1,7 +1,7 @@
 import os
-
-pass_file = ['KernelColor.py', '__init__.py', 'geometry.py', 'KernelAudio.py', 'KernelColor.py', 'ImageObj.py'
-             'KernelLayout.py', 'KernelPosition.py', 'VFlags.py', 'Uflags.py', 'RFlags.py']
+pass_file = ['KernelColor.py', '__init__.py', 'geometry.py', 'KernelAudio.py', 'KernelColor.py', 'ImageObj.py',
+             'KernelLayout.py', 'KernelPosition.py', 'VFlags.py', 'Uflags.py', 'RFlags.py', 'KernelInit.py',
+             'LinkRenderfunc.py', 'RRender.py', 'Render.py', 'TextObj.py']
 
 pf1 = ['__init__.py']
 def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
@@ -29,4 +29,4 @@ def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
 folder_path = 'src/pgtkb'
 my_extensions = ['.py']
 result_name = 'haha.txt'
-merge_code_files(folder_path, result_name, my_extensions, pf1)
+merge_code_files(folder_path, result_name, my_extensions, 'pf1')

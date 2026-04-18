@@ -3,7 +3,7 @@ from .KernelPosition import *
 from .geometry import *
 from .KernelWidget import *
 from .ObjType import *
-from .KernalInit import *
+from .KernelInit import *
 from .PgRenderCompo import *
 from .ImageObj import *
 from .KernelAudio import *

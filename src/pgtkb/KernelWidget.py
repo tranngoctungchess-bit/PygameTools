@@ -4,7 +4,7 @@ import pygame
 from pgtkb.KernelPosition import Margin
 from pgtkb.ObjType import PosTuple, RectTuple
 from pgtkb.RFlags import *
-from pgtkb.KernalInit import init
+from pgtkb.KernelInit import init
 init()
 def trashfunc(*args, **kwargs):
     pass
@@ -116,7 +116,7 @@ class Widget:
             pygame.draw.rect(surface, bg, (self.rect.x,self.rect.y, self.rect.w, self.rect.h))
         elif isinstance(bg, pygame.Surface):
             surface = self.get_surface()
-            surface.blit(bg, (0,0), (self.rect.x,self.rect.y, self.rect.w, self.rect.h))
+            surface.blit(bg, (self.rect.x, self.rect.y), (self.rect.x, self.rect.y, self.rect.w, self.rect.h))
     def change_rect(self, rect: RectTuple):
         self.change_pos((rect[0], rect[1]))
         self.change_size((rect[2], rect[3]))
@@ -124,7 +124,6 @@ class Widget:
     def change_pos(self, new_pos: PosTuple):
         dx = new_pos[0] - self.rect.x
         dy = new_pos[1] - self.rect.y
-
         if dx == 0 and dy == 0:
             return
 
@@ -164,20 +163,24 @@ class Widget:
         self.child = new_widget.child
         self.rerender()
 
-    def push_margin(self, anchor):
+    def goto_margin(self, anchor):
         from pgtkb.KernelPosition import Margin
-        if self.margin_manager:
-            pos_x, pos_y = self.margin_manager.get_pos(self.get_size(), anchor)
+        if self.parent.margin_manager:
+            pos_x, pos_y = self.parent.margin_manager.get_pos(self.get_size(), anchor)
             if isinstance(self.parent, Widget):
                 pos_x += self.parent.rect.x
                 pos_y += self.parent.rect.y
+
             self.change_pos((pos_x, pos_y))
         else:
-            raise ValueError("You need to set_margin to widget parent before push margin")
+            raise ValueError(f"Parent of '{self.name}' must have a margin_manager before push_margin.")
+
         self.anchor = anchor
-    def set_margin(self, padding, border_percent: PosTuple | None=None):
+
+    def set_margin(self, padding=(0, 0), border_percent: PosTuple | None = None):
         from pgtkb.KernelPosition import Margin
-        self.margin_manager = Margin(self.parent, border_percent, padding)
+        container = self.surface if hasattr(self, 'surface') else self
+        self.margin_manager = Margin(container, border_percent, padding)
 
     def anchor_to_pos(self, anchor: str):
         if self.margin_manager:
@@ -239,28 +242,19 @@ class Widget:
 
     def dispatch_resize(self):
         if self.margin_manager:
-            self.margin_manager.update_on_resize(self.parent)
-            if self.anchor:
-                self.push_margin(self.anchor, self.margin_manager.percentage, self.margin_manager.padding)
-            self.rerender()
+            self.margin_manager.update_on_resize(self)
+        if self.anchor:
+            self.goto_margin(self.anchor)
         else:
             self.rerender()
         for child in self.child.values():
-            if not child.margin_manager:
-                child.dispatch_resize()
+            child.dispatch_resize()
     def dispatch_click(self, *args):
         return trashfunc
     def dispatch_release(self, *args):
         return trashfunc
     def dispatch_hover(self, *args):
         return trashfunc
-def convert(pos, offset):
-    return pos[0] + offset[0], pos[1] + offset[1]
-def convert_a_lot(widget: Widget):
-    offset_x, offset_y = widget.rect.x, widget.rect.y
-    new_x = [val + offset_x for val in widget.pos_x]
-    new_y = [val + offset_y for val in widget.pos_y]
-    return new_x, new_y
 class MainScreen:
     """
     """
@@ -271,6 +265,7 @@ class MainScreen:
             self.surface = pygame.display.set_mode(size, pygame.RESIZABLE | flags)
         if valid_background(bg):
             self.background = bg
+            self.original_background = bg if isinstance(bg, pygame.Surface) else None
         self.child = {}
         self.margin_manager = None
         self.blank(bg)
@@ -294,6 +289,16 @@ class MainScreen:
                 self.surface.fill(new_bg)
             else:
                 self.blit(new_bg, (0,0))
+    def blank_newbg(self, new_bg):
+        self.clearWidget()
+        if valid_background(new_bg):
+            self.background = new_bg
+            self.original_background = new_bg if isinstance(new_bg, pygame.Surface) else None
+            self.blank()
+            for widget in self.child.values():
+                widget.hide_itself()
+        else:
+            raise ValueError("Background must be an RGB tuple or a pygame.Surface")
     def blit(self, source, dest):
         self.surface.blit(source, dest)
     def blit_to_anchor(self,surface, anchor: str):
@@ -316,6 +321,20 @@ class MainScreen:
         self.render_engine_type = engine
     def flip(self):
         pygame.display.flip()
+
+    def change_bg(self, new_bg):
+        if valid_background(new_bg):
+            self.background = new_bg
+            self.original_background = new_bg if isinstance(new_bg, pygame.Surface) else None
+            self.blank()
+
+            for widget in self.child.values():
+                widget.rerender()
+        else:
+            raise ValueError("Background must be an RGB tuple or a pygame.Surface")
+    def handle_resize_bg(self, new_size):
+        if isinstance(self.original_background, pygame.Surface):
+            self.background = pygame.transform.smoothscale(self.original_background, new_size)
 class PygameRender:
     """
 

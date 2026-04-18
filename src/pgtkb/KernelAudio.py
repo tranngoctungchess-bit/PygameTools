@@ -1,12 +1,13 @@
-import sys
 import os
 import pygame
+import time
 
-try:
-    import miniaudio
-except ImportError:
-    miniaudio = None
+_cur_run_audio = []
 
+def cleanupaudio():
+    """Stop all currently playing audio instances."""
+    for audio in _cur_run_audio:
+        audio.stop()
 
 class Audio:
     def __init__(self, filepath: str):
@@ -19,85 +20,99 @@ class Audio:
             raise ValueError(f"Unsupported format: {ext}. Supported: {valid_exts}")
 
         self.filepath = filepath
-        self.backend = 'miniaudio' if miniaudio else 'pygame'
-        self._load()
-        self._stream = None
-        self._paused = False
         self._volume = 1.0
+        self.is_play = False
+        self.is_paused = False
+        self._loop = False
 
-    def _detect_backend(self):
-        return self.backend
+        self._sound = None
+        self.channel = None
+
+        self._load()
+        _cur_run_audio.append(self)
 
     def _load(self):
-        if self.backend == 'miniaudio':
-            self._info = miniaudio.get_file_info(self.filepath)
-        else:
-            self._sound = pygame.mixer.Sound(self.filepath)
+        """Load the sound file using pygame mixer."""
+        self._sound = pygame.mixer.Sound(self.filepath)
 
     def play(self, loop=False, volume=None):
-        play_volume = volume if volume is not None else self._volume
-
-        if self.backend == 'miniaudio':
-            self._stream = miniaudio.play_file(
-                self.filepath,
-                loop=loop,
-                volume=play_volume
-            )
+        """Start playback of the audio file."""
+        if volume is not None:
+            self.set_volume(volume)
+        self._loop = loop
+        if not self.is_paused:
+            self.stop()
         else:
-            self._sound.set_volume(play_volume)
-            self._sound.play(-1 if loop else 0)
+            if self.channel:
+                self.channel.unpause()
+                self.is_paused = False
+                self.is_play = True
+                return
 
-        self._paused = False
+        self._sound.set_volume(self._volume)
+        self.channel = self._sound.play(-1 if loop else 0)
+        self.is_play = True
+        self.is_paused = False
 
     def stop(self):
-        if self.backend == 'miniaudio' and self._stream:
-            self._stream.stop()
-            self._stream = None
-        elif self.backend == 'pygame':
-            self._sound.stop()
+        """Stop playback completely."""
+        self.is_play = False
+        self._loop = False
+        self.is_paused = False
+
+        if self.channel:
+            self.channel.stop()
+            self.channel = None
 
     @property
-    def duration(self):
-        if self.backend == 'miniaudio':
-            return self._info.duration
-        else:
-            return self._sound.get_length()
+    def duration(self) -> float:
+        """Return the duration of the audio file in seconds."""
+        return self._sound.get_length()
 
     def pause(self):
-        if self.backend == 'miniaudio' and self._stream:
-            self._stream.pause()
-            self._paused = True
-        elif self.backend == 'pygame':
-            pygame.mixer.pause()
+        """Pause playback."""
+        if self.channel and self.channel.get_busy() and not self.is_paused:
+            self.channel.pause()
+            self.is_paused = True
+            self.is_play = True
 
     def resume(self):
-        if self.backend == 'miniaudio' and self._stream and self._paused:
-            self._stream.resume()
-            self._paused = False
-        elif self.backend == 'pygame':
-            pygame.mixer.unpause()
+        """Resume paused playback."""
+        if self.channel and self.is_paused:
+            self.channel.unpause()
+            self.is_paused = False
+            self.is_play = True
 
     def set_volume(self, volume: float):
+        """Set the playback volume (0.0 to 1.0)."""
         self._volume = max(0.0, min(1.0, volume))
-        if self.backend == 'miniaudio' and self._stream:
-            self._stream.volume = self._volume
-        elif self.backend == 'pygame' and hasattr(self, '_sound'):
+        if self._sound:
             self._sound.set_volume(self._volume)
 
     def get_volume(self) -> float:
+        """Return the current volume."""
         return self._volume
 
     def fade_out(self, duration_ms: int):
-        if self.backend == 'miniaudio' and self._stream:
-            self._stream.fade_out(duration_ms)
-        elif self.backend == 'pygame':
+        """Fade out over duration_ms milliseconds and stop playback."""
+        if self._sound:
             self._sound.fadeout(duration_ms)
+        self.is_play = False
+        self.is_paused = False
+        self.channel = None
 
     def fade_in(self, duration_ms: int, loop=False):
-        if self.backend == 'miniaudio':
-            self._stream = miniaudio.play_file(
-                self.filepath,
-                loop=loop,
-                volume=0.0
-            )
-            self._stream.fade_in(duration_ms, target_volume=self._volume)
+        """Fade in over duration_ms milliseconds, starting from volume 0."""
+        self.set_volume(0.0)
+        self.play(loop=loop)
+
+        steps = 50
+        step_duration = duration_ms / steps / 1000.0
+
+        for i in range(steps):
+            new_vol = self._volume * ((i + 1) / steps)
+            self._sound.set_volume(new_vol)
+            time.sleep(step_duration)
+
+    def is_playing(self) -> bool:
+        return self.channel is not None and self.channel.get_busy()

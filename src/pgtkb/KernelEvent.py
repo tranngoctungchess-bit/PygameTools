@@ -6,9 +6,13 @@ from pgtkb.VFlags import *
 
 
 def _handle_resize(self: "EventDispatcher"):
-    self.screen.blank()
-    for widget in list(reversed(self.screen.child.values())):
+    self.screen.handle_resize_bg(self.event.size)
+    if self.screen.margin_manager:
+        self.screen.margin_manager.update_on_resize(self.screen)
+    for widget in self.screen.child.values():
         widget.dispatch_resize()
+    self.screen.blank()
+    pygame.display.flip()
 def _handle_quit(self: "EventDispatcher"):
     return False
 mouse_event2flags = {

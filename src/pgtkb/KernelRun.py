@@ -3,9 +3,7 @@ from typing import Union
 from collections.abc import Callable
 import concurrent.futures
 import pygame
-
-from pgtkb import PygameRender, MainScreen, EventDispatcher
-
+from pgtkb import PygameRender, MainScreen, EventDispatcher, cleanupaudio
 quitnow = pygame.QUIT
 class BreakThread(Exception):
     def __init__(self, message):
@@ -40,6 +38,7 @@ class Thread:
             for func in self.functions:
                 func()
             self.running = False
+        cleanupaudio()
     def threadbreak(self):
         self.break_requested = True
     def immediate_break(self):

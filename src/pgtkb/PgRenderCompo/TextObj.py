@@ -35,7 +35,7 @@ class Label(Widget):
     __slots__ = ('font', 'textpack', 'smooth', 'bg')
     def __init__(self, parent: Widget  | MainScreen, color,
                  size, text,
-                  Uflags: set | tuple = (), pos : PosTuple=(0, 0), font ="timesnewroman", name: None | str = None):
+                  Uflags: set | tuple = (text_Is_Antialias,), pos : PosTuple=(0, 0), font ="timesnewroman", name: None | str = None):
         self.textpack = TextPack(color, font, size, text)
         self.font = pygame.font.SysFont(self.textpack.Font, self.textpack.Size)
         text_surface = self.font.render(self.textpack.Text, False, self.textpack.Color)
