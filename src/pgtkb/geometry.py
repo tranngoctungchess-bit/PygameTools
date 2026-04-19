@@ -1,7 +1,5 @@
 #v0.09
-from pgtkb import KernelInit
 import math
-KernelInit.init()
 #wrap some useful function from a math lib
 sqrt = math.sqrt
 atan2 = math.atan2
