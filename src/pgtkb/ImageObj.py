@@ -9,7 +9,7 @@ os_path_join = os.path.join
 os_path_splitext = os.path.splitext
 def is_image_file(path):
     ext = os.path.splitext(path)[1].lower()
-    return ext in {'.png', '.jpg', '.jpeg', '.bmp', '.gif'}
+    return ext in {'.png', '.jpg', '.jpeg', '.bmp', '.gif', 'webp'}
 class ImagePack:
     def __init__(self, src: str, convert_alpha = True):
         if os_exists(src) and is_image_file(src):
