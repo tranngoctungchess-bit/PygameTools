@@ -256,8 +256,7 @@ class Widget:
     def dispatch_hover(self, *args):
         return trashfunc
 class MainScreen:
-    """
-    """
+    __slots__ = ('surface', 'background', 'original_background', 'child', 'margin_manager', 'render_engine_type', 'focused')
     def __init__(self, size, flags=0, bg = (0,0,0), fixed = False):
         if fixed:
             self.surface = pygame.display.set_mode(size, flags)
