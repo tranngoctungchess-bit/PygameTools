@@ -5,6 +5,8 @@ from pgtkb.UFlags import *
 from pgtkb.KernelWidget import Widget, MainScreen
 from pgtkb.ObjType import RectTuple, PosTuple, TextPack, Border
 from pgtkb.VFlags import *
+from pgtkb.KernelInit import font_init
+font_init()
 import re
 def trashfunc(*args, **kwargs):
     pass
