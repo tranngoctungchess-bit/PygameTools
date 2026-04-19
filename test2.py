@@ -29,4 +29,4 @@ def merge_code_files(source_dir, output_file, extensions=None, skip_files=None):
 folder_path = 'src/pgtkb'
 my_extensions = ['.py']
 result_name = 'haha.txt'
-merge_code_files(folder_path, result_name, my_extensions, 'pf1')
+merge_code_files(folder_path, result_name, my_extensions, pf1)
