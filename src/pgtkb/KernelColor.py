@@ -1,3 +1,9 @@
+"""Module for color manipulation and gradient generation.
+
+This module provides utilities for converting between color formats (HEX, RGB, HSL),
+managing named colors, and generating color gradients.
+"""
+
 import re
 FLOAT_ERROR = 0.0000005
 NAMES_TO_HEX = {
@@ -150,16 +156,55 @@ NAMES_TO_HEX = {
     "yellowgreen": "#9acd32",
                 }
 class ColorTools:
+    """Utilities for color format conversion and normalization."""
     def name_to_hex(self, name: str) -> str:
+        """Converts a CSS3 color name to its hexadecimal representation.
+
+        Args:
+            name (str): The name of the color (e.g., 'red', 'aliceblue').
+
+        Returns:
+            str: The hexadecimal color string (e.g., '#ff0000').
+
+        Raises:
+            ValueError: If the color name is not recognized.
+        """
         if hex_value := NAMES_TO_HEX.get(name.lower()):
             return hex_value
         raise ValueError(f'"{name}" is not defined as a named color in CSS3')
     def hex_to_rgb(self, hex_value: str):
+        """Converts a hexadecimal color string to an RGB tuple.
+
+        Args:
+            hex_value (str): The hex color string (e.g., '#ffffff' or '#fff').
+
+        Returns:
+            tuple: A tuple of (R, G, B) integers (0-255).
+        """
         int_value = int(self.normalize_hex(hex_value)[1:], 16)
         return int_value >> 16, int_value >> 8 & 0xFF, int_value & 0xFF
     def name_to_rgb(self, name):
+        """Converts a CSS3 color name to an RGB tuple.
+
+        Args:
+            name (str): The name of the color.
+
+        Returns:
+            tuple: A tuple of (R, G, B) integers (0-255).
+        """
         return self.hex_to_rgb(self.name_to_hex(name))
     def normalize_hex(self, hex_value : str):
+        """Normalizes a hex color string to a standard 6-digit lowercase format.
+
+        Args:
+            hex_value (str): The hex color string to normalize.
+
+        Returns:
+            str: The normalized hex string (e.g., '#ABC' becomes '#aabbcc').
+
+        Raises:
+            ValueError: If the hex value is invalid.
+        """
         if (match := re.compile(r"^#([a-fA-F0-9]{3}|[a-fA-F0-9]{6})$").match(hex_value)) is None:
             raise ValueError(f'"{hex_value}" is not a valid hexadecimal color value.')
         hex_digits = match.group(1)
@@ -168,6 +213,16 @@ class ColorTools:
         return f"#{hex_digits.lower()}"
 
     def hue_to_rgb(self, v1, v2, vH):
+        """Helper for HSL to RGB conversion.
+
+        Args:
+            v1 (float): Helper value 1.
+            v2 (float): Helper value 2.
+            vH (float): Hue value.
+
+        Returns:
+            float: Calculated RGB component value.
+        """
 
         while vH < 0: vH += 1
         while vH > 1: vH -= 1
@@ -178,6 +233,17 @@ class ColorTools:
 
         return v1
     def hsl_to_rgb(self, hsl):
+        """Converts HSL color values to RGB.
+
+        Args:
+            hsl (tuple): A tuple or list of (H, S, L) values (0.0 to 1.0).
+
+        Returns:
+            tuple: A tuple of (R, G, B) floats (0.0 to 1.0).
+
+        Raises:
+            ValueError: If saturation or lightness are outside the [0, 1] range.
+        """
         h, s, l = (float(v) for v in hsl)
 
         if not (0.0 - FLOAT_ERROR <= s <= 1.0 + FLOAT_ERROR):
@@ -202,6 +268,17 @@ class ColorTools:
         return r, g, b
 
     def rgb_to_hsl(self, rgb):
+        """Converts RGB color values to HSL.
+
+        Args:
+            rgb (tuple): A tuple or list of (R, G, B) values (0.0 to 1.0).
+
+        Returns:
+            tuple: A tuple of (H, S, L) values (0.0 to 1.0).
+
+        Raises:
+            ValueError: If any RGB component is outside the [0, 1] range.
+        """
         r, g, b = (float(v) for v in rgb)
 
         for name, v in {'Red': r, 'Green': g, 'Blue': b}.items():
@@ -248,11 +325,22 @@ class ColorTools:
 
 
 class GradientGenerator:
+    """Utilities for generating color gradients."""
     def linear_gradient(self, color_start, color_end, steps):
+        """Generates a linear gradient between two colors.
+
+        Args:
+            color_start (tuple): Starting RGB color tuple (R, G, B).
+            color_end (tuple): Ending RGB color tuple (R, G, B).
+            steps (int): Number of steps in the gradient.
+
+        Returns:
+            list: A list of RGB tuples representing the gradient.
+        """
         gradient = []
         for i in range(steps):
             ratio = i / (steps - 1)
-            # Trộn màu
+            # mix color
             r = int(color_start[0] + (color_end[0] - color_start[0]) * ratio)
             g = int(color_start[1] + (color_end[1] - color_start[1]) * ratio)
             b = int(color_start[2] + (color_end[2] - color_start[2]) * ratio)
@@ -260,6 +348,15 @@ class GradientGenerator:
         return gradient
 
     def multi_gradient(self, colors, steps):
+        """Generates a multi-stop gradient through a list of colors.
+
+        Args:
+            colors (list): A list of RGB color tuples.
+            steps (int): Total number of steps in the gradient.
+
+        Returns:
+            list: A list of RGB tuples representing the multi-stop gradient.
+        """
         gradient = []
         segments = len(colors) - 1
         steps_per_segment = steps // segments
