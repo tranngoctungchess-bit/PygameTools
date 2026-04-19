@@ -6,6 +6,7 @@ from collections import deque
 def trashfunc(*args, **kwargs):
     pass
 class FixedButton(Widget):
+    __slots__ = ("is_hovered", "lock_hover", "bg")
     def __init__(self, parent, rect: RectTuple | PosTuple, bg=None, hoverbg=None, pressbg=None,name: str| None = None):
         super().__init__(parent, rect=rect, name=name)
         self.is_hovered = False
