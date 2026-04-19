@@ -137,10 +137,6 @@ class Margin:
         width = max(0, width)
         height = max(0, height)
         return left, top, width, height
-
-######
-#NEXT
-######
 class LayoutHelper:
     """
     Docstring for LayoutHelper:
