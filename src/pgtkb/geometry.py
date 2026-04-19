@@ -1,4 +1,3 @@
-#v0.09
 import math
 #wrap some useful function from a math lib
 sqrt = math.sqrt
