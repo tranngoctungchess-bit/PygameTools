@@ -1,3 +1,6 @@
+//
+// Created by Admin on 4/19/2026.
+//
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -6,7 +9,7 @@
 
 namespace fs = std::filesystem;
 std::vector<std::string> pass_file = {"__init__.py", "geometry.py",
-    "KernelAudio.py", "KernelColor.py", "ImageObj.py"};
+    "KernelAudio.py", "KernelColor.py", "ImageObj.py",};
 std::vector<std::string> pf1 = {"__init__.py"};
 void merge_code_files(const fs::path& source_dir,
                       const fs::path& output_file,
@@ -55,6 +58,6 @@ int main() {
     std::vector<std::string> my_extensions = {".py"};
     fs::path result_name = "mergefile.txt";
 
-    merge_code_files(folder_path, result_name, my_extensions, pass_file);
+    merge_code_files(folder_path, result_name, my_extensions, pf1);
     return 0;
 }
