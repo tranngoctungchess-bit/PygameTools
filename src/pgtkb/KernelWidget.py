@@ -367,10 +367,3 @@ class PygameRender:
             self.widget.dirty_auto_flag.clear()
         except KeyError as e:
             raise ValueError(f"Flag {e} not found in renderfunc mapping. Check LinkRenderfunc.py")
-class SkiaRender:
-    def __init__(self, widget: Widget):
-        self.widget = widget
-    #coming soon
-class UltraRender:
-    def __init__(self):
-        print('Render with OpenGL coming soon in kernel 2.0')
