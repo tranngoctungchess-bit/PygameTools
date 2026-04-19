@@ -81,3 +81,8 @@ fix the margin bug,
 refactor Kernel Audio with unsupported to miniaudio
 fix the Draw bug to stop the trash on the screen
 add blank_newbg func to MainScreen
+Build 26:
+remove the waste import(Tuple in KernelWidget, and KernelInit in geometry, KernelPosition)
+add __slots__ to all class which has > 3 parameters
+complete docstring for KernelAudio, KernelColor, KernelPosition and ImageObj
+refactor the Kernel_Init to boost the startup time
