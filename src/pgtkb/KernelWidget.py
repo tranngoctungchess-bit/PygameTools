@@ -1,11 +1,12 @@
-from typing import Tuple, Union, Dict
+from typing import Union, Dict
 from dataclasses import dataclass
 import pygame
 from pgtkb.KernelPosition import Margin
 from pgtkb.ObjType import PosTuple, RectTuple
 from pgtkb.RFlags import *
-from pgtkb.KernelInit import init
-init()
+from pgtkb.KernelInit import display_init, joystick_init
+display_init()
+joystick_init()
 def trashfunc(*args, **kwargs):
     pass
 def valid_background(bg):

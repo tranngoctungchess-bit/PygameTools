@@ -38,6 +38,7 @@ special_event_to_handle = {
 def extra_parameter(handler, *args, **kwargs):
     return partial(handler, *args, **kwargs)
 class EventDispatcher:
+    __slots__ = ('screen', 'current_hovered', 'event', 'focused_widget', 'pressed_key')
     def __init__(self, screen: MainScreen):
         self.screen = screen
         self.current_hovered = None

@@ -1,9 +1,7 @@
 #pgtkb 1(build 0.09)
 #Pre-alpha
 from typing import Tuple, Optional
-from pgtkb.KernelInit import init
 from pgtkb.ObjType import PosTuple, RectTuple
-init()
 #####
 #Margin
 #####

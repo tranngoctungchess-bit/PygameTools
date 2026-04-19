@@ -3,6 +3,7 @@ from pgtkb.ObjType import PosTuple
 
 
 class GridLayout:
+    __slots__ = ('width_grid', 'height_grid', 'total_width', 'total_height', 'pos', 'padding', 'cell_width', 'cell_height', 'edge_cell', 'cells')
     def __init__(self, width_grid: int, height_grid: int, size: PosTuple, pos: PosTuple | None = None, padding=20):
         self.width_grid = width_grid
         self.height_grid = height_grid
@@ -51,8 +52,10 @@ class GridLayout:
             widget.rect.y = final_y
 
 class HorizontalLayout(GridLayout):
+    __slots__ = ()
     def __init__(self, length : int, size: PosTuple, pos : PosTuple, padding=20):
         super().__init__(length, 1, size, pos, padding)
 class VerticalLayout(GridLayout):
+    __slots__ = ()
     def __init__(self, length: int, size: PosTuple, pos: PosTuple, padding=20):
         super().__init__(1, length, size, pos, padding)
