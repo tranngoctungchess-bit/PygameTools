@@ -1,8 +1,5 @@
 from typing import Tuple, Optional
 from pgtkb.ObjType import PosTuple, RectTuple
-#####
-#Margin
-#####
 class Anchor:
      topleft = 'TopLeft'
      topcenter = 'TopCenter'
