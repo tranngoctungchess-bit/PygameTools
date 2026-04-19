@@ -1,6 +1,6 @@
 [project]
 name = "pgtkb"
-version = "0.0.25.1"
+version = "0.0.26"
 description = "hello"
 readme = "README.md"
 authors = [
