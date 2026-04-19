@@ -9,6 +9,7 @@ class BreakThread(Exception):
     def __init__(self, message):
         super().__init__(message)
 class Thread:
+    __slots__ = ('functions', 'quitcondition', 'running', 'fps', 'clock', 'break_requested', 'event_manager', 'dt')
     def __init__(self, screen: MainScreen, functions: list,
                  quitcondition: int | Callable[..., bool] | None = pygame.QUIT, fps: int| float=60):
         self.functions = functions
@@ -54,6 +55,7 @@ class Thread:
     def get_event(self):
         return self.event_manager.event
 class MainApplication(Thread):
+    __slots__ = ('screen',)
     def __init__(self, screen_size, screen_flags=0, screen_bg = (0,0,0),
                  fixed = False, quitcondition: int | Callable[..., bool] | None = quitnow,
                  fps: int | float=60, render_engine = PygameRender, caption = None, functions = None):
