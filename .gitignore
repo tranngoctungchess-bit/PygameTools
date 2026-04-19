@@ -43,6 +43,8 @@ Thumbs.db
 dist/
 build/
 *.egg-info/
-
+cmake-build-debug
+CMakeLists.txt
+mergecode.cpp
 # Pygame (optional)
 *.log
