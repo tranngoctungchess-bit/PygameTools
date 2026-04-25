@@ -86,3 +86,10 @@ remove the waste import(Tuple in KernelWidget, and KernelInit in geometry, Kerne
 add __slots__ to all class which has > 3 parameters
 complete docstring for KernelAudio, KernelColor, KernelPosition and ImageObj
 refactor the Kernel_Init to boost the startup time
+Build 27:
+refactor EventDispatcher to use registry-based system for flexible event handling
+add support for custom event/key handlers and key combinations (kmod)
+add advanced geometry tools (distance, lerp, dot_product, reflect_vector, bounding_box)
+add angle utilities (normalize_angle, angle_difference)
+add collision detection (line_intersection, point_in_triangle, circle_rect_collision)
+fix to_vector to return vector between two points
