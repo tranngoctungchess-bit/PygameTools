@@ -1,13 +1,15 @@
 [project]
 name = "pgtkb"
-version = "0.0.26"
+version = "0.0.27"
 description = "hello"
 readme = "README.md"
 authors = [
     { name = "tranngoctungchess-bit", email = "tranngoctung.chess@gmail.com" }
 ]
 requires-python = ">=3.10"
-dependencies = []
+dependencies = [
+    "pygame-ce >= 2.5.7"
+]
 
 [build-system]
 requires = ["uv_build>=0.10.10,<0.11.0"]

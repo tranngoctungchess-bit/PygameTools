@@ -72,7 +72,7 @@ class Label(Widget):
         self.dirty_vflags.add(textpack)
 class LineEdit(FixedButton):
     __slots__ = ("label", "text", "display_text", "fully", "display_start", "pad_x", "pad_y", "cursor", "cursor_idx",
-                        "cursor_timer", "blink_speed")
+                        "cursor_timer", "blink_speed", "is_key_insert")
     def __init__(self, parent,  text_size, width_line_edit ,pos: PosTuple=(0,0), bg=(255,255,255),
                  text_color=(0,0,0), border_radius=4, border_width=1, border_color = (0,0,0),
                  text_font="timesnewroman", text_uflags=None, pad_x=8, pad_y=4, name: str | None = None,
@@ -146,6 +146,7 @@ class LineEdit(FixedButton):
     def clear_text(self):
         self.text = ""
         self._update_display_offset()
+        self.cursor_idx = 0
     def change_cursor_pos(self, addition_idx):
         self.cursor.hide_itself()
         # max(0, ...) ensures it doesn't go back past the beginning of the string,

@@ -20,6 +20,7 @@ def display_init():
         pygame.display.init()
         display_init_state = True
     set_fill_mode(_fill_mode)
+    pygame.key.set_repeat(300, 50)
 def audio_init():
     global audio_init_state
     if not audio_init_state:

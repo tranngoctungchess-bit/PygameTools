@@ -7,7 +7,6 @@
 namespace fs = std::filesystem;
 std::vector<std::string> pass_file = {"__init__.py", "geometry.py",
     "KernelAudio.py", "KernelColor.py", "ImageObj.py"};
-std::vector<std::string> pf1 = {"__init__.py"};
 void merge_code_files(const fs::path& source_dir,
                       const fs::path& output_file,
                       const std::vector<std::string>& extensions,

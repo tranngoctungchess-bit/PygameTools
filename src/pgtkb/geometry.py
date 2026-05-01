@@ -7,15 +7,50 @@ radians = math.radians
 cos = math.cos
 sin = math.sin
 pi = math.pi
-def to_vector(pos_x:float, pos_y:float):
-    """change 2 pos to a vector"""
-    return pos_y - pos_x
+def to_vector(p1, p2):
+    """Return the vector from point p1 to point p2."""
+    return p2[0] - p1[0], p2[1] - p1[1]
+
+def distance(p1, p2):
+    """Return the Euclidean distance between two points."""
+    return math.sqrt((p2[0] - p1[0])**2 + (p2[1] - p1[1])**2)
+
+def lerp(a, b, t):
+    """Linear interpolation between two numbers or points."""
+    if isinstance(a, (list, tuple)):
+        return (a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t)
+    return a + (b - a) * t
+
+def dot_product(v1, v2):
+    """Return the dot product of two vectors."""
+    return v1[0] * v2[0] + v1[1] * v2[1]
+
+def is_point_in_circle(point, center, radius):
+    """Check if a point is inside a circle."""
+    return distance(point, center) <= radius
+
+def reflect_vector(vec, normal):
+    """Reflect a vector across a surface normal (bouncing logic)."""
+    n = normalize(normal)
+    dot = dot_product(vec, n)
+    return (vec[0] - 2 * dot * n[0], vec[1] - 2 * dot * n[1])
+
+def get_bounding_box(points):
+    """Return (x, y, w, h) that encloses all given points."""
+    if not points: return None
+    xs = [p[0] for p in points]
+    ys = [p[1] for p in points]
+    min_x, max_x = min(xs), max(xs)
+    min_y, max_y = min(ys), max(ys)
+    return (min_x, min_y, max_x - min_x, max_y - min_y)
+
 def magnitude(vec):
     """return the distance of two pos"""
     return math.sqrt(vec[0]*vec[0] + vec[1]*vec[1])
+
 def vector_between(p1, p2):
     """return the vector between two pos"""
-    return p2[0] - p1[0], p2[1] - p1[1]
+    return to_vector(p1, p2)
 def normalize(vec):
     """Return unit vector."""
     mag = magnitude(vec)
@@ -112,3 +147,69 @@ def point_line_distance(point, line_p1, line_p2):
     if denominator == 0:
         return distance(point, line_p1)  # a line is a point
     return numerator / denominator
+
+def normalize_angle(angle):
+    """Normalize angle to [0, 360)."""
+    return angle % 360.0
+
+def angle_difference(target, current):
+    """Return the shortest difference between two angles in degrees."""
+    diff = (target - current + 180) % 360 - 180
+    return diff
+
+def line_intersection(p1, p2, p3, p4):
+    """
+    Find the intersection point of two line segments (p1-p2) and (p3-p4).
+    Returns (x, y) if they intersect, else None.
+    """
+    x1, y1 = p1
+    x2, y2 = p2
+    x3, y3 = p3
+    x4, y4 = p4
+
+    denom = (y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1)
+    if denom == 0:  # Parallel or coincident
+        return None
+
+    ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denom
+    ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denom
+
+    if 0 <= ua <= 1 and 0 <= ub <= 1:
+        return x1 + ua * (x2 - x1), y1 + ua * (y2 - y1)
+    return None
+
+def is_point_in_triangle(p, a, b, c):
+    """Check if point p is inside triangle abc using barycentric coordinates."""
+    px, py = p
+    ax, ay = a
+    bx, by = b
+    cx, cy = c
+
+    v0 = (cx - ax, cy - ay)
+    v1 = (bx - ax, by - ay)
+    v2 = (px - ax, py - ay)
+
+    dot00 = dot_product(v0, v0)
+    dot01 = dot_product(v0, v1)
+    dot02 = dot_product(v0, v2)
+    dot11 = dot_product(v1, v1)
+    dot12 = dot_product(v1, v2)
+
+    denom = (dot00 * dot11 - dot01 * dot01)
+    if denom == 0: return False # Degenerate triangle
+    
+    inv_denom = 1 / denom
+    u = (dot11 * dot02 - dot01 * dot12) * inv_denom
+    v = (dot00 * dot12 - dot01 * dot02) * inv_denom
+
+    return (u >= 0) and (v >= 0) and (u + v < 1)
+
+def circle_rect_collision(center, radius, rect):
+    """Check if circle (center, radius) intersects with rect (x, y, w, h)."""
+    # Find the closest point to the circle within the rectangle
+    closest_x, closest_y = clamp_point(center, rect)
+    
+    # Calculate the distance between the circle's center and this closest point
+    dist = distance(center, (closest_x, closest_y))
+    
+    return dist <= radius

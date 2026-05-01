@@ -3,6 +3,7 @@ from pgtkb.VFlags import *
 from pgtkb.ObjType import RectTuple, PosTuple
 import pygame
 from collections import deque
+from functools import wraps
 def trashfunc(*args, **kwargs):
     pass
 class FixedButton(Widget):
@@ -100,8 +101,28 @@ class FixedButton(Widget):
             self.handle_realease_visual()
             return self._get_handler(Realeasefunc)
         return result_func
-
-
+    def on_event(self, flag):
+        def decorator(func):
+            self.vflags[flag] = func
+            self.dirty_vflags.add(flag)
+            return func
+        return decorator
+    def on_dlclick(self):
+        return self.on_event(Downlclick)
+    def on_drclick(self):
+        return self.on_event(Downrclick)
+    def on_ulclick(self):
+        return self.on_event(Uplclick)
+    def on_urclick(self):
+        return self.on_event(Uprclick)
+    def on_dsmouse(self):
+        return self.on_event(Downscrollmouse)
+    def on_usmouse(self):
+        return self.on_event(Upscrollmouse)
+    def on_hover(self):
+        return self.on_event(Hoverfunc)
+    def on_release(self):
+        return self.on_event(Realeasefunc)
 class ToggleButton(FixedButton):
     def __init__(self, parent, rect,name: str| None = None, fbg=None, tbg=None, hoverbg=None, lock_toogle=False):
         super().__init__(parent, rect, fbg, hoverbg, tbg, name=name)
