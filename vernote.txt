@@ -97,9 +97,3 @@ Build 28:
 convert geometry to Cython (.pyx) for high-performance math (5x+ speedup)
 Fix LineEdit bug: Not reset cursor pos when clear_text
 Add Click-to-place cursor to LineEdit
-Build 29:
-add Enter_func to VFlags and RFlags system
-implement on_enter decorator for FixedButton
-integrate Enter_func into LineEdit for handling Enter key events
-refactor build system to use setuptools/cython and cibuildwheel
-add GitHub Actions for automated cross-platform wheel building
