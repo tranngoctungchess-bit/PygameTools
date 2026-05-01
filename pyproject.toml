@@ -8,7 +8,7 @@ authors = [
 ]
 requires-python = ">=3.10"
 dependencies = [
-    "pygame-ce"
+    "pygame-ce >= 2.5.7"
 ]
 
 [build-system]
