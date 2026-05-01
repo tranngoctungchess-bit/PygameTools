@@ -45,6 +45,7 @@ renderfunc = {
     Rhover_bg : notingfunc,
     Rpressed_bg: notingfunc,
     RRealeasefunc: notingfunc,
+    REnterfunc: notingfunc,
     Rhave_margin: notingfunc,
     #########
     #AFLAG
@@ -67,5 +68,6 @@ renderfunc = {
     hover_bg: notingfunc,
     pressed_bg: notingfunc,
     Hoverfunc: notingfunc,
-    Realeasefunc: notingfunc
-}
+    Realeasefunc: notingfunc,
+    Enterfunc: notingfunc
+    }

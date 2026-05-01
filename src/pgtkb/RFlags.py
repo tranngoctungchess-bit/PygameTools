@@ -31,6 +31,7 @@ Rhover_bg = hover_bg + 2000
 Rpressed_bg = pressed_bg + 2000
 RHover_func = Hoverfunc + 2000
 RRealeasefunc = Realeasefunc + 2000
+REnterfunc = Enterfunc + 2000
 """
 Link Rflag to Uflag, Vflag
 """
@@ -59,5 +60,6 @@ rflags_to_vflags = {
     Upscrollup: RUpscrollup,
     Upscrolldown: RUpscrolldown,
     Hoverfunc: RHover_func,
-    Realeasefunc: RRealeasefunc
+    Realeasefunc: RRealeasefunc,
+    Enterfunc: REnterfunc
 }

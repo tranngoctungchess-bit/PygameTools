@@ -64,14 +64,8 @@ def main():
     input_box.add_vflag((border, Border(1, (200,200,200))),
                         (corner_radius, 4))
 
-    # Nút "Gửi"
-    send_btn = FixedButton(screen, rect=(560, 200, 80, 30), bg=(0,180,0), hoverbg=(0,220,0))
-    send_btn.set_margin(padding=(0,0))             # set margin trước
-    send_label = Label(send_btn, color=(255,255,255), size=16, text="Gửi")
-    send_label.goto_margin(Anchor.center)
-
-    @send_btn.on_dlclick()
-    def on_send(btn):
+    @input_box.on_enter()
+    def on_send():
         print("Đã nhập:", input_box.text)
         input_box.clear_text()
 

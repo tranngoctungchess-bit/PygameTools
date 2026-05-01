@@ -93,3 +93,7 @@ add advanced geometry tools (distance, lerp, dot_product, reflect_vector, boundi
 add angle utilities (normalize_angle, angle_difference)
 add collision detection (line_intersection, point_in_triangle, circle_rect_collision)
 fix to_vector to return vector between two points
+Build 28:
+convert geometry to Cython (.pyx) for high-performance math (5x+ speedup)
+Fix LineEdit bug: Not reset cursor pos when clear_text
+Add Click-to-place cursor to LineEdit

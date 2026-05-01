@@ -135,7 +135,46 @@ class LineEdit(FixedButton):
             self.cursor_idx -= 1
             self._update_display_offset()
             self.change_cursor_pos(0)
+    def dispatch_click(self, mouse_pos, event):
+        handler = super().dispatch_click(mouse_pos, event)
+        if event.type == pygame.MOUSEBUTTONDOWN and self.inrect(mouse_pos):
+            self._place_cursor_at_mouse(mouse_pos)
+        return handler
+    def _place_cursor_at_mouse(self, mouse_pos):
+        border_w = self.vflags[border].border_width
+        max_width = self.rect.w - self.pad_x * 2 - border_w * 2
+        local_x = mouse_pos[0] - self.label.rect.x
+        font = self.label.font
+        text = self.text
+        display_start = self.display_start
+        if local_x <= 0:
+            new_idx = display_start
+        else:
+            cumulative_w = 0
+            new_idx = len(text)
+            for i in range(display_start, len(text)):
+                char_w = font.size(text[i])[0]
+                if local_x < cumulative_w + char_w / 2:
+                    new_idx = i
+                    break
+                cumulative_w += char_w
 
+        self.cursor_idx = new_idx
+        if self.cursor_idx < self.display_start:
+            self.display_start = self.cursor_idx
+        self._update_display_offset()
+
+        while True:
+            cursor_x = font.size(text[self.display_start:self.cursor_idx])[0]
+            if cursor_x <= max_width or self.display_start >= self.cursor_idx:
+                break
+            self.display_start += 1
+        self._update_display_offset()
+        self._update_cursor_width()
+        self.change_cursor_pos(0)
+        self._reset_cursor_blink()
+        self.cursor.make_visible()
+        self.label.rerender()
     def dispatch_hover(self, mouse_pos):
         pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_IBEAM)
         return super().dispatch_hover(mouse_pos)
@@ -146,7 +185,7 @@ class LineEdit(FixedButton):
     def clear_text(self):
         self.text = ""
         self._update_display_offset()
-        self.cursor_idx = 0
+        self.change_cursor_pos(-self.cursor_idx)
     def change_cursor_pos(self, addition_idx):
         self.cursor.hide_itself()
         # max(0, ...) ensures it doesn't go back past the beginning of the string,
@@ -179,9 +218,6 @@ class LineEdit(FixedButton):
         self.cursor_timer = 0
         self.cursor.visible = True
         self.cursor.make_visible()
-    def on_enter(self):
-        pass
-
     def on_insert(self):
         self.cursor.make_invisible()
         self.is_key_insert = not self.is_key_insert
@@ -199,6 +235,11 @@ class LineEdit(FixedButton):
         else:
             self.cursor.rect.w = 1
         self.cursor.rerender()
+    def on_enter(self):
+        return self.on_event(Enterfunc)
+    def dispatch_enter(self):
+        func = self.vflags.get(Enterfunc, trashfunc)
+        func()
 class Cursor(Widget):
     def __init__(self,parent: FixedButton, color, rect):
         self.color = color

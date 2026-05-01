@@ -146,8 +146,8 @@ class EventDispatcher:
                 widget.process_addchar(self.event.text)
     def _dispatch_enter(self):
         for widget in self.focused_obj:
-            if hasattr(widget, 'on_enter'):
-                widget.on_enter()
+            if hasattr(widget, 'dispatch_enter'):
+                widget.dispatch_enter()
     def _dispatch_keyup(self):
         self.pressed_key.discard(self.event.key)
     def _dispatch_hover(self):
