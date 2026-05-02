@@ -150,7 +150,7 @@ class Widget:
         for chd in self.child.values():
             chd.rerender()
         self.hide_itself()
-    def inrect(self, pos: PosTuple):
+    def inwidget(self, pos: PosTuple):
         px, py = pos
         return (self.rect.x <= px <= self.rect.x + self.rect.w) and (self.rect.y <= py <= self.rect.y + self.rect.h)
     def replace_itself(self, new_widget: "Widget"):
@@ -166,16 +166,24 @@ class Widget:
 
     def goto_margin(self, anchor):
         from pgtkb.KernelPosition import Margin
-        if self.parent.margin_manager:
-            pos_x, pos_y = self.parent.margin_manager.get_pos(self.get_size(), anchor)
-            if isinstance(self.parent, Widget):
-                pos_x += self.parent.rect.x
-                pos_y += self.parent.rect.y
 
-            self.change_pos((pos_x, pos_y))
-        else:
-            raise ValueError(f"Parent of '{self.name}' must have a margin_manager before push_margin.")
-
+        if self.parent.margin_manager is None:
+            warnings.warn(
+                f"Parent of '{self.name}' has no margin_manager set. "
+                f"Falling back to default margin (0, 0). "
+                f"Call parent.set_margin() for custom margins.",
+                stacklevel=2
+            )
+            self.parent.margin_manager = Margin(
+                self.parent.surface if hasattr(self.parent, 'surface') else self.parent,
+                None,
+                (0, 0)
+            )
+        pos_x, pos_y = self.parent.margin_manager.get_pos(self.get_size(), anchor)
+        if isinstance(self.parent, Widget):
+            pos_x += self.parent.rect.x
+            pos_y += self.parent.rect.y
+        self.change_pos((pos_x, pos_y))
         self.anchor = anchor
 
     def set_margin(self, padding=(0, 0), border_percent: PosTuple | None = None):
@@ -256,6 +264,40 @@ class Widget:
         return trashfunc
     def dispatch_hover(self, *args):
         return trashfunc
+class CircleWidget(Widget):
+    def __init__(self, center_pos, radius, parent: Union["MainScreen", "Widget"],
+                 can_change = False, name: str | None = None):
+        x, y = center_pos
+        self.radius = radius
+        self.center_pos = center_pos
+        rect = (x - radius, y - radius, 2 * radius, 2 * radius)
+        super().__init__(parent, rect, can_change, name)
+
+    def inwidget(self, pos: PosTuple):
+        px, py = pos
+        cx, cy = self.center_pos
+        return ((px - cx) ** 2 + (py - cy) ** 2) <= self.radius ** 2
+
+    def change_pos(self, new_center_pos: PosTuple):
+        self.center_pos = new_center_pos
+        x, y = new_center_pos
+        new_rect_pos = (x - self.radius, y - self.radius)
+        super().change_pos(new_rect_pos)
+
+    def change_size(self, new_radius: float | int):
+        self.radius = new_radius
+        x, y = self.center_pos
+        new_rect = (x - new_radius, y - new_radius, 2 * new_radius, 2 * new_radius)
+        self.change_rect(new_rect)
+
+    def hide_itself(self):
+        bg = self.get_background()
+        surface = self.get_surface()
+        if isinstance(bg, tuple):
+            pygame.draw.circle(surface, bg, self.center_pos, self.radius)
+        elif isinstance(bg, pygame.Surface):
+            surface.blit(bg, (self.rect.x, self.rect.y), (self.rect.x, self.rect.y, self.rect.w, self.rect.h))
+
 class MainScreen:
     __slots__ = ('surface', 'background', 'original_background', 'child', 'margin_manager', 'render_engine_type', 'focused')
     def __init__(self, size, flags=0, bg = (0,0,0), fixed = False):

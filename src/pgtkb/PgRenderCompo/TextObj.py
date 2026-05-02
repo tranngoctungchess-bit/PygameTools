@@ -137,7 +137,7 @@ class LineEdit(FixedButton):
             self.change_cursor_pos(0)
     def dispatch_click(self, mouse_pos, event):
         handler = super().dispatch_click(mouse_pos, event)
-        if event.type == pygame.MOUSEBUTTONDOWN and self.inrect(mouse_pos):
+        if event.type == pygame.MOUSEBUTTONDOWN and self.inwidget(mouse_pos):
             self._place_cursor_at_mouse(mouse_pos)
         return handler
     def _place_cursor_at_mouse(self, mouse_pos):

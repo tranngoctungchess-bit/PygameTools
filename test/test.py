@@ -1,9 +1,10 @@
 import pygame
 from pgtkb import (
     MainApplication, FixedButton, Label, LineEdit, Audio,
-    Anchor, Border, ToggleButton, ToogleGroup, LayoutHelper
+    Anchor, Border, ToggleButton, ToogleGroup, LayoutHelper,
+    CircleButton, CircleToogleButton
 )
-from pgtkb.VFlags import border, corner_radius
+from pgtkb.VFlags import border, corner_radius, bg_widget
 from pgtkb.UFlags import text_Is_Bold
 
 try:
@@ -15,7 +16,7 @@ def main():
     app = MainApplication(
         screen_size=(800, 600),
         screen_bg=(40, 40, 50),
-        caption="Demo pgtkb Build 27",
+        caption="Demo pgtkb Build 29",
         fps=60
     )
     screen = app.screen
@@ -24,7 +25,7 @@ def main():
     screen.set_margin(padding=(20, 20))
 
     # Nhãn tiêu đề
-    title = Label(screen, color=(255, 215, 0), size=32, text="Chương trình mẫu",
+    title = Label(screen, color=(255, 215, 0), size=32, text="Chương trình mẫu Build 29",
                   Uflags={text_Is_Bold})
     title.goto_margin(Anchor.topcenter)
 
@@ -69,7 +70,35 @@ def main():
         print("Đã nhập:", input_box.text)
         input_box.clear_text()
 
-    app.event_manager.add_kmod_func(pygame.KMOD_CTRL, pygame.K_q, app.immediate_break)
+    # Test CircleButton
+    c_btn = CircleButton(screen, center_pos=(100, 400), radius=40,
+                         bg=(0, 200, 100), hoverbg=(0, 255, 150), pressbg=(0, 150, 50))
+    c_btn.set_margin()
+    c_label = Label(c_btn, color=(255, 255, 255), size=14, text="Circle")
+    c_label.goto_margin(Anchor.center)
+
+    @c_btn.on_dlclick()
+    def on_c_click():
+        print("CircleButton clicked!")
+
+    # Test CircleToogleButton with group
+    c_group = ToogleGroup(max_button=1)
+    
+    ct_btn1 = CircleToogleButton(screen, center_pos=(200, 400), radius=40,
+                                 fbg=(200, 0, 0), tbg=(255, 255, 255), hoverbg=(255, 100, 100))
+    ct_btn1.set_margin()
+    ct_label1 = Label(ct_btn1, color=(0, 0, 0), size=14, text="C-Toggle 1")
+    ct_label1.goto_margin(Anchor.center)
+    c_group.add(ct_btn1)
+
+    ct_btn2 = CircleToogleButton(screen, center_pos=(300, 400), radius=40,
+                                 fbg=(0, 0, 200), tbg=(255, 255, 255), hoverbg=(100, 100, 255))
+    ct_btn2.set_margin()
+    ct_label2 = Label(ct_btn2, color=(0, 0, 0), size=14, text="C-Toggle 2")
+    ct_label2.goto_margin(Anchor.center)
+    c_group.add(ct_btn2)
+
+    app.event_manager.add_kmod_func(pygame.KMOD_CTRL, (pygame.K_q,), app.immediate_break)
 
     app.threadstart()
 

@@ -97,3 +97,7 @@ Build 28:
 convert geometry to Cython (.pyx) for high-performance math (5x+ speedup)
 Fix LineEdit bug: Not reset cursor pos when clear_text
 Add Click-to-place cursor to LineEdit
+Build 29:
+Add CircleWidget !!!!
+Add CircleButton, CircleToogleButton
+Auto set_margin when the parent widget doesn't have a margin instead of raising an error

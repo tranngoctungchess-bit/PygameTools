@@ -1,5 +1,3 @@
-from typing import Union
-
 from collections.abc import Callable
 import concurrent.futures
 import pygame

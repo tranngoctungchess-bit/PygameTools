@@ -79,7 +79,7 @@ class EventDispatcher:
             _truecallback(func_list)
     def _dispatch_mousebuttondown(self):
         for widget in list(reversed(self.screen.child.values())):
-            if widget.inrect(self.mouse_pos):
+            if widget.inwidget(self.mouse_pos):
                 self.screen.focused = False
                 if hasattr(widget, 'dispatch_click'):
                     func = widget.dispatch_click(self.mouse_pos, self.event)
@@ -90,7 +90,7 @@ class EventDispatcher:
     def _dispatch_mousebuttonup(self):
         if not self.screen.focused:
             for widget in list(reversed(self.screen.child.values())):
-                if widget.inrect(self.mouse_pos):
+                if widget.inwidget(self.mouse_pos):
                     for w in list(self.focused_obj):
                         w.focused = False
                     self.focused_obj.clear()
@@ -154,7 +154,7 @@ class EventDispatcher:
         self.event = None
         new_hovered = None
         for widget in list(reversed(self.screen.child.values())):
-            if hasattr(widget, 'is_hovered') and widget.inrect(self.mouse_pos):
+            if hasattr(widget, 'is_hovered') and widget.inwidget(self.mouse_pos):
                 new_hovered = widget
                 break
 
